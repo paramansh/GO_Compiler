@@ -20,7 +20,7 @@ for i in range(len(mylist)):
     x,y=mylist[i]
     token_dic[x]=y
 
-########
+# === RESERVED KEYWORDS === #
 keywords = [
         'break',
         'case',
@@ -49,6 +49,7 @@ keywords = [
         'var'
         ]
 
+# === TOKENS LIST === #
 tokens = [
         'MINUS',
         'NUMBER',
@@ -103,7 +104,7 @@ tokens = [
         'TIMESEQ'
         ] + [k.upper() for k in keywords]
 
-
+# === REGEX DEFINITIONS === #
 t_ignore  = ' \t'
 t_ignore_COMMENT = r'(/\*([^*]|\n|(\*+([^*/]|\n])))*\*+/)|(//.*)'
 t_PLUS    = r'\+'
@@ -154,10 +155,7 @@ t_DOT     = r'\.'
 t_SEMICOL = r'\;'
 t_COLON   = r'\:'
 
-
-########
-
-
+# === REGEX DEFINITIONS WITH ACTIONS === #
 def t_STRING(t):
     r'(\"[^(\")]*\")|(\'[^(\')]*\') '
     t.value=t.value[1:-1].replace("\'","\"")
@@ -178,8 +176,9 @@ def t_IDENTIFIER(t):
         t.type = t.value.upper()
     return t
 
+### [TO DO] ADD DEFINITION FOR IMAGINARY NUMBER
+
 def t_FLOAT(t):
-    ###Imaginary tokens to be added for both imaginary and decimal
     r'(([0-9](_?[0-9]+)*(\.[0-9](_?[0-9]+)*)?)[eE]\-[0-9](_?[0-9]+)*)|([0-9](_?[0-9]+)*\.[0-9](_?[0-9]+)*)([eE][\+]?[0-9](_?[0-9]+)*)?'
     t.value = float(t.value.replace("_",""))
     return t
@@ -197,22 +196,40 @@ def t_error(t):
      print("Illegal character '%s'" % t.value[0])
      t.lexer.skip(1)
 
-lexer=lex.lex()         # Build the lexer
-
-# Test it out
-# data = '''
-# 3 + 4 * 10
-# + -20 *2
-# '''
-
-# Give the lexer some input
+lexer=lex.lex()
 lexer.input(f1.read())
 
 # Tokenize
 tokens_lst=[]
 while True:
- tok = lexer.token()
- if not tok:
-     break      # No more input
- tokens_lst.append([tok.type,tok.value,token_dic[tok.type]])
-print(tokens_lst)
+        tok = lexer.token()
+        if not tok:
+                break      # end of input
+
+        tokens_lst.append([tok.type,tok.value,token_dic[tok.type]])
+
+# for token in tokens_lst:
+#         print token
+
+f3 = open(outfile, 'w')
+head = """
+        <html>
+        <title>[CS335] Assignment 1</title>
+        <body>
+        <h1>LEXER Output</h1>
+        
+"""
+
+addendum = ""
+for tok in tokens_lst:
+        addendum = addendum + "<font color=\"{}\">{} </font> {}<br>".format(tok[2], tok[0], tok[1])
+
+tail = """
+        </body>
+        </html>
+
+"""
+
+contents = head + addendum + tail
+f3.write(contents)
+f3.close()
