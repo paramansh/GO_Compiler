@@ -7,6 +7,7 @@ func second(x, y string) (string) {
 }
 
 func main() {
-    a:= second("hello", "world");
+    fmt.println("hello");
+    a := second("hello", "world");
     fmt.Println(a);
 }

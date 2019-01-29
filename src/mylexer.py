@@ -46,18 +46,19 @@ keywords = [
         'struct',
         'switch',
         'type',
-        'var'
+        'var',
         ]
 
 # === TOKENS LIST === #
 tokens = [
-        'MINUS',
-        'NUMBER',
-        # 'IMAGINARY'
+        'IDENTIFIER',
         'RUNE',
-        'FLOAT',
-        'PLUS',
         'STRING',
+        'IMAGINARY',
+        'FLOAT',
+        'INTEGER',
+        'PLUS',
+        'MINUS',
         'TIMES',
         'DIVIDE',
         'MOD',
@@ -101,14 +102,15 @@ tokens = [
         'DOT',
         'SEMICOL',
         'COLON',
-        'IDENTIFIER',
         'PLUSEQ',
         'TIMESEQ',
-        'INDENT'
+        'INDENT',
+        'CONSTANT'
         ] + [k.upper() for k in keywords]
 
 # === REGEX DEFINITIONS === #
 t_INDENT  = r'\t'
+t_ignore = r' '
 t_ignore_COMMENT = r'(/\*([^*]|\n|(\*+([^*/]|\n])))*\*+/)|(//.*)'
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -159,23 +161,12 @@ t_SEMICOL = r'\;'
 t_COLON   = r'\:'
 
 # === REGEX DEFINITIONS WITH ACTIONS === #
-def t_STRING(t):
-    # r'(\"[^(\")]*\")'
-    r'(\"[^\"]*\")|(\`[^\`]*\`) '
-    t.value=t.value[1:-1]
-    return t
-
-def t_RUNE(t):
-    r'\'(.|(\\[abfnrtv]))\''
-    t.value = (t.value[1:-1])
-    return t
-
-def t_INTERFACE(t):
-    r'interface'
+def t_CONSTANT(t):
+    r'true|false|iota'
     return t
 
 def t_TYPE(t):
-    r'(((\*)|\ )*int|((\*)|\ )*float|((\*)|\ )*string)'
+    r'(((\*)|\ )*int|((\*)|\ )*float|((\*)|\ )*string)|((\*)|\ )*complex|((\*)|\ )*bool'
     t.value=t.value.replace(" ","")
     return t
 
@@ -185,14 +176,31 @@ def t_IDENTIFIER(t):
         t.type = t.value.upper()
     return t
 
-### [TO DO] ADD DEFINITION FOR IMAGINARY NUMBER
+def t_RUNE(t):
+    r'\'(.|(\\[abfnrtv]))\''
+    t.value = (t.value[1:-1])
+    return t
+
+def t_STRING(t):
+    r'(\"[^\"]*\")|(\`[^\`]*\`) '
+    t.value=t.value[1:-1]
+    return t
+
+def t_INTERFACE(t):
+    r'interface'
+    return t
+
+def t_IMAGINARY(t):
+    r'(([0-9](_?[0-9]+)*(\.[0-9](_?[0-9]+)*)?)[eE]\-[0-9](_?[0-9]+)*)i|([0-9](_?[0-9]+)*\.[0-9](_?[0-9]+)*)([eE][\+]?[0-9](_?[0-9]+)*)?i|(\d+)i'
+    t.value = complex(t.value.replace('i', 'j'))
+    return t
 
 def t_FLOAT(t):
     r'(([0-9](_?[0-9]+)*(\.[0-9](_?[0-9]+)*)?)[eE]\-[0-9](_?[0-9]+)*)|([0-9](_?[0-9]+)*\.[0-9](_?[0-9]+)*)([eE][\+]?[0-9](_?[0-9]+)*)?'
     t.value = float(t.value.replace("_",""))
     return t
 
-def t_NUMBER(t):
+def t_INTEGER(t):
     r'\d+'
     t.value = int(t.value)
     return t
@@ -217,10 +225,6 @@ while True:
 
         tokens_lst.append(tok)
 
-
-# for token in tokens_lst:
-#         print token
-print(tokens_lst)
 for tok in tokens_lst:
         print tok
 

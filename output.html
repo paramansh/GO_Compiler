@@ -3,7 +3,7 @@
         <title>[CS335] Assignment 1</title>
         <body>
         <h1>LEXER Output</h1>
-        
+
 <font color="#FF0000">var </font><font color="#000FFF">x </font><font color="#000FFF">= </font><font color="#000FFF">10 </font><font color="#000FFF">; </font><br>
 <font color="#FF0000">var </font><font color="#000FFF">y </font><font color="#000FFF">= </font><font color="#000FFF">1 </font><font color="#000FFF">+ </font><font color="#000FFF">25 </font><font color="#000FFF">* </font><font color="#000FFF">3 </font><font color="#000FFF">/ </font><font color="#000FFF">2 </font><font color="#000FFF">; </font><br>
 <font color="#FF0000">var </font><font color="#000FFF">z </font><font color="#FF0000">int </font><font color="#000FFF">= </font><font color="#000FFF">33 </font><font color="#000FFF">/ </font><font color="#000FFF">29 </font><font color="#000FFF">- </font><font color="#000FFF">75 </font><font color="#000FFF">+ </font><font color="#000FFF">89 </font><font color="#000FFF">- </font><font color="#000FFF">23 </font><font color="#000FFF">/ </font><font color="#000FFF">78 </font><font color="#000FFF">/ </font><font color="#000FFF">89 </font><font color="#000FFF">; </font><br>
@@ -21,18 +21,23 @@
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">math/cmplx </font><br>
 <font color="#000FFF">) </font><br>
 <font color="#FF0000">var </font><font color="#000FFF">( </font><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">ToBe </font><font color="#000FFF">bool </font><font color="#000FFF">= </font><font color="#000FFF">false </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">ToBe </font><font color="#FF0000">bool </font><font color="#000FFF">= </font><font color="#FFFF00">false </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">MaxInt </font><font color="#000FFF">uint64 </font><font color="#000FFF">= </font><font color="#000FFF">1 </font><font color="#000FFF"><< </font><font color="#000FFF">64 </font><font color="#000FFF">- </font><font color="#000FFF">1 </font><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">z </font><font color="#000FFF">complex128 </font><font color="#000FFF">= </font><font color="#000FFF">cmplx </font><font color="#000FFF">. </font><font color="#000FFF">Sqrt </font><font color="#000FFF">( </font><font color="#000FFF">- </font><font color="#000FFF">5 </font><font color="#000FFF">+ </font><font color="#000FFF">12 </font><font color="#000FFF">i </font><font color="#000FFF">) </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">z </font><font color="#FF0000">complex </font><font color="#000FFF">128 </font><font color="#000FFF">= </font><font color="#000FFF">cmplx </font><font color="#000FFF">. </font><font color="#000FFF">Sqrt </font><font color="#000FFF">( </font><font color="#000FFF">- </font><font color="#000FFF">5 </font><font color="#000FFF">+ </font><font color="#000000">12j </font><font color="#000FFF">) </font><br>
 <font color="#000FFF">) </font><br>
 <font color="#FF0000">func </font><font color="#000FFF">main </font><font color="#000FFF">( </font><font color="#000FFF">) </font><font color="#000FFF">{ </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF0000">const </font><font color="#000FFF">f </font><font color="#000FFF">= </font><font color="#000FFF">%T(%v)\n </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">Printf </font><font color="#000FFF">( </font><font color="#000FFF">f </font><font color="#000FFF">, </font><font color="#000FFF">ToBe </font><font color="#000FFF">, </font><font color="#000FFF">ToBe </font><font color="#000FFF">) </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF0000">for </font><font color="#000FFF">( </font><font color="#000FFF">) </font><font color="#000FFF">{ </font><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">println </font>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">( </font><font color="#000FFF">hello </font><font color="#000FFF">) </font><font color="#000FFF">; </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">println </font><font color="#000FFF">( </font><font color="#000FFF">hello </font><font color="#000FFF">) </font><font color="#000FFF">; </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">} </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">Printf </font><font color="#000FFF">( </font><font color="#000FFF">f </font><font color="#000FFF">, </font><font color="#000FFF">MaxInt </font><font color="#000FFF">, </font><font color="#000FFF">MaxInt </font><font color="#000FFF">) </font><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">Printf </font><font color="#000FFF">( </font><font color="#000FFF">f </font><font color="#000FFF">, </font><font color="#000FFF">z </font><font color="#000FFF">, </font><font color="#000FFF">z </font><font color="#000FFF">) </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF0000">func </font><font color="#000FFF">main </font><font color="#000FFF">( </font><font color="#000FFF">) </font><font color="#000FFF">{ </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">println </font><font color="#000FFF">( </font><font color="#000FFF">hello </font><font color="#000FFF">) </font><font color="#000FFF">; </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">a </font><font color="#000FFF">:= </font><font color="#000FFF">second </font><font color="#000FFF">( </font><font color="#000FFF">hello </font><font color="#000FFF">, </font><font color="#000FFF">world </font><font color="#000FFF">) </font><font color="#000FFF">; </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">fmt </font><font color="#000FFF">. </font><font color="#000FFF">Println </font><font color="#000FFF">( </font><font color="#000FFF">a </font><font color="#000FFF">) </font><font color="#000FFF">; </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#000FFF">} </font><br>
 <font color="#000FFF">} </font>
         </body>
         </html>

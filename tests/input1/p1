@@ -30,8 +30,13 @@ func main() {
 	const f = "%T(%v)\n" // test
 	fmt.Printf(f, ToBe, ToBe)
 	for() {
-		fmt.println	("hello");
+		fmt.println("hello");
 	}
 	fmt.Printf(f, MaxInt, MaxInt)
 	fmt.Printf(f, z, z)
+	func main() {
+		fmt.println("hello");
+		a := second("hello", "world");
+    	fmt.Println(a);
+	}
 }
