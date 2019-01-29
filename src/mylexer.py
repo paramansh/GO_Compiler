@@ -53,6 +53,8 @@ keywords = [
 tokens = [
         'MINUS',
         'NUMBER',
+        # 'IMAGINARY'
+        'RUNE',
         'FLOAT',
         'PLUS',
         'STRING',
@@ -157,8 +159,14 @@ t_COLON   = r'\:'
 
 # === REGEX DEFINITIONS WITH ACTIONS === #
 def t_STRING(t):
-    r'(\"[^(\")]*\")|(\'[^(\')]*\') '
-    t.value=t.value[1:-1].replace("\'","\"")
+    # r'(\"[^(\")]*\")'
+    r'(\"[^(\")]*\")|(\`[^(\`)]*\`) '
+    t.value=t.value[1:-1]
+    return t
+def t_RUNE(t):
+    r'\'(.|(\\[abfnrtv]))\''
+    # print(t.value[1:-1])
+    t.value = (t.value[1:-1])
     return t
 
 def t_INTERFACE(t):
@@ -210,14 +218,14 @@ while True:
 
 # for token in tokens_lst:
 #         print token
-
+print(tokens_lst)
 f3 = open(outfile, 'w')
 head = """
         <html>
         <title>[CS335] Assignment 1</title>
         <body>
         <h1>LEXER Output</h1>
-        
+
 """
 
 addendum = ""

@@ -1,0 +1,8 @@
+package main;
+
+import "fmt"
+
+func main() {
+    var x := 8;
+    fmt.Println("p'o`p'o", `Te'st"Te'st`);
+}
