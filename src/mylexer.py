@@ -101,11 +101,12 @@ tokens = [
         'COLON',
         'IDENTIFIER',
         'PLUSEQ',
-        'TIMESEQ'
+        'TIMESEQ',
+        'INDENT'
         ] + [k.upper() for k in keywords]
 
 # === REGEX DEFINITIONS === #
-t_ignore  = ' \t'
+t_INDENT  = r'\t'
 t_ignore_COMMENT = r'(/\*([^*]|\n|(\*+([^*/]|\n])))*\*+/)|(//.*)'
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -157,7 +158,7 @@ t_COLON   = r'\:'
 
 # === REGEX DEFINITIONS WITH ACTIONS === #
 def t_STRING(t):
-    r'(\"[^(\")]*\")|(\'[^(\')]*\') '
+    r'(\"[^\"]*\")|(\'[^\']*\') '
     t.value=t.value[1:-1].replace("\'","\"")
     return t
 
@@ -166,7 +167,7 @@ def t_INTERFACE(t):
     return t
 
 def t_TYPE(t):
-    r'(((\*)|\ )*int|((\*)|\ )*float|((\*)|\ )*string)'
+    r'(((\*)|\ )*int|((\*)|\ )*float|((\*)|\ )*string)' 
     t.value=t.value.replace(" ","")
     return t
 
@@ -206,10 +207,10 @@ while True:
         if not tok:
                 break      # end of input
 
-        tokens_lst.append([tok.type,tok.value,token_dic[tok.type]])
+        tokens_lst.append(tok)
 
-# for token in tokens_lst:
-#         print token
+for tok in tokens_lst:
+        print tok
 
 f3 = open(outfile, 'w')
 head = """
@@ -221,8 +222,16 @@ head = """
 """
 
 addendum = ""
+curr_line = 1
 for tok in tokens_lst:
-        addendum = addendum + "<font color=\"{}\">{} </font> {}<br>".format(tok[2], tok[0], tok[1])
+        if curr_line != tok.lineno :
+                addendum += "<br>\n"
+                curr_line = tok.lineno
+        
+        if tok.type == 'INDENT':
+                addendum += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+        else:
+                addendum += "<font color=\"{}\">{} </font>".format(token_dic[tok.type], tok.value)
 
 tail = """
         </body>
