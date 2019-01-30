@@ -1,0 +1,34 @@
+
+        <html>
+        <title>[CS335] Assignment 1</title>
+        <body>
+        <h1>LEXER Output</h1>
+
+<font color="#FF0000">package </font><font color="#0000FF">main </font><br>
+<font color="#FF0000">import </font><font color="#FF00FF">( </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#008000">"fmt" </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#008000">"strings" </font><br>
+<font color="#FF00FF">) </font><br>
+<font color="#FF0000">func </font><font color="#0000FF">main </font><font color="#FF00FF">( </font><font color="#FF00FF">) </font><font color="#FF00FF">{ </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">game </font><font color="#FF00FF">:= </font><font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF0000">string </font><font color="#FF00FF">{ </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF0000">string </font><font color="#FF00FF">{ </font><font color="#008000">"_" </font><font color="#FF00FF">, </font><font color="#008000">"_" </font><font color="#FF00FF">, </font><font color="#008000">"_" </font><font color="#FF00FF">} </font><font color="#FF00FF">, </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF0000">string </font><font color="#FF00FF">{ </font><font color="#008000">"_" </font><font color="#FF00FF">, </font><font color="#008000">"_" </font><font color="#FF00FF">, </font><font color="#008000">"_" </font><font color="#FF00FF">} </font><font color="#FF00FF">, </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF0000">string </font><font color="#FF00FF">{ </font><font color="#008000">"_" </font><font color="#FF00FF">, </font><font color="#008000">"_" </font><font color="#FF00FF">, </font><font color="#008000">"_" </font><font color="#FF00FF">} </font><font color="#FF00FF">, </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF00FF">} </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">game </font><font color="#FF00FF">[ </font><font color="#000000">0 </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#000000">0 </font><font color="#FF00FF">] </font><font color="#FF00FF">= </font><font color="#008000">"X" </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">game </font><font color="#FF00FF">[ </font><font color="#000000">2 </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#000000">2 </font><font color="#FF00FF">] </font><font color="#FF00FF">= </font><font color="#008000">"O" </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">game </font><font color="#FF00FF">[ </font><font color="#000000">2 </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#000000">0 </font><font color="#FF00FF">] </font><font color="#FF00FF">= </font><font color="#008000">"X" </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">game </font><font color="#FF00FF">[ </font><font color="#000000">1 </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#000000">0 </font><font color="#FF00FF">] </font><font color="#FF00FF">= </font><font color="#008000">"O" </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">game </font><font color="#FF00FF">[ </font><font color="#000000">0 </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#000000">2 </font><font color="#FF00FF">] </font><font color="#FF00FF">= </font><font color="#008000">"X" </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">printBoard </font><font color="#FF00FF">( </font><font color="#0000FF">game </font><font color="#FF00FF">) </font><br>
+<font color="#FF00FF">} </font><br>
+<font color="#FF0000">func </font><font color="#0000FF">printBoard </font><font color="#FF00FF">( </font><font color="#0000FF">s </font><font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF00FF">[ </font><font color="#FF00FF">] </font><font color="#FF0000">string </font><font color="#FF00FF">) </font><font color="#FF00FF">{ </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF0000">for </font><font color="#0000FF">i </font><font color="#FF00FF">:= </font><font color="#000000">0 </font><font color="#FF00FF">; </font><font color="#0000FF">i </font><font color="#FF00FF">< </font><font color="#0000FF">len </font><font color="#FF00FF">( </font><font color="#0000FF">s </font><font color="#FF00FF">) </font><font color="#FF00FF">; </font><font color="#0000FF">i </font><font color="#FF00FF">++ </font><font color="#FF00FF">{ </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#0000FF">fmt </font><font color="#FF00FF">. </font><font color="#0000FF">Printf </font><font color="#FF00FF">( </font><font color="#008000">"%s\n" </font><font color="#FF00FF">, </font><font color="#FF0000">string </font><font color="#0000FF">s </font><font color="#FF00FF">. </font><font color="#0000FF">Join </font><font color="#FF00FF">( </font><font color="#0000FF">s </font><font color="#FF00FF">[ </font><font color="#0000FF">i </font><font color="#FF00FF">] </font><font color="#FF00FF">, </font><font color="#008000">" " </font><font color="#FF00FF">) </font><font color="#FF00FF">) </font><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#FF00FF">} </font><br>
+<font color="#FF00FF">} </font>
+        </body>
+        </html>
+
