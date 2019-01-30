@@ -161,6 +161,10 @@ t_SEMICOL = r'\;'
 t_COLON   = r'\:'
 
 # === REGEX DEFINITIONS WITH ACTIONS === #
+def t_INTERFACE(t):
+    r'interface'
+    return t
+
 def t_CONSTANT(t):
     r'true|false|iota'
     return t
@@ -184,10 +188,6 @@ def t_RUNE(t):
 def t_STRING(t):
     r'(\"[^\"]*\")|(\`[^\`]*\`) '
     t.value=t.value[1:-1]
-    return t
-
-def t_INTERFACE(t):
-    r'interface'
     return t
 
 def t_IMAGINARY(t):
@@ -247,6 +247,8 @@ for tok in tokens_lst:
 
         if tok.type == 'INDENT':
                 addendum += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+        elif tok.type == 'STRING':
+                addendum += "<font color=\"{}\">\"{}\" </font>".format(token_dic[tok.type], tok.value)
         else:
                 addendum += "<font color=\"{}\">{} </font>".format(token_dic[tok.type], tok.value)
 
