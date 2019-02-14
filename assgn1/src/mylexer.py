@@ -104,13 +104,13 @@ tokens = [
         'COLON',
         'PLUSEQ',
         'TIMESEQ',
-        'INDENT',
+        # 'INDENT',
         'CONSTANT'
         ] + [k.upper() for k in keywords]
 
 # === REGEX DEFINITIONS === #
-t_INDENT  = r'\t'
-t_ignore = r' '
+# t_INDENT  = r'\t'
+t_ignore = ' \t'
 t_ignore_COMMENT = r'(/\*([^*]|\n|(\*+([^*/]|\n])))*\*+/)|(//.*)'
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -170,7 +170,7 @@ def t_CONSTANT(t):
     return t
 
 def t_TYPE(t):
-    r'(((\*)|\ )*int$|((\*)|\ )*float$|((\*)|\ )*string$)|((\*)|\ )*complex$|((\*)|\ )*bool$'
+    r'(((\*)|\ )*\bint\b|((\*)|\ )*\bfloat\b|((\*)|\ )*\bstring\b)|((\*)|\ )*\bcomplex\b|((\*)|\ )*\bbool\b'
     t.value=t.value.replace(" ","")
     return t
 
@@ -229,35 +229,35 @@ for tok in tokens_lst:
         print tok
 
 
-f3 = open(outfile, 'w')
-head = """
-        <html>
-        <title>[CS335] Assignment 1</title>
-        <body>
-        <h1>LEXER Output</h1>
+# f3 = open(outfile, 'w')
+# head = """
+#         <html>
+#         <title>[CS335] Assignment 1</title>
+#         <body>
+#         <h1>LEXER Output</h1>
 
-"""
+# """
 
-addendum = ""
-curr_line = 1
-for tok in tokens_lst:
-        if curr_line != tok.lineno :
-                addendum += "<br>\n"
-                curr_line = tok.lineno
+# addendum = ""
+# curr_line = 1
+# for tok in tokens_lst:
+#         if curr_line != tok.lineno :
+#                 addendum += "<br>\n"
+#                 curr_line = tok.lineno
 
-        if tok.type == 'INDENT':
-                addendum += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
-        elif tok.type == 'STRING':
-                addendum += "<font color=\"{}\">\"{}\" </font>".format(token_dic[tok.type], tok.value)
-        else:
-                addendum += "<font color=\"{}\">{} </font>".format(token_dic[tok.type], tok.value)
+#         if tok.type == 'INDENT':
+#                 addendum += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+#         elif tok.type == 'STRING':
+#                 addendum += "<font color=\"{}\">\"{}\" </font>".format(token_dic[tok.type], tok.value)
+#         else:
+#                 addendum += "<font color=\"{}\">{} </font>".format(token_dic[tok.type], tok.value)
 
-tail = """
-        </body>
-        </html>
+# tail = """
+#         </body>
+#         </html>
 
-"""
+# """
 
-contents = head + addendum + tail
-f3.write(contents)
-f3.close()
+# contents = head + addendum + tail
+# f3.write(contents)
+# f3.close()
