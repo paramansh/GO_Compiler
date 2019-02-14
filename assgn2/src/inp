@@ -1,11 +1,12 @@
 package main;
 
-import "fmt";
+import m "fmt";
 
 func main() 
 {
-	y == !(ww+5) * 4;
-
+	z++;
+	for i=0; i< 45; i++ {z=2; a = 3*4; continue he; break;};
+	return x, y;
 };
 
 func ma() {

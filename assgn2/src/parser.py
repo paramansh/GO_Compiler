@@ -13,8 +13,8 @@ def makenode(label):
 	nodecount += 1
 	return nodecount - 1
 
-def makeedge(node1, node2):
-	dot.edge(str(node1), str(node2))
+def makeedge(node1, node2, label=""):
+	dot.edge(str(node1), str(node2), label=label)
 
 
 precedence = (
@@ -715,30 +715,32 @@ def p_simple_stmt(p):
 
 def p_labeled_statements(p):
 	''' LabeledStmt : Label COLON Statement '''
-	p[0] = ["LabeledStmt", p[1], ":", p[3]]
+	p[0] = makenode(":")
+	makeedge(p[0], p[1])
+	makeedge(p[0], p[3])
+	# p[0] = ["LabeledStmt", p[1], ":", p[3]]
 
 def p_label(p):
 	''' Label : IDENTIFIER '''
-	p[0] = ["Label", p[1]]
+	p[0] = makenode(p[1])
+	# p[0] = p[1]
 
 
 def p_expression_stmt(p):
 	''' ExpressionStmt : Expression '''
-	p[0] = ["ExpressionStmt", p[1]]
+	p[0] = p[1]
 
 def p_inc_dec(p):
 	''' IncDecStmt : Expression PLUSPLUS
 					| Expression MINUSMIN '''
-	if p[2] == '++':
-		p[0] = ["IncDecStmt", p[1], "++"]
-	else:
-		p[0] = ["IncDecStmt", p[1], "--"]
+	p[0] = p[1]
+	temp = makenode(p[2])
+	makeedge(p[1], temp)
 
 
 def p_assignment(p):
 	'''Assignment : ExpressionList assign_op ExpressionList'''
 	p[0] = makenode(p[2])
-	# print p[1]
 	for i in p[1]:
 	    makeedge(p[0], i)
 	for i in p[3]:
@@ -761,11 +763,19 @@ def p_AssignOp(p):
 				| GGEQ
 				| EQUAL '''
 	p[0] = p[1]
+ #----------------------------------------------------
 
+ #--------------------IF STATEMENTS---------------------------
 
 def p_if_statement(p):
 	''' IfStmt : IF Expression Block ElseOpt '''
-	p[0] = ["IfStmt", "if", p[2], p[3], p[4]]
+	p[0] = makenode(p[1])
+	makeedge(p[0], p[2], "Condition")
+	makeedge(p[0], p[3], "Then")
+	if (p[4] != -1):
+		makeedge(p[0], p[4], "Else")
+
+	# p[0] = ["IfStmt", "if", p[2], p[3], p[4]]
 
 def p_SimpleStmtOpt(p):
 	''' SimpleStmtOpt : SimpleStmt SEMICOL
@@ -780,9 +790,11 @@ def p_else_opt(p):
 				| ELSE Block
 				| epsilon '''
 	if len(p) == 3:
-		p[0] = ["ElseOpt", "else", p[2]]
+		p[0] = p[2]
+		# p[0] = ["ElseOpt", "else", p[2]]
 	else:
-		p[0] = ["ElseOpt", p[1]]
+		p[0] = -1
+		# p[0] = ["ElseOpt", p[1]]
 
 # ----------------------------------------------------------------
 
@@ -879,46 +891,43 @@ def p_type_rep(p):
 
 def p_for(p):
 	'''ForStmt : FOR ConditionBlockOpt Block'''
-	p[0] = ["ForStmt", "for", p[2], p[3]]
+	# p[0] = ["ForStmt", "for", p[2], p[3]]
+	p[0] = makenode(p[1])
+	makeedge(p[0], p[3])
+	if (p[2] != -1):
+		makeedge(p[0], p[2])
 
 def p_conditionblockopt(p):
 	'''ConditionBlockOpt : epsilon
 				| Condition
-				| ForClause
-				| RangeClause'''
-	p[0] = ["ConditionBlockOpt", p[1]]
+				| ForClause'''
+				# | RangeClause'''
+	if (p[1] == "epsilon"):
+		p[0] = -1
+	else:
+		p[0] = p[1]
 
 def p_condition(p):
 	'''Condition : Expression '''
-	p[0] = ["Condition", p[1]]
+	p[0] = p[1]
 
 def p_forclause(p):
 	'''ForClause : SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt'''
-	p[0] = ["ForClause", p[1], ";", p[3], ";", p[5]]
-
-# def p_initstmtopt(p):
-#   '''InitStmtOpt : epsilon
-#            | InitStmt '''
-#   p[0] = ["InitStmtOpt", p[1]]
-
-# def p_init_stmt(p):
-#   ''' InitStmt : SimpleStmt'''
-#   p[0] = ["InitStmt", p[1]]
+	p[0] = makenode("ForClause")
+	makeedge(p[0], p[1])
+	if (p[3] != -1):
+		makeedge(p[0], p[3])
+	makeedge(p[0], p[5])
+	# p[0] = ["ForClause", p[1], ";", p[3], ";", p[5]]
 
 
 def p_conditionopt(p):
 	'''ConditionOpt : epsilon
 			| Condition '''
-	p[0] = ["ConditionOpt", p[1]]
-
-# def p_poststmtopt(p):
-#   '''PostStmtOpt : epsilon
-#            | PostStmt '''
-#   p[0] = ["PostStmtOpt", p[1]]
-
-# def p_post_stmt(p):
-#   ''' PostStmt : SimpleStmt '''
-#   # p[0] = ["PostStmt", p[1]]
+	if (p[1] == "epsilon"):
+		p[0] = -1
+	else:
+		p[0] = p[1]
 
 def p_rageclause(p):
 	'''RangeClause : ExpressionIdentListOpt RANGE Expression'''
@@ -936,38 +945,60 @@ def p_expressionidentifier(p):
 	else:
 		####TODO how????????? 
 		p[0] = ["ExpressionIdentifier", p[1], ":="]
+#----------------------------------------------------------
+
+#----------------------MISC--------------------------------
 
 def p_return(p):
 	'''ReturnStmt : RETURN ExpressionListPureOpt'''
-	p[0] = ["ReturnStmt", "return", p[2]]
+	# p[0] = ["ReturnStmt", "return", p[2]]
+	p[0] = makenode(p[1])
+	for i in p[2]:
+		makeedge(p[0], i)
 
 def p_expressionlist_pure_opt(p):
 	'''ExpressionListPureOpt : ExpressionList
 				| epsilon'''
-	p[0] = ["ExpressionListPureOpt", p[1]]
+	if (p[0] != "epsilon"):
+		p[0] = p[1]
+	else:
+		p[0] = []
 
 def p_break(p):
 	'''BreakStmt : BREAK LabelOpt'''
-	p[0] = ["BreakStmt", "break", p[2]]
+	p[0] = makenode(p[1])
+	if (p[2] != -1):
+		makeedge(p[0], p[2])
+	# p[0] = ["BreakStmt", "break", p[2]]
 
 def p_continue(p):
 	'''ContinueStmt : CONTINUE LabelOpt'''
-	p[0] = ["ContinueStmt", "continue", p[2]]
+	p[0] = makenode(p[1])
+	if (p[2] != -1):
+		makeedge(p[0], p[2])
 
 def p_labelopt(p):
 	'''LabelOpt : Label
 			| epsilon '''
-	p[0] = ["LabelOpt", p[1]]
+	if (p[1] != "epsilon"):
+		p[0] = p[1]
+	else:
+		p[0] = -1
 
 def p_goto(p):
 	'''GotoStmt : GOTO Label '''
-	p[0] = ["GotoStmt", "goto", p[2]]
+	p[0] = makenode(p[1])
+	if (p[2] != -1):
+		makeedge(p[0], p[2])
 # -----------------------------------------------------------
 
 # ----------------  SOURCE FILE --------------------------------
 def p_source_file(p):
 	'''Source : PackageClause SEMICOL ImportDeclRep TopLevelDeclRep'''
-	p[0] = ["Source", p[1], ";", p[3], p[4]]
+	# p[0] = ["Source", p[1], ";", p[3], p[4]]
+	p[0] = makenode("Source")
+	makeedge(p[0], p[1])
+	makeedge(p[0], p[3])
 
 def p_import_decl_rep(p):
 	'''ImportDeclRep : epsilon
@@ -990,47 +1021,54 @@ def p_toplevel_decl_rep(p):
 # ---------- PACKAGE CLAUSE --------------------
 def p_package_clause(p):
 	'''PackageClause : PACKAGE PackageName'''
-	p[0] = ["PackageClause", "package", p[2]]
+	p[0] = makenode(p[1])
+	temp = makenode(p[2])
+	makeedge(p[0], temp)
 
 
 def p_package_name(p):
 	'''PackageName : IDENTIFIER'''
-	p[0] = ["PackageName", p[1]]
+	p[0] = p[1]
 # -----------------------------------------------
 
 # --------- IMPORT DECLARATIONS ---------------
 def p_import_decl(p):
 	'''ImportDecl : IMPORT ImportSpec
 			| IMPORT LPAREN ImportSpecRep RPAREN '''
+	p[0] = makenode(p[1])
 	if len(p) == 3:
-		p[0] = ["ImportDecl", "import", p[2]]
+		makeedge(p[0], p[2])
 	else:
-		p[0] = ["ImportDecl", "import", "(", p[3], ")"]
+		for i in p[3]:
+			makeedge(p[0], i)
 
 def p_import_spec_rep(p):
 	''' ImportSpecRep : ImportSpecRep ImportSpec SEMICOL
 				| epsilon '''
 	if len(p) == 4:
-		p[0] = ["ImportSpecRep", p[1], p[2], ";"]
+		p[0] = p[1]
+		p[0].append(p[2])
 	else:
-		p[0] = ["ImportSpecRep", p[1]]
+		p[0] = []
 
 def p_import_spec(p):
 	''' ImportSpec : PackageNameDotOpt ImportPath '''
-	p[0] = ["ImportSpec", p[1], p[2]]
+	p[0] = p[2]
+	if (p[1] != -1):
+		makeedge(p[0], p[1], "as")
 
 def p_package_name_dot_opt(p):
 	''' PackageNameDotOpt : DOT
 							| PackageName
 							| epsilon'''
-	if p[1]== '.':
-		p[0] = ["PackageNameDotOpt", "."]
+	if p[1]== 'epsilon':
+		p[0] = -1
 	else:
-		p[0] = ["PackageNameDotOpt", p[1]]
+		p[0] = makenode(p[1])
 
 def p_import_path(p):
 	''' ImportPath : STRING '''
-	p[0] = ["ImportPath", p[1]]
+	p[0] = makenode(p[1])
 # -------------------------------------------------------ParametersParameters
 
 
