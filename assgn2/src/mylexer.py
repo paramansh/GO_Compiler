@@ -104,13 +104,11 @@ tokens = [
         'COLON',
         'PLUSEQ',
         'TIMESEQ',
-        'INDENT',
         'CONSTANT'
         ] + [k.upper() for k in keywords]
 
 # === REGEX DEFINITIONS === #
-t_INDENT  = r'\t'
-t_ignore = r' '
+t_ignore = ' \t'
 t_ignore_COMMENT = r'(/\*([^*]|\n|(\*+([^*/]|\n])))*\*+/)|(//.*)'
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -127,7 +125,7 @@ t_PLUSEQ  = r'(\+=)'
 t_MINUSEQ = r'(-=)'
 t_TIMESEQ = r'(\*=)'
 t_DIVIDEEQ= r'/='
-t_MODEQ   = r'(%=)'
+t_MODEQ   = r'(%=)'     
 t_AMPEQ   = r'(&=)'
 t_OREQ    = r'(\|=)'
 t_CAREQ   = r'(\^=)'
@@ -170,7 +168,7 @@ def t_CONSTANT(t):
     return t
 
 def t_TYPE(t):
-    r'(((\*)|\ )*int$|((\*)|\ )*float$|((\*)|\ )*string$)|((\*)|\ )*complex$|((\*)|\ )*bool$'
+    r'(((\*)|\ )*\bint\b|((\*)|\ )*\bfloat\b|((\*)|\ )*\bstring\b)|((\*)|\ )*\bcomplex\b|((\*)|\ )*\bbool\b'
     t.value=t.value.replace(" ","")
     return t
 

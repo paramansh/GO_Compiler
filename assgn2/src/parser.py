@@ -2,6 +2,34 @@ import ply.yacc as yacc
 import mylexer            # Import lexer information
 tokens = mylexer.tokens   # Need token list
 
+from graphviz import Digraph 
+
+nodecount = 0
+dot = Digraph()
+
+def makenode(label):
+	global nodecount
+	dot.node(str(nodecount), label)
+	nodecount += 1
+	return nodecount - 1
+
+def makeedge(node1, node2):
+	dot.edge(str(node1), str(node2))
+
+
+precedence = (
+	('right','EQUAL', 'NOT'),
+	('left', 'OROR'),
+	('left', 'AMPAMP'),
+	('left', 'OR'),
+	('left', 'CARET'),
+	('left', 'AMPERS'),
+	('left', 'EQEQ', 'NOTEQ'),
+	('left', 'LESS', 'GREAT','LEQ','GEQ'),
+	('left', 'LL', 'GG'),
+	('left', 'PLUS', 'MINUS'),
+	('left', 'TIMES', 'DIVIDE','MOD'),
+)
 
 #-------------------------------Start------------------------------#
 
@@ -30,7 +58,7 @@ def p_type(p):
 		p[0] = ["Type", p[1]]
 
 def p_type_name(p):
-	'''TypeName : IDENTIFIER
+	'''TypeName : TYPE
 				| QualifiedIdent'''
 	# '''TypeName : identifier
 	# 			| QualifiedIdent'''
@@ -45,9 +73,9 @@ def p_type_lit(p):
 	p[0] = ["TypeLit", p[1]]
 #TODO#############           
 def p_type_opt(p):
-    '''TypeOpt : Type
-               | epsilon'''
-    p[0] = ["TypeOpt", p[1]]
+	'''TypeOpt : Type
+			   | epsilon'''
+	p[0] = ["TypeOpt", p[1]]
 
 #----------------------------------------------------------------------------------#
 
@@ -104,14 +132,14 @@ def p_tag(p):
 #-------------------------------PointerType------------------------------#
 
 def p_pointer_type(p):
-    '''PointerType : TIMES BaseType'''
+	'''PointerType : TIMES BaseType'''
 	# '''PointerType : STAR BaseType'''
 	#########TODO times or star
-    p[0] = ["PointerType", "*", p[2]]
+	p[0] = ["PointerType", "*", p[2]]
 
 def p_base_type(p):
-    '''BaseType : Type'''
-    p[0] = ["BaseType", p[1]]
+	'''BaseType : Type'''
+	p[0] = ["BaseType", p[1]]
 
 #----------------------------------------------------------------------------------#
 
@@ -122,73 +150,82 @@ def p_function_type(p):
 	p[0] = ["FunctionType", "func", p[2]]
 
 def p_signature(p):
-    '''Signature : Parameters ResultOpt'''
-    p[0] = ["Signature", p[1], p[2]]
+	'''Signature : Parameters ResultOpt'''
+	p[0] = ["Signature", p[1], p[2]]
 
 def p_result_opt(p):
-    '''ResultOpt : Result
-                 | epsilon'''
-    p[0] = ["ResultOpt", p[1]]
+	'''ResultOpt : Result
+				 | epsilon'''
+	p[0] = ["ResultOpt", p[1]]
 
 def p_result(p):
-    '''Result : Parameters
-              | Type'''
-    p[0] = ["Result", p[1]]
+	'''Result : Parameters
+			  | Type'''
+	p[0] = ["Result", p[1]]
 
 def p_parameters(p):
-    '''Parameters : LPAREN ParameterListOpt RPAREN'''
-    p[0] = ["Parameters", "(", p[2], ")"]
+	'''Parameters : LPAREN ParameterListOpt RPAREN'''
+	p[0] = ["Parameters", "(", p[2], ")"]
 
 def p_parameter_list_opt(p):
-    '''ParameterListOpt : ParametersList
-                        | epsilon'''
-    p[0] = ["ParameterListOpt", p[1]]
+	'''ParameterListOpt : ParametersList
+						| epsilon'''
+	p[0] = ["ParameterListOpt", p[1]]
 
 def p_parameter_list(p):
-    '''ParametersList : Type
-                      | IdentifierList Type
-                      | ParameterDeclCommaRep'''
-    if len(p) == 3:
-        p[0] = ["ParametersList", p[1], p[2]]
-    else:
-        p[0] = ["ParametersList", p[1]]
+	'''ParametersList : Type
+					  | IdentifierList Type
+					  | ParameterDeclCommaRep'''
+	if len(p) == 3:
+		p[0] = ["ParametersList", p[1], p[2]]
+	else:
+		p[0] = ["ParametersList", p[1]]
 
 ######### TODO possible conflicts?????
 def p_parameter_decl_comma_rep(p):
-    '''ParameterDeclCommaRep : ParameterDeclCommaRep COMMA ParameterDecl
-                             | ParameterDecl COMMA ParameterDecl'''
-    p[0] = ["ParameterDeclCommaRep", p[1], ",", p[3]]
+	'''ParameterDeclCommaRep : ParameterDeclCommaRep COMMA ParameterDecl
+							 | ParameterDecl COMMA ParameterDecl'''
+	p[0] = ["ParameterDeclCommaRep", p[1], ",", p[3]]
 
 def p_parameter_decl(p):
-    '''ParameterDecl : IdentifierList Type
-                     | Type'''
-    if len(p) == 3:
-        p[0] = ["ParameterDecl", p[1], p[2]]
-    else:
-        p[0] = ["ParameterDecl", p[1]]
+	'''ParameterDecl : IdentifierList Type
+					 | Type'''
+	if len(p) == 3:
+		p[0] = ["ParameterDecl", p[1], p[2]]
+	else:
+		p[0] = ["ParameterDecl", p[1]]
 
 #----------------------------------------------------------------------------------#
 
 #-----------------------Blocks---------------------------
 
 def p_block(p):
-    '''Block : LBRACE StatementList RBRACE'''
-    p[0] = ["Blocks", "{" , p[2], "}"]
+	'''Block : LBRACE StatementList RBRACE'''
+	# p[0] = ["Blocks", "{" , p[2], "}"]
+	p[0] = makenode("Block")
+	for i in p[2]:
+		makeedge(p[0], i)
 
 def p_statement_list(p):
-    '''StatementList : StatementRep'''
-    p[0] = ["StatementList", p[1]]
+	'''StatementList : StatementRep'''
+	p[0] = p[1]
+	# p[0] = ["StatementList", p[1]]
 
 
 #########TODO different!!!
 def p_statement_rep(p):
-    '''StatementRep : StatementRep Statement SEMICOL
-                    | epsilon'''
-    if len(p) == 4:
-        p[0] = ["StatementRep", p[1], p[2], ';']
-    else:
-        p[0] = ["StatementRep", p[1]]
+	'''StatementRep : StatementRep Statement SEMICOL
+					| epsilon'''
+	if len(p) == 4:
+		p[0] = p[1]
+		p[0].append(p[2])
+		# p[0] =  str(p[1]) + str(p[2]) + ';'
+	else:
+		p[0] = []
+		# p[0] = "";
+		# p[0] = ["StatementRep", p[1]]
 
+# 
 # -------------------------------------------------------
 
 # ------------------DECLARATIONS and SCOPE------------------------
@@ -207,12 +244,12 @@ def p_toplevel_decl(p):
 
 # ------------------CONSTANT DECLARATIONS----------------
 def p_const_decl(p):
-    '''ConstDecl : CONST ConstSpec
-                 | CONST LPAREN ConstSpecRep RPAREN'''
-    if len(p) == 3:
-        p[0] = ["ConstDecl", "const", p[2]]
-    else:
-        p[0] = ["ConstDecl", "const", '(', p[3], ')']
+	'''ConstDecl : CONST ConstSpec
+				 | CONST LPAREN ConstSpecRep RPAREN'''
+	if len(p) == 3:
+		p[0] = ["ConstDecl", "const", p[2]]
+	else:
+		p[0] = ["ConstDecl", "const", '(', p[3], ')']
 
 
 ##### TODO Can be changed!!
@@ -224,119 +261,119 @@ def p_const_decl(p):
 #     else:
 #         p[0] = ["ConstSpecRep", p[1]]
 def p_const_spec_rep(p):
-    '''ConstSpecRep : ConstSpecRep ConstSpec SEMICOL
-                    | epsilon'''
-    if len(p) == 4:
-        p[0] = ["ConstSpecRep", p[1], p[2], ';']
-    else:
-        p[0] = ["ConstSpecRep", p[1]]
+	'''ConstSpecRep : ConstSpecRep ConstSpec SEMICOL
+					| epsilon'''
+	if len(p) == 4:
+		p[0] = ["ConstSpecRep", p[1], p[2], ';']
+	else:
+		p[0] = ["ConstSpecRep", p[1]]
 
 def p_const_spec(p):
-    '''ConstSpec : IdentifierList TypeExprListOpt'''
-    p[0] = ["ConstSpec", p[1], p[2]]
+	'''ConstSpec : IdentifierList TypeExprListOpt'''
+	p[0] = ["ConstSpec", p[1], p[2]]
 
 def p_type_expr_list(p):
-    '''TypeExprListOpt : TypeOpt EQUAL ExpressionList
-                       | epsilon'''
-    if len(p) == 4:
-        p[0] = ["TypeExprListOpt", p[1], "=", p[3]]
-    else:
-        p[0] = ["TypeExprListOpt", p[1]]
+	'''TypeExprListOpt : TypeOpt EQUAL ExpressionList
+					   | epsilon'''
+	if len(p) == 4:
+		p[0] = ["TypeExprListOpt", p[1], "=", p[3]]
+	else:
+		p[0] = ["TypeExprListOpt", p[1]]
 
 def p_identifier_list(p):
-    '''IdentifierList : IDENTIFIER IdentifierRep'''
-    p[0] = ["IdentifierList", p[1], p[2]]
+	'''IdentifierList : IDENTIFIER IdentifierRep'''
+	p[0] = ["IdentifierList", p[1], p[2]]
 
 def p_identifier_rep(p):
-    '''IdentifierRep : IdentifierRep COMMA IDENTIFIER
-                     | epsilon'''
-    if len(p) == 4:
-        p[0] = ["IdentifierRep", p[1], ",", p[3]]
-    else:
-        p[0] = ["IdentifierRep", p[1]]
+	'''IdentifierRep : IdentifierRep COMMA IDENTIFIER
+					 | epsilon'''
+	if len(p) == 4:
+		p[0] = ["IdentifierRep", p[1], ",", p[3]]
+	else:
+		p[0] = ["IdentifierRep", p[1]]
 
-def p_expr_list(p):
-    '''ExpressionList : Expression ExpressionRep'''
-    p[0] = ["ExpressionList", p[1], p[2]]
+# def p_expr_list(p):
+#     '''ExpressionList : Expression ExpressionRep'''
+#     p[0] = ["ExpressionList", p[1], p[2]]
 
-def p_expr_rep(p):
-    '''ExpressionRep : ExpressionRep COMMA Expression
-                     | epsilon'''
-    if len(p) == 4:
-        p[0] = ["ExpressionRep", p[1], ',', p[3]]
-    else:
-        p[0] = ["ExpressionRep", p[1]]
+# def p_expr_rep(p):
+#     '''ExpressionRep : ExpressionRep COMMA Expression
+#                      | epsilon'''
+#     if len(p) == 4:
+#         p[0] = ["ExpressionRep", p[1], ',', p[3]]
+#     else:
+#         p[0] = ["ExpressionRep", p[1]]
 
 	###?????????How to guarantee same number of idetifiers and expressions TODO
 # -------------------------------------------------------
 
 # ------------------TYPE DECLARATIONS-------------------
 def p_type_decl(p):
-    '''TypeDecl : TYPE TypeSpec
-                | TYPE LPAREN TypeSpecRep RPAREN'''
-    if len(p) == 5:
-        p[0] = ["TypeDecl", "type", "(", p[3], ")"]
-    else:
-        p[0] = ["TypeDecl", "type", p[2]]
+	'''TypeDecl : TYPE TypeSpec
+				| TYPE LPAREN TypeSpecRep RPAREN'''
+	if len(p) == 5:
+		p[0] = ["TypeDecl", "type", "(", p[3], ")"]
+	else:
+		p[0] = ["TypeDecl", "type", p[2]]
 
 def p_type_spec_rep(p):
-    '''TypeSpecRep : TypeSpecRep TypeSpec SEMICOL
-                   | epsilon'''
-    if len(p) == 4:
-        p[0] = ["TypeSpecRep", p[1], p[2], ";"]
-    else:
-        p[0] = ["TypeSpecRep", p[1]]
+	'''TypeSpecRep : TypeSpecRep TypeSpec SEMICOL
+				   | epsilon'''
+	if len(p) == 4:
+		p[0] = ["TypeSpecRep", p[1], p[2], ";"]
+	else:
+		p[0] = ["TypeSpecRep", p[1]]
 
 def p_type_spec(p):
-    '''TypeSpec : AliasDecl
-                | TypeDef'''
-    p[0] = ["TypeSpec", p[1]]
+	'''TypeSpec : AliasDecl
+				| TypeDef'''
+	p[0] = ["TypeSpec", p[1]]
 
 def p_alias_decl(p):
-    '''AliasDecl : IDENTIFIER EQUAL Type'''
-    p[0] = ["AliasDecl", p[1], '=', p[3]]
+	'''AliasDecl : IDENTIFIER EQUAL Type'''
+	p[0] = ["AliasDecl", p[1], '=', p[3]]
 # -------------------------------------------------------
 
 
 # -------------------TYPE DEFINITIONS--------------------
 def p_type_def(p):
-    '''TypeDef : IDENTIFIER Type'''
-    p[0] = ["TypeDef", p[1], p[2]]
+	'''TypeDef : IDENTIFIER Type'''
+	p[0] = ["TypeDef", p[1], p[2]]
 # -------------------------------------------------------
 
 
 # ----------------VARIABLE DECLARATIONS------------------
 def p_var_decl(p):
-    '''VarDecl : VAR VarSpec
-               | VAR LPAREN VarSpecRep RPAREN'''
-    if len(p) == 3:
-        p[0] = ["VarDecl", "var", p[2]]
-    else:
-        p[0] = ["VarDecl", "var", "(", p[3], ")"]
+	'''VarDecl : VAR VarSpec
+			   | VAR LPAREN VarSpecRep RPAREN'''
+	if len(p) == 3:
+		p[0] = ["VarDecl", "var", p[2]]
+	else:
+		p[0] = ["VarDecl", "var", "(", p[3], ")"]
 
 def p_var_spec_rep(p):
-    '''VarSpecRep : VarSpecRep VarSpec SEMICOL
-                  | epsilon'''
-    if len(p) == 4:
-        p[0] = ["VarSpecRep", p[1], p[2], ";"]
-    else:
-        p[0] = ["VarSpecRep", p[1]]
+	'''VarSpecRep : VarSpecRep VarSpec SEMICOL
+				  | epsilon'''
+	if len(p) == 4:
+		p[0] = ["VarSpecRep", p[1], p[2], ";"]
+	else:
+		p[0] = ["VarSpecRep", p[1]]
 
 def p_var_spec(p):
-    '''VarSpec : IdentifierList Type ExpressionListOpt
-               | IdentifierList EQUAL ExpressionList'''
-    if p[2] == '=':
-        p[0] = ["VarSpec", p[1], "=", p[3]]
-    else:
-        p[0] = ["VarSpec", p[1], p[2], p[3]]
+	'''VarSpec : IdentifierList Type ExpressionListOpt
+			   | IdentifierList EQUAL ExpressionList'''
+	if p[2] == '=':
+		p[0] = ["VarSpec", p[1], "=", p[3]]
+	else:
+		p[0] = ["VarSpec", p[1], p[2], p[3]]
 
 def p_expr_list_opt(p):
-    '''ExpressionListOpt : EQUAL ExpressionList
-                         | epsilon'''
-    if len(p) == 3:
-        p[0] = ["ExpressionListOpt", "=", p[2]]
-    else:
-        p[0] = ["ExpressionListOpt", p[1]]
+	'''ExpressionListOpt : EQUAL ExpressionList
+						 | epsilon'''
+	if len(p) == 3:
+		p[0] = ["ExpressionListOpt", "=", p[2]]
+	else:
+		p[0] = ["ExpressionListOpt", p[1]]
 # -------------------------------------------------------
 
 	
@@ -348,27 +385,27 @@ def p_short_var_decl(p):
 
 # ----------------FUNCTION DECLARATIONS------------------
 def p_func_decl(p):
-    '''FunctionDecl : FUNC FunctionName Function
-                    | FUNC FunctionName Signature'''
-    p[0] = ["FunctionDecl", "func", p[2], p[3]]
+	'''FunctionDecl : FUNC FunctionName Function
+					| FUNC FunctionName Signature'''
+	p[0] = ["FunctionDecl", "func", p[2], p[3]]
 
 def p_func_name(p):
-    '''FunctionName : IDENTIFIER'''
-    p[0] = ["FunctionName", p[1]]
+	'''FunctionName : IDENTIFIER'''
+	p[0] = ["FunctionName", p[1]]
 
 def p_func(p):
-    '''Function : Signature FunctionBody'''
-    p[0] = ["Function", p[1], p[2]]
+	'''Function : Signature FunctionBody'''
+	p[0] = ["Function", p[1], p[2]]
 
 def p_func_body(p):
-    '''FunctionBody : Block'''
-    p[0] = ["FunctionBody", p[1]]
+	'''FunctionBody : Block'''
+	p[0] = ["FunctionBody", p[1]]
 # -------------------------------------------------------
 
 # -------------------QUALIFIED IDENTIFIER----------------
 def p_quali_ident(p):
-    '''QualifiedIdent : IDENTIFIER DOT TypeName'''
-    p[0] = ["QualifiedIdent", p[1], ".", p[3]]
+	'''QualifiedIdent : IDENTIFIER DOT TypeName'''
+	p[0] = ["QualifiedIdent", p[1], ".", p[3]]
 # -------------------------------------------------------
 
 def p_empty(p):
@@ -377,143 +414,151 @@ def p_empty(p):
 
 # ----------------------OPERAND----------------------------
 def p_operand(p):
-    '''Operand : Literal
-               | OperandName
-               | LPAREN Expression RPAREN'''
-    if len(p) == 2:
-        p[0] = ["Operand", p[1]]
-    else:
-        p[0] = ["Operand", "(", p[2], ")"]
+	'''Operand : Literal
+			   | OperandName
+			   | LPAREN Expression RPAREN'''
+	if len(p) == 2:
+		p[0] = p[1]
+		# p[0] = ["Operand", p[1]]
+	else:
+		# p[0] = ["Operand", "(", p[2], ")"]
+		p[0] = p[2]
 
 def p_literal(p):
-    '''Literal : BasicLit'''
-               #| CompositeLit'''
-    p[0] = ["Literal", p[1]]
+	'''Literal : BasicLit'''
+			   #| CompositeLit'''
+	# p[0] = ["Literal", p[1]]
+	p[0] = p[1]
 
 def p_basic_lit(p):
-    '''BasicLit : INTEGER
-                | FLOAT
-                | IMAGINARY
-                | RUNE
-                | STRING'''
-    p[0] = ["BasicLit",str(p[1])]
+	'''BasicLit : INTEGER
+				| FLOAT
+				| IMAGINARY
+				| RUNE
+				| STRING'''
+	# p[0] = ["BasicLit",str(p[1])]
+	# p[0] = str(p[1])
+	p[0] = makenode(str(p[1]))
 
 def p_operand_name(p):
-    '''OperandName : IDENTIFIER'''
-    p[0] = ["OperandName", p[1]]
+	'''OperandName : IDENTIFIER'''
+	p[0] = makenode(str(p[1]))
+	# p[0] = ["OperandName", p[1]]
 # ---------------------------------------------------------
 
 # -----------------COMPOSITE LITERALS----------------------
 def p_comp_lit(p):
-    '''CompositeLit : LiteralType LiteralValue'''
-    p[0] = ["CompositeLit", p[1], p[2]]
+	'''CompositeLit : LiteralType LiteralValue'''
+	p[0] = ["CompositeLit", p[1], p[2]]
 
 def p_lit_type(p):
-    '''LiteralType : ArrayType
-                   | ElementType
-                   | TypeName'''
-    p[0] = ["LiteralType", p[1]]
+	'''LiteralType : ArrayType
+				   | ElementType
+				   | TypeName'''
+	p[0] = ["LiteralType", p[1]]
 
 def p_lit_val(p):
-    '''LiteralValue : LBRACE ElementListOpt RBRACE'''
-    p[0] = ["LiteralValue", "{", p[2], "}"]
+	'''LiteralValue : LBRACE ElementListOpt RBRACE'''
+	p[0] = ["LiteralValue", "{", p[2], "}"]
 
 def p_elem_list_comma_opt(p):
-    '''ElementListOpt : ElementList
-                           | epsilon'''
-    p[0] = ["ElementListOpt", p[1]]
+	'''ElementListOpt : ElementList
+						   | epsilon'''
+	p[0] = ["ElementListOpt", p[1]]
 
 def p_elem_list(p):
-    '''ElementList : KeyedElement KeyedElementCommaRep'''
-    p[0] = ["ElementList", p[1], p[2]]
+	'''ElementList : KeyedElement KeyedElementCommaRep'''
+	p[0] = ["ElementList", p[1], p[2]]
 
 def p_key_elem_comma_rep(p):
-    '''KeyedElementCommaRep : KeyedElementCommaRep COMMA KeyedElement
-                            | epsilon'''
-    if len(p) == 4:
-        p[0] = ["KeyedElementCommaRep", p[1], ",", p[3]]
-    else:
-        p[0] = ["KeyedElementCommaRep", p[1]]
+	'''KeyedElementCommaRep : KeyedElementCommaRep COMMA KeyedElement
+							| epsilon'''
+	if len(p) == 4:
+		p[0] = ["KeyedElementCommaRep", p[1], ",", p[3]]
+	else:
+		p[0] = ["KeyedElementCommaRep", p[1]]
 
 def p_key_elem(p):
-    '''KeyedElement : Key COLON Element
-                    | Element'''
-    if len(p) == 4:
-        p[0] = ["KeyedElement", p[1], ":", p[3]]
-    else:
-        p[0] = ["KeyedElement", p[1]]
+	'''KeyedElement : Key COLON Element
+					| Element'''
+	if len(p) == 4:
+		p[0] = ["KeyedElement", p[1], ":", p[3]]
+	else:
+		p[0] = ["KeyedElement", p[1]]
 
 def p_key(p):
-    '''Key : FieldName
-           | Expression
-           | LiteralValue'''
-    p[0] = ["Key", p[1]]
+	'''Key : FieldName
+		   | Expression
+		   | LiteralValue'''
+	p[0] = ["Key", p[1]]
 
 def p_field_name(p):
-    '''FieldName : IDENTIFIER'''
-    p[0] = ["FieldName", p[1]]
+	'''FieldName : IDENTIFIER'''
+	p[0] = ["FieldName", p[1]]
 
 def p_elem(p):
-    '''Element : Expression
-               | LiteralValue'''
-    p[0] = ["Element", p[1]]
+	'''Element : Expression
+			   | LiteralValue'''
+	p[0] = ["Element", p[1]]
 # ---------------------------------------------------------
 
 
 # -----------------CONVERSIONS-----------------------------
 def p_conversion(p):
-    '''Conversion : Type LPAREN Expression RPAREN'''
-    p[0] = ["Conversion", p[1],  "(", p[3], ")"]
+	'''Conversion : Type LPAREN Expression RPAREN'''
+	p[0] = ["Conversion", p[1],  "(", p[3], ")"]
 # ---------------------------------------------------------
 
 
 # ------------------PRIMARY EXPRESSIONS--------------------
 def p_prim_expr(p):
-    '''PrimaryExpr : Operand
+	'''PrimaryExpr : Operand
 				   | Conversion
-                   | PrimaryExpr Selector
-                   | PrimaryExpr Index
-                   | PrimaryExpr Slice
-                   | PrimaryExpr TypeAssertion
-                   | PrimaryExpr Arguments'''
-    if len(p) == 2:
-        p[0] = ["PrimaryExpr", p[1]]
-    else:
-        p[0] = ["PrimaryExpr", p[1], p[2]]
+				   | PrimaryExpr Selector
+				   | PrimaryExpr Index
+				   | PrimaryExpr Slice
+				   | PrimaryExpr TypeAssertion
+				   | PrimaryExpr Arguments'''
+	if len(p) == 2:
+		p[0] = p[1]
+		# p[0] = ["PrimaryExpr", p[1]]
+	else:
+		p[0] = ["PrimaryExpr", p[1], p[2]]
 
 def p_selector(p):
-    '''Selector : DOT IDENTIFIER'''
-    p[0] = ["Selector", ".", p[2]]
+	'''Selector : DOT IDENTIFIER'''
+	p[0] = ["Selector", ".", p[2]]
 
 def p_index(p):
-    '''Index : LBRACK Expression RBRACK'''
-    p[0] = ["Index", "[", p[2], "]"]
+	'''Index : LBRACK Expression RBRACK'''
+	p[0] = ["Index", "[", p[2], "]"]
 
 def p_slice(p):
-    '''Slice : LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
-             | LBRACK ExpressionOpt COLON Expression COLON Expression RBRACK'''
+	'''Slice : LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
+			 | LBRACK ExpressionOpt COLON Expression COLON Expression RBRACK'''
 			 ###### TODO Optional
-    if len(p) == 6:
-        p[0] = ["Slice", "[", p[2], ":", p[4], "]"]
-    else:
-        p[0] = ["Slice", "[", p[2], ":", p[4], ":", p[6], "]"]
+	if len(p) == 6:
+		p[0] = ["Slice", "[", p[2], ":", p[4], "]"]
+	else:
+		p[0] = ["Slice", "[", p[2], ":", p[4], ":", p[6], "]"]
 
 def p_type_assert(p):
-    '''TypeAssertion : DOT LPAREN Type RPAREN'''
-    p[0] = ["TypeAssertion", ".", "(", p[3], ")"]
+	'''TypeAssertion : DOT LPAREN Type RPAREN'''
+	p[0] = ["TypeAssertion", ".", "(", p[3], ")"]
 
 def p_argument(p):
-    '''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
+	'''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
 		#####?????????
-    p[0] = ["Arguments", "(", p[2], ")"]
+	p[0] = ["Arguments", "(", p[2], ")"]
 
 def p_expr_list_type_opt(p):
-    '''ExpressionListTypeOpt : ExpressionList
-                             | epsilon'''
-    if len(p) == 3:
-        p[0] = ["ExpressionListTypeOpt", p[1], p[2]]
-    else:
-        p[0] = ["ExpressionListTypeOpt", p[1]]
+	'''ExpressionListTypeOpt : ExpressionList
+							 | epsilon'''
+	if len(p) == 3:
+		p[0] = ["ExpressionListTypeOpt", p[1], p[2]]
+	### TODO 
+	else:
+		p[0] = ["ExpressionListTypeOpt", p[1]]
 
 #def p_comma_opt(p):
 #    '''CommaOpt : COMMA
@@ -524,93 +569,103 @@ def p_expr_list_type_opt(p):
 #        p[0] = ["CommaOpt", p[1]]
 
 def p_expr_list_comma_opt(p):
-    '''ExpressionListCommaOpt : COMMA ExpressionList
-                              | epsilon'''
-    if len(p) == 3:
-        p[0] = ["ExpressionListCommaOpt", ",", p[2]]
-    else:
-        p[0] = ["ExpressionListCommaOpt", p[1]]
+	'''ExpressionListCommaOpt : COMMA ExpressionList
+							  | epsilon'''
+	if len(p) == 3:
+		p[0] = ["ExpressionListCommaOpt", ",", p[2]]
+	else:
+		p[0] = ["ExpressionListCommaOpt", p[1]]
 
 def p_expr_list(p):
-    '''ExpressionList : Expression ExpressionRep'''
-    p[0] = ["ExpressionList", p[1], p[2]]
+	'''ExpressionList : Expression ExpressionRep'''
+	p[0] = p[2]
+	p[0].append(p[1])
+	# p[0] = ["ExpressionList", p[1], p[2]]
 
 def p_expr_rep(p):
-    '''ExpressionRep : ExpressionRep COMMA Expression
-                     | epsilon'''
-    if len(p) == 4:
-        p[0] = ["ExpressionRep", p[1], ',', p[3]]
-    else:
-        p[0] = ["ExpressionRep", p[1]]
+	'''ExpressionRep : ExpressionRep COMMA Expression
+					 | epsilon'''
+	if len(p) == 4:
+		p[0] = p[1]
+		p[0].append(p[3])
+		#TODO   repetition
+		# p[0] = str(p[1]) + ',' + str(p[3])
+	else:
+		p[0] = []
+		# if (p[1] != "epsilon"):
+		#     p[0] = p[1]
+		# else:
+		#     p[0] = ""
 # ---------------------------------------------------------
 
 
 #----------------------OPERATORS-------------------------
 def p_expression(p):
-    '''Expression : UnaryExpr
-                  | Expression BinaryOp Expression'''
-    if len(p) == 4:
-        p[0] = ["Expression", p[1], p[2], p[3]]
-    else:
-        p[0] = ["Expression", p[1]]
+	'''Expression : UnaryExpr
+				  | Expression BinaryOp Expression'''
+	if len(p) == 4:
+		p[0] = makenode(p[2])
+		makeedge(p[0], p[1])
+		makeedge(p[0], p[3])
+
+		# p[0] = ["BinaryOp", p[1], p[2], p[3]]
+		# p[0] = ["Expression", p[1], p[2], p[3]]
+		# p[0] = makenode(p[2])
+		# p[0] -> child = p[1], p[2];
+	else:
+		p[0] = p[1]
+		# p[0] = makenode(p[1]);
+		# p[0] = p[1]
+		# p[0] = makenode(p[1])
+		# p[0] = ["Expression", p[1]]
 
 
 ##########TODO check requirement
 def p_expr_opt(p):
-    '''ExpressionOpt : Expression
-                     | epsilon'''
-    p[0] = ["ExpressionOpt", p[1]]
+	'''ExpressionOpt : Expression
+					 | epsilon'''
+	p[0] = ["ExpressionOpt", p[1]]
 
 def p_unary_expr(p):
-    '''UnaryExpr : PrimaryExpr
-                 | UnaryOp UnaryExpr
-                 | NOT UnaryExpr'''
-    if len(p) == 2:
-        p[0] = ["UnaryExpr", p[1]]
-    elif p[1] == "!": # TODO !! not requried seperately
-        p[0] = ["UnaryExpr", "!", p[2]]
-    else:
-        p[0] = ["UnaryExpr", p[1], p[2]]
+	'''UnaryExpr : PrimaryExpr
+				 | UnaryOp UnaryExpr'''
+				#  | NOT UnaryExpr'''
+	if len(p) == 2:
+		p[0] = p[1]
+		# p[0] = ["UnaryExpr", p[1]]
+	# elif p[1] == "!": # TODO !! not requried seperately
+	# 	p[0] = ["UnaryExpr", "!", p[2]]
+	else:
+		p[0] = makenode(str(p[1]))
+		makeedge(p[0], p[2])
+		# p[0] = ["UnaryExpr", p[1], p[2]]
 
 def p_binary_op(p):
-    '''BinaryOp : OROR
-                | AMPAMP
-                | RelOp
-                | AddOp
+	'''BinaryOp : OROR
+				| AMPAMP
+				| RelOp
+				| AddOp
 				| MulOp'''
-    if p[1] == "||":
-        p[0] = ["BinaryOp", "||"]
-    elif p[1] == "&&":
-        p[0] = ["BinaryOp", "&&"]
-    else:
-        p[0] = ["BinaryOp", p[1]]
+	# p[0] = ["BinaryOp", p[1]]
+	p[0] = p[1]
 
 def p_rel_op(p):
-    '''RelOp : EQEQ
-             | NOTEQ
-             | LESS
-             | GREAT
-             | LEQ
-             | GEQ'''
-    if p[1] == "==":
-        p[0] = ["RelOp", "=="]
-    elif p[1] == "!=":
-        p[0] = ["RelOp", "!="]
-    elif p[1] == "<":
-        p[0] = ["RelOp", "<"]
-    elif p[1] == ">":
-        p[0] = ["RelOp", ">"]
-    elif p[1] == "<=":
-        p[0] = ["RelOp", "<="]
-    elif p[1] == ">=":
-        p[0] = ["RelOp", ">="]
+	'''RelOp : EQEQ
+			 | NOTEQ
+			 | LESS
+			 | GREAT
+			 | LEQ
+			 | GEQ'''
+	p[0] = p[1]
+
 
 def p_add_op(p):
 	'''AddOp : PLUS
 			 | MINUS
 			 | OR
 			 | CARET'''
-	p[0] = ["AddOp", p[1]]
+	p[0] = p[1]
+	# p[0] = ["AddOp", p[1]]
 
 def p_mul_op(p):
 	'''MulOp : TIMES
@@ -620,68 +675,42 @@ def p_mul_op(p):
 			 | LL
 			 | GG
 			 | AMPCAR'''
-	p[0] = ["MulOp", p[1]]
-
-# def p_add_mul_op(p):
-#     '''AddMulOp : UnaryOp
-#                 | OR
-#                 | XOR
-#                 | DIVIDE
-#                 | MOD
-#                 | LSHIFT
-#                 | RSHIFT'''
-#     if p[1] == "/":
-#         p[0] = ["AddMulOp", "/"]
-#     elif p[1] == "%":
-#         p[0] = ["AddMulOp", "%"]
-#     elif p[1] == "|":
-#         p[0] = ["AddMulOp", "|"]
-#     elif p[1] == "^":
-#         p[0] = ["AddMulOp", "^"]
-#     elif p[1] == "<<":
-#         p[0] = ["AddMulOp", "<<"]
-#     elif p[1] == ">>":
-#         p[0] = ["AddMulOp", ">>"]
-#     else:
-#         p[0] = ["AddMulOp", p[1]]
+	p[0] = p[1]
+	# p[0] = ["MulOp", p[1]]
 
 def p_unary_op(p):
-    '''UnaryOp : PLUS
-               | MINUS
-               | TIMES
-               | AMPERS '''
-    if p[1] == '+':
-        p[0] = ["UnaryOp", "+"]
-    elif p[1] == '-':
-        p[0] = ["UnaryOp", "-"]
-    elif p[1] == '*':
-        p[0] = ["UnaryOp", "*"]
-    elif p[1] == '&':
-        p[0] = ["UnaryOp", "&"]
+	'''UnaryOp : PLUS
+			   | MINUS
+			   | TIMES
+			   | AMPERS
+			   | NOT '''
+	p[0] = p[1]
+	
 # -------------------------------------------------------
 
 # ---------------- STATEMENTS -----------------------
 def p_statement(p):
-    '''Statement : Declaration
-                 | LabeledStmt
-                 | SimpleStmt
-                 | ReturnStmt
-                 | BreakStmt
-                 | ContinueStmt
-                 | GotoStmt
-                 | Block
-                 | IfStmt
-                 | SwitchStmt
-                 | ForStmt '''
-    p[0] = ["Statement", p[1]]
+	'''Statement : Declaration
+				 | LabeledStmt
+				 | SimpleStmt
+				 | ReturnStmt
+				 | BreakStmt
+				 | ContinueStmt
+				 | GotoStmt
+				 | Block
+				 | IfStmt
+				 | SwitchStmt
+				 | ForStmt '''
+	# p[0] = ["Statement", p[1]]
+	p[0] = p[1]
 
 def p_simple_stmt(p):
-	''' SimpleStmt : epsilon
-					| ExpressionStmt
-					| IncDecStmt
-					| Assignment
-					| ShortVarDecl '''
-	p[0] = ["SimpleStmt", p[1]]
+	'''SimpleStmt : epsilon
+				  | ExpressionStmt
+				  | IncDecStmt
+				  | Assignment
+				  | ShortVarDecl '''
+	p[0] = p[1]
 
 
 def p_labeled_statements(p):
@@ -707,12 +736,17 @@ def p_inc_dec(p):
 
 
 def p_assignment(p):
-	''' Assignment : ExpressionList assign_op ExpressionList'''
-	p[0] = ["Assignment", p[1], p[2], p[3]]
+	'''Assignment : ExpressionList assign_op ExpressionList'''
+	p[0] = makenode(p[2])
+	# print p[1]
+	for i in p[1]:
+	    makeedge(p[0], i)
+	for i in p[3]:
+		makeedge(p[0], i)
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
-	p[0] = ["assign_op", p[1]]
+	p[0] = p[1]
 
 def p_AssignOp(p):
 	''' AssignOp : PLUSEQ
@@ -726,7 +760,7 @@ def p_AssignOp(p):
 				| LLEQ
 				| GGEQ
 				| EQUAL '''
-	p[0] = ["AssignOp", p[1]]
+	p[0] = p[1]
 
 
 def p_if_statement(p):
@@ -932,8 +966,8 @@ def p_goto(p):
 
 # ----------------  SOURCE FILE --------------------------------
 def p_source_file(p):
-    '''Source : PackageClause SEMICOL ImportDeclRep TopLevelDeclRep'''
-    p[0] = ["Source", p[1], ";", p[3], p[4]]
+	'''Source : PackageClause SEMICOL ImportDeclRep TopLevelDeclRep'''
+	p[0] = ["Source", p[1], ";", p[3], p[4]]
 
 def p_import_decl_rep(p):
 	'''ImportDeclRep : epsilon
@@ -955,13 +989,13 @@ def p_toplevel_decl_rep(p):
 
 # ---------- PACKAGE CLAUSE --------------------
 def p_package_clause(p):
-    '''PackageClause : PACKAGE PackageName'''
-    p[0] = ["PackageClause", "package", p[2]]
+	'''PackageClause : PACKAGE PackageName'''
+	p[0] = ["PackageClause", "package", p[2]]
 
 
 def p_package_name(p):
-    '''PackageName : IDENTIFIER'''
-    p[0] = ["PackageName", p[1]]
+	'''PackageName : IDENTIFIER'''
+	p[0] = ["PackageName", p[1]]
 # -----------------------------------------------
 
 # --------- IMPORT DECLARATIONS ---------------
@@ -997,12 +1031,12 @@ def p_package_name_dot_opt(p):
 def p_import_path(p):
 	''' ImportPath : STRING '''
 	p[0] = ["ImportPath", p[1]]
-# -------------------------------------------------------
+# -------------------------------------------------------ParametersParameters
 
 
-def p_error(p):
-  print("Syntax error in input!")
-  print(p)
+# def p_error(p):
+#   print("Syntax error in input!")
+#   print(p)
 
 
 
@@ -1012,4 +1046,8 @@ with open('inp','r') as f:
 	input_str = f.read()
 
 t = parser.parse(input_str)
-print(t)
+
+import pprint as pp
+
+pp.pprint(t)
+dot.render('digraph.dot')
