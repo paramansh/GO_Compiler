@@ -1,4 +1,4 @@
 $ cd assgn2
-$ python src/parser.py --input=tests/input
+$ python src/parser.py --input=tests/<folder>/<infile> --output=<outfile>.dot
 
-check syntaxtree.dot.pdf
+check <outfile>.dot.pdf

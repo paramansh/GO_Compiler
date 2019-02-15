@@ -2,7 +2,8 @@ package math;
 
 import ("fmt"; "lib/math";);
 
-const heapnode struct{left, right int;};
+const node;
+const heapnode struct{left, right int;} = node;
 
 var k = 0;
 var x, y float = -1, -2;

@@ -6,8 +6,10 @@ import pprint as pp
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
+argparser.add_argument("--output",help = "Specify the output dot file.")
 args = argparser.parse_args()
 infile = args.input
+outfile = args.output
 
 tokens = mylexer.tokens
 nodecount = 0
@@ -164,7 +166,7 @@ def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
 	p[0] = make_node('func')
 	for i in p[1]:
-		make_edge(p[0], i, 'param')
+		make_edge(p[0], i, 'arg')
 	for i in p[2]:
 		make_edge(p[0], i, 'return')
 
@@ -204,7 +206,7 @@ def p_parameter_list(p):
 		temp = make_node('parameter')
 		for i in p[1]:
 			make_edge(temp, i)
-		make_edge(temp, p[2])
+		make_edge(temp, p[2], 'type')
 		p[0] = [temp]
 	elif type(p[1]) == list:
 		p[0] = p[1]
@@ -227,9 +229,9 @@ def p_parameter_decl(p):
 	if len(p) == 3:
 		for i in p[1]:
 			make_edge(p[0], i)
-		make_edge(p[0], p[2])
+		make_edge(p[0], p[2], 'type')
 	else:
-		make_edge(p[0], p[1])
+		make_edge(p[0], p[1], 'type')
 
 #----------------------------------------------------------------------------------#
 
@@ -1144,4 +1146,4 @@ with open(infile,'r') as f:
 t = parser.parse(input_str)
 
 pp.pprint(t)
-dot.render('syntaxtree.dot')
+dot.render(outfile)
