@@ -1129,4 +1129,4 @@ with open(infile,'r') as f:
 t = parser.parse(input_str)
 
 pp.pprint(t)
-dot.render('digraph.dot')
+dot.render('syntaxtree.dot')

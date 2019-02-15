@@ -1,0 +1,4 @@
+$ cd assgn2
+$ python src/parser.py --input=tests/input
+
+check syntaxtree.dot.pdf
