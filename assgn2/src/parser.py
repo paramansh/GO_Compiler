@@ -321,8 +321,9 @@ def p_type_expr_list(p):
 
 def p_identifier_list(p):
 	'''IdentifierList : IDENTIFIER IdentifierRep'''
+	temp = make_node(p[1])
 	p[0] = p[2]
-	p[0].append(p[1])
+	p[0].append(temp)
 
 def p_identifier_rep(p):
 	'''IdentifierRep : IdentifierRep COMMA IDENTIFIER
