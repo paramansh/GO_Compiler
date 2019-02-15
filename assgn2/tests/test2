@@ -1,0 +1,11 @@
+package main;
+
+import "fmt";
+import "lib/math";
+
+const (x, y int = 3, 5; pi = 3.14;);
+
+type (
+	intptr = *int;
+	intarr = [2] *int;
+);

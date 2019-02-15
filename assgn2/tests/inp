@@ -16,9 +16,9 @@ type (
 func main() 
 {
 	//struct {y int;};
-	var z int = 0;
-	z++;
-	for i :=0; i< 45; i++ {z=2; a = 3*4; continue stat; break;};
+	var z = tree.root;
+	var x int = arr[5];
+	// for i :=0; i< 45; i++ {z=2; a = 3*4; continue stat; break;};
 	//return x, y;
 };
 

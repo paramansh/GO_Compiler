@@ -1,0 +1,17 @@
+package math;
+
+import ("fmt"; "lib/math";);
+
+const heapnode struct{left, right int;};
+
+var k = 0;
+var x, y float = -1, -2;
+
+func main() 
+{
+	var z = tree.root;
+	var p int = arr[5];
+    var q *int = arr[2:4];
+
+    fmt.Println(z.p);
+};

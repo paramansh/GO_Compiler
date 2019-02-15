@@ -1,0 +1,9 @@
+package math;
+
+import "fmt";
+import m "lib/math";
+
+const arr [3]int = (1, 2, 4);
+
+var i int;
+var U, V, W float;

@@ -240,7 +240,8 @@ def p_block(p):
 	'''Block : LBRACE StatementList RBRACE'''
 	p[0] = make_node('Block')
 	for i in p[2]:
-		make_edge(p[0], i)
+		if i != -1:
+			make_edge(p[0], i)
 
 def p_statement_list(p):
 	'''StatementList : StatementRep'''
@@ -408,17 +409,15 @@ def p_var_spec(p):
 	p[0] = make_node('VarSpec')
 	if p[2] == '=':
 		for i in p[1]:
-			make_edge(p[0], i)
-		temp = make_node(p[2])
-		make_edge(p[0], temp)
+			make_edge(p[0], i, 'id')
 		for i in p[3]:
-			make_edge(p[0], i)
+			make_edge(p[0], i, 'exp')
 	else:
 		for i in p[1]:
-			make_edge(p[0], i)
-		make_edge(p[0], p[2])
+			make_edge(p[0], i, 'id')
+		make_edge(p[0], p[2], 'type')
 		for i in p[3]:
-			make_edge(p[0], i)
+			make_edge(p[0], i, 'exp')
 
 def p_expr_list_opt(p):
 	'''ExpressionListOpt : EQUAL ExpressionList
@@ -437,8 +436,8 @@ def p_short_var_decl(p):
 	''' ShortVarDecl : IDENTIFIER COLONEQ Expression '''
 	p[0] = make_node(p[2])
 	temp = make_node(p[1])
-	make_edge(p[0], temp)
-	make_edge(p[0], p[3])
+	make_edge(p[0], temp, 'id')
+	make_edge(p[0], p[3], 'exp')
 
 # -------------------------------------------------------
 
@@ -469,9 +468,9 @@ def p_func_body(p):
 
 # -------------------QUALIFIED IDENTIFIER----------------
 
-def p_quali_ident(p):
-	'''QualifiedIdent : IDENTIFIER DOT TypeName'''
-	p[0] = ['QualifiedIdent', p[1], '.', p[3]]
+# def p_quali_ident(p):
+# 	'''QualifiedIdent : IDENTIFIER DOT TypeName'''
+# 	p[0] = ['QualifiedIdent', p[1], '.', p[3]]
 
 # -------------------------------------------------------
 
@@ -509,59 +508,59 @@ def p_operand_name(p):
 
 # -----------------COMPOSITE LITERALS----------------------
 
-def p_comp_lit(p):
-	'''CompositeLit : LiteralType LiteralValue'''
-	p[0] = ['CompositeLit', p[1], p[2]]
+# def p_comp_lit(p):
+# 	'''CompositeLit : LiteralType LiteralValue'''
+# 	p[0] = ['CompositeLit', p[1], p[2]]
 
-def p_lit_type(p):
-	'''LiteralType : ArrayType
-				   | ElementType
-				   | TypeName'''
-	p[0] = ['LiteralType', p[1]]
+# def p_lit_type(p):
+# 	'''LiteralType : ArrayType
+# 				   | ElementType
+# 				   | TypeName'''
+# 	p[0] = ['LiteralType', p[1]]
 
-def p_lit_val(p):
-	'''LiteralValue : LBRACE ElementListOpt RBRACE'''
-	p[0] = ['LiteralValue', '{', p[2], '}']
+# def p_lit_val(p):
+# 	'''LiteralValue : LBRACE ElementListOpt RBRACE'''
+# 	p[0] = ['LiteralValue', '{', p[2], '}']
 
-def p_elem_list_comma_opt(p):
-	'''ElementListOpt : ElementList
-						   | epsilon'''
-	p[0] = ['ElementListOpt', p[1]]
+# def p_elem_list_comma_opt(p):
+# 	'''ElementListOpt : ElementList
+# 						   | epsilon'''
+# 	p[0] = ['ElementListOpt', p[1]]
 
-def p_elem_list(p):
-	'''ElementList : KeyedElement KeyedElementCommaRep'''
-	p[0] = ['ElementList', p[1], p[2]]
+# def p_elem_list(p):
+# 	'''ElementList : KeyedElement KeyedElementCommaRep'''
+# 	p[0] = ['ElementList', p[1], p[2]]
 
-def p_key_elem_comma_rep(p):
-	'''KeyedElementCommaRep : KeyedElementCommaRep COMMA KeyedElement
-							| epsilon'''
-	if len(p) == 4:
-		p[0] = ['KeyedElementCommaRep', p[1], ',', p[3]]
-	else:
-		p[0] = ['KeyedElementCommaRep', p[1]]
+# def p_key_elem_comma_rep(p):
+# 	'''KeyedElementCommaRep : KeyedElementCommaRep COMMA KeyedElement
+# 							| epsilon'''
+# 	if len(p) == 4:
+# 		p[0] = ['KeyedElementCommaRep', p[1], ',', p[3]]
+# 	else:
+# 		p[0] = ['KeyedElementCommaRep', p[1]]
 
-def p_key_elem(p):
-	'''KeyedElement : Key COLON Element
-					| Element'''
-	if len(p) == 4:
-		p[0] = ['KeyedElement', p[1], ':', p[3]]
-	else:
-		p[0] = ['KeyedElement', p[1]]
+# def p_key_elem(p):
+# 	'''KeyedElement : Key COLON Element
+# 					| Element'''
+# 	if len(p) == 4:
+# 		p[0] = ['KeyedElement', p[1], ':', p[3]]
+# 	else:
+# 		p[0] = ['KeyedElement', p[1]]
 
-def p_key(p):
-	'''Key : FieldName
-		   | Expression
-		   | LiteralValue'''
-	p[0] = ['Key', p[1]]
+# def p_key(p):
+# 	'''Key : FieldName
+# 		   | Expression
+# 		   | LiteralValue'''
+# 	p[0] = ['Key', p[1]]
 
-def p_field_name(p):
-	'''FieldName : IDENTIFIER'''
-	p[0] = ['FieldName', p[1]]
+# def p_field_name(p):
+# 	'''FieldName : IDENTIFIER'''
+# 	p[0] = ['FieldName', p[1]]
 
-def p_elem(p):
-	'''Element : Expression
-			   | LiteralValue'''
-	p[0] = ['Element', p[1]]
+# def p_elem(p):
+# 	'''Element : Expression
+# 			   | LiteralValue'''
+# 	p[0] = ['Element', p[1]]
 
 # ---------------------------------------------------------
 
@@ -570,7 +569,8 @@ def p_elem(p):
 
 def p_conversion(p):
 	'''Conversion : Type LPAREN Expression RPAREN'''
-	p[0] = ['Conversion', p[1],  '(', p[3], ')']
+	p[0] = p[1]
+	make_edge(p[0], p[3])
 
 # ---------------------------------------------------------
 
@@ -583,47 +583,55 @@ def p_prim_expr(p):
 				   | PrimaryExpr Selector
 				   | PrimaryExpr Index
 				   | PrimaryExpr Slice
-				   | PrimaryExpr TypeAssertion
 				   | PrimaryExpr Arguments'''
+				  #  | PrimaryExpr TypeAssertion'''
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		p[0] = ['PrimaryExpr', p[1], p[2]]
+		p[0] = p[1]
+		make_edge(p[0], p[2])
 
 def p_selector(p):
 	'''Selector : DOT IDENTIFIER'''
-	p[0] = ['Selector', '.', p[2]]
+	p[0] = make_node(p[1])
+	temp = make_node(p[2])
+	make_edge(p[0], temp, 'select')
 
 def p_index(p):
 	'''Index : LBRACK Expression RBRACK'''
-	p[0] = ['Index', '[', p[2], ']']
+	p[0] = make_node('[]')
+	make_edge(p[0], p[2], 'index')
 
 def p_slice(p):
-	'''Slice : LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
-			 | LBRACK ExpressionOpt COLON Expression COLON Expression RBRACK'''
-			 ### TODO Optional
-	if len(p) == 6:
-		p[0] = ['Slice', '[', p[2], ':', p[4], ']']
-	else:
-		p[0] = ['Slice', '[', p[2], ':', p[4], ':', p[6], ']']
+	'''Slice : LBRACK ExpressionOpt COLON ExpressionOpt RBRACK'''
+			#  | LBRACK ExpressionOpt COLON Expression COLON Expression RBRACK'''
+	p[0] = make_node('slice')
+	if p[2] != - 1:
+		make_edge(p[0], p[2], 'low')
+	if p[4] != - 1:
+		make_edge(p[0], p[4], 'high')
+	
 
-def p_type_assert(p):
-	'''TypeAssertion : DOT LPAREN Type RPAREN'''
-	p[0] = ['TypeAssertion', '.', '(', p[3], ')']
+# def p_type_assert(p):
+# 	'''TypeAssertion : DOT LPAREN Type RPAREN'''
+# 	p[0] = ['TypeAssertion', '.', '(', p[3], ')']
 
 def p_argument(p):
 	'''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
-	### TODO ??
-	p[0] = ['Arguments', '(', p[2], ')']
+	# p[0] = ['Arguments', '(', p[2], ')']
+	p[0] = make_node('args')
+	for i in p[2]:
+		make_edge(p[0], i)
 
 def p_expr_list_type_opt(p):
 	'''ExpressionListTypeOpt : ExpressionList
 							 | epsilon'''
-	if len(p) == 3:
-		p[0] = ['ExpressionListTypeOpt', p[1], p[2]]
-	### TODO ??
+	if p[1] == 'epsilon':
+		# p[0] = ['ExpressionListTypeOpt', p[1], p[2]]
+		p[0] = []
 	else:
-		p[0] = ['ExpressionListTypeOpt', p[1]]
+		# p[0] = ['ExpressionListTypeOpt', p[1]]
+		p[0] = p[1]
 
 #def p_comma_opt(p):
 #    '''CommaOpt : COMMA
@@ -633,13 +641,13 @@ def p_expr_list_type_opt(p):
 #    else:
 #        p[0] = ['CommaOpt', p[1]]
 
-def p_expr_list_comma_opt(p):
-	'''ExpressionListCommaOpt : COMMA ExpressionList
-							  | epsilon'''
-	if len(p) == 3:
-		p[0] = ['ExpressionListCommaOpt', ',', p[2]]
-	else:
-		p[0] = ['ExpressionListCommaOpt', p[1]]
+# def p_expr_list_comma_opt(p):
+# 	'''ExpressionListCommaOpt : COMMA ExpressionList
+# 							  | epsilon'''
+# 	if len(p) == 3:
+# 		p[0] = ['ExpressionListCommaOpt', ',', p[2]]
+# 	else:
+# 		p[0] = ['ExpressionListCommaOpt', p[1]]
 
 def p_expr_list(p):
 	'''ExpressionList : Expression ExpressionRep'''
@@ -674,7 +682,11 @@ def p_expression(p):
 def p_expr_opt(p):
 	'''ExpressionOpt : Expression
 					 | epsilon'''
-	p[0] = ['ExpressionOpt', p[1]]
+	# p[0] = ['ExpressionOpt', p[1]]
+	if p[1] == 'epsilon':
+		p[0] = -1
+	else:
+		p[0] = p[1]
 
 def p_unary_expr(p):
 	'''UnaryExpr : PrimaryExpr
@@ -753,13 +765,17 @@ def p_simple_stmt(p):
 				  | IncDecStmt
 				  | Assignment
 				  | ShortVarDecl '''
-	p[0] = p[1]
+	if p[1] == 'epsilon':
+		p[0] = -1
+	else:
+		p[0] = p[1]
 
 def p_labeled_statements(p):
 	''' LabeledStmt : Label COLON Statement '''
 	p[0] = make_node(':')
 	make_edge(p[0], p[1])
-	make_edge(p[0], p[3])
+	if p[3] != -1:
+		make_edge(p[0], p[3])
 
 def p_label(p):
 	''' Label : IDENTIFIER '''
@@ -810,10 +826,10 @@ def p_AssignOp(p):
 def p_if_statement(p):
 	''' IfStmt : IF Expression Block ElseOpt '''
 	p[0] = make_node(p[1])
-	make_edge(p[0], p[2], 'Condition')
-	make_edge(p[0], p[3], 'Then')
+	make_edge(p[0], p[2], 'condition')
+	make_edge(p[0], p[3], 'then')
 	if p[4] != -1:
-		make_edge(p[0], p[4], 'Else')
+		make_edge(p[0], p[4], 'else')
 
 def p_SimpleStmtOpt(p):
 	''' SimpleStmtOpt : SimpleStmt SEMICOL
@@ -1111,9 +1127,8 @@ def p_import_path(p):
 
 # -------------------------------------------------------
 
-# def p_error(p):
-#   print('Syntax error in input!')
-#   print(p)
+def p_error(p):
+  print('[SYNTAX ERROR] at line no. ' + str(p.lineno) + ' with token ' + str(p.type) + ' near \"' + str(p.value) + '\"')
 
 def p_empty(p):
 	'''epsilon : '''
