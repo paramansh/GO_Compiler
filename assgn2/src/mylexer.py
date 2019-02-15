@@ -104,7 +104,8 @@ tokens = [
         'COLON',
         'PLUSEQ',
         'TIMESEQ',
-        'CONSTANT'
+        'CONSTANT',
+        'TYPEX'
         ] + [k.upper() for k in keywords]
 
 # === REGEX DEFINITIONS === #
@@ -167,7 +168,7 @@ def t_CONSTANT(t):
     r'true$|false$|iota$'
     return t
 
-def t_TYPE(t):
+def t_TYPEX(t):
     r'(((\*)|\ )*\bint\b|((\*)|\ )*\bfloat\b|((\*)|\ )*\bstring\b)|((\*)|\ )*\bcomplex\b|((\*)|\ )*\bbool\b'
     t.value=t.value.replace(" ","")
     return t
