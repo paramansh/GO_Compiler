@@ -673,13 +673,22 @@ def p_expr_rep(p):
 
 def p_expression(p):
 	'''Expression : UnaryExpr
-				  | Expression BinaryOp Expression'''
+				  | Expression AddOp Term
+					| Expression AddOp UnaryExpr
+					| Term'''
 	if len(p) == 4:
 		p[0] = make_node(p[2])
 		make_edge(p[0], p[1])
 		make_edge(p[0], p[3])
 	else:
 		p[0] = p[1]
+
+def p_term(p):
+	'''Term : Term MulOp Term
+					| UnaryExpr MulOp UnaryExpr'''
+	p[0] = make_node(p[2])
+	make_edge(p[0], p[1])
+	make_edge(p[0], p[3])
 
 ### TODO requirement ??
 def p_expr_opt(p):
