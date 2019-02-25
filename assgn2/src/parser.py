@@ -621,7 +621,6 @@ def p_slice(p):
 
 def p_argument(p):
 	'''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
-	# p[0] = ['Arguments', '(', p[2], ')']
 	p[0] = make_node('args')
 	for i in p[2]:
 		make_edge(p[0], i)
@@ -630,10 +629,8 @@ def p_expr_list_type_opt(p):
 	'''ExpressionListTypeOpt : ExpressionList
 							 | epsilon'''
 	if p[1] == 'epsilon':
-		# p[0] = ['ExpressionListTypeOpt', p[1], p[2]]
 		p[0] = []
 	else:
-		# p[0] = ['ExpressionListTypeOpt', p[1]]
 		p[0] = p[1]
 
 #def p_comma_opt(p):
@@ -673,7 +670,25 @@ def p_expr_rep(p):
 
 def p_expression(p):
 	'''Expression : UnaryExpr
-				  | Expression BinaryOp Expression'''
+				  | Expression OROR Expression
+					| Expression AMPAMP Expression
+					| Expression EQEQ Expression
+					| Expression NOTEQ Expression
+					| Expression LESS Expression
+					| Expression GREAT Expression
+					| Expression LEQ Expression
+					| Expression GEQ Expression
+					| Expression PLUS Expression
+					| Expression MINUS Expression
+					| Expression OR Expression
+					| Expression CARET Expression
+					| Expression TIMES Expression
+					| Expression DIVIDE Expression
+					| Expression MOD Expression
+					| Expression AMPERS Expression
+					| Expression LL Expression
+					| Expression GG Expression
+					| Expression AMPCAR Expression'''
 	if len(p) == 4:
 		p[0] = make_node(p[2])
 		make_edge(p[0], p[1])
@@ -681,11 +696,9 @@ def p_expression(p):
 	else:
 		p[0] = p[1]
 
-### TODO requirement ??
 def p_expr_opt(p):
 	'''ExpressionOpt : Expression
 					 | epsilon'''
-	# p[0] = ['ExpressionOpt', p[1]]
 	if p[1] == 'epsilon':
 		p[0] = -1
 	else:
@@ -701,39 +714,61 @@ def p_unary_expr(p):
 		p[0] = make_node(str(p[1]))
 		make_edge(p[0], p[2])
 
-def p_binary_op(p):
-	'''BinaryOp : OROR
-				| AMPAMP
-				| RelOp
-				| AddOp
-				| MulOp'''
-	p[0] = p[1]
+# def p_binary_op(p):
+# 	'''BinaryOp : OROR
+# 				| AMPAMP
+# 				| EQEQ
+# 				| NOTEQ
+# 				| LESS
+# 				| GREAT
+# 				| LEQ
+# 				| GEQ
+# 				| PLUS
+# 				| MINUS
+# 				| OR
+# 				| CARET
+# 				| TIMES
+# 				| DIVIDE
+# 				| MOD
+# 				| AMPERS
+# 				| LL
+# 				| GG
+# 				| AMPCAR'''
+# 	p[0] = p[1]
 
-def p_rel_op(p):
-	'''RelOp : EQEQ
-			 | NOTEQ
-			 | LESS
-			 | GREAT
-			 | LEQ
-			 | GEQ'''
-	p[0] = p[1]
+# def p_binary_op(p):
+# 	'''BinaryOp : OROR
+# 				| AMPAMP
+# 				| RelOp
+# 				| AddOp
+# 				| MulOp'''
+# 	p[0] = p[1]
 
-def p_add_op(p):
-	'''AddOp : PLUS
-			 | MINUS
-			 | OR
-			 | CARET'''
-	p[0] = p[1]
+# def p_rel_op(p):
+# 	'''RelOp : EQEQ
+# 			 | NOTEQ
+# 			 | LESS
+# 			 | GREAT
+# 			 | LEQ
+# 			 | GEQ'''
+# 	p[0] = p[1]
 
-def p_mul_op(p):
-	'''MulOp : TIMES
-			 | DIVIDE
-			 | MOD
-			 | AMPERS
-			 | LL
-			 | GG
-			 | AMPCAR'''
-	p[0] = p[1]
+# def p_add_op(p):
+# 	'''AddOp : PLUS
+# 			 | MINUS
+# 			 | OR
+# 			 | CARET'''
+# 	p[0] = p[1]
+
+# def p_mul_op(p):
+# 	'''MulOp : TIMES
+# 			 | DIVIDE
+# 			 | MOD
+# 			 | AMPERS
+# 			 | LL
+# 			 | GG
+# 			 | AMPCAR'''
+# 	p[0] = p[1]
 
 def p_unary_op(p):
 	'''UnaryOp : PLUS
