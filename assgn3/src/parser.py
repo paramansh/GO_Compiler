@@ -6,6 +6,7 @@ import pprint as pp
 from utils import Node, SymbolTable
 from scope import *
 from mytypes import *
+import json 
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
@@ -45,6 +46,14 @@ def insertId(idname, idtype):
 	else:
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
+
+def insertInfo(idname, attr, value):
+	if not scopeCheck(idname):
+		err = "variable does not exists"
+		print err
+	else:
+		curr_scope = scope_stack[-1]
+		curr_scope.setArgs(idname, attr, value)
 
 
 global_symbol_table = SymbolTable(None)
@@ -86,8 +95,10 @@ def p_type(p):
 
 def p_type_name(p):
 	'''TypeName : TYPEX'''
-				# | QualifiedIdent'''
-	p[0] = make_node(p[1])
+	# p[0] = make_node(p[1])
+	temp = Node()
+	temp.type = p[1]
+	p[0] = temp
 
 def p_type_lit(p):
 	'''TypeLit : ArrayType
@@ -347,18 +358,18 @@ def p_type_expr_list(p):
 
 def p_identifier_list(p):
 	'''IdentifierList : IDENTIFIER IdentifierRep'''
-	temp = make_node(p[1])
 	p[0] = p[2]
-	p[0].append(temp)
+	p[0].idlist.append(p[1])
 
 def p_identifier_rep(p):
 	'''IdentifierRep : IdentifierRep COMMA IDENTIFIER
 					 | epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[3])
+		p[0].idlist.append(p[3])
 	else:
-		p[0] = []
+		p[0] = Node()
+
 
 # -------------------------------------------------------
 
@@ -442,11 +453,21 @@ def p_var_spec(p):
 		for i in p[3]:
 			make_edge(p[0], i, 'exp')
 	else:
-		for i in p[1]:
-			make_edge(p[0], i, 'id')
-		make_edge(p[0], p[2], 'type')
-		for i in p[3]:
-			make_edge(p[0], i, 'exp')
+		if not p[3]:
+			for i in p[1].idlist:
+				insertId(i, p[2].type)
+		else:
+			if len(p[3].exprlist) != len(p[1].idlist):
+				lineno = p.lineno(2) # TODO correct line send up where actual token is
+				print "error: unequal number of arguments on lhs and rhs at line", lineno 
+			else:
+				for i in range(len(p[3].exprlist)):
+					if p[3].exprlist[i].type != p[2].type:
+						print 'error: at line', p.lineno(0), 'type mismatch in variable and expression'
+					err = insertId(p[1].idlist[i], p[2].type)
+					if err:
+						print 'error: at line', p.lineno(0), err
+					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].value)
 
 def p_expr_list_opt(p):
 	'''ExpressionListOpt : EQUAL ExpressionList
@@ -454,7 +475,7 @@ def p_expr_list_opt(p):
 	if len(p) == 3:
 		p[0] = p[2]
 	else:
-		p[0] = []
+		p[0] = None
 
 # -------------------------------------------------------
 	
@@ -521,12 +542,39 @@ def p_literal(p):
 	p[0] = p[1]
 
 def p_basic_lit(p):
-	'''BasicLit : INTEGER
-				| FLOAT
-				| IMAGINARY
-				| RUNE
-				| STRING'''
-	p[0] = make_node(str(p[1]))
+	'''BasicLit : IntLiteral
+				| FloatLiteral
+				| ImgLiteral
+				| RuneLiteral
+				| StringLiteral'''
+	p[0] = p[1]
+
+def p_int_literal(p):
+	'''IntLiteral : INTEGER'''
+	p[0] = Node()
+	p[0].expr.value = p[1]
+	p[0].expr.type = 'int'
+
+def p_float_literal(p):
+	'''FloatLiteral : FLOAT'''
+	p[0] = Node()
+	p[0].expr.value = p[1]
+	p[0].expr.type = 'float'
+def p_img_literal(p):
+	'''ImgLiteral : IMAGINARY'''
+	p[0] = Node()
+	p[0].expr.value = p[1]
+	p[0].expr.type = 'imaginary'
+def p_rune_literal(p):
+	'''RuneLiteral : RUNE'''
+	p[0] = Node()
+	p[0].expr.value = p[1]
+	p[0].expr.type = 'rune'
+def p_string_literal(p):
+	'''StringLiteral : STRING'''
+	p[0] = Node()
+	p[0].expr.value = p[1]
+	p[0].expr.type = 'string'
 
 def p_operand_name(p):
 	'''OperandName : IDENTIFIER'''
@@ -678,16 +726,16 @@ def p_expr_list_type_opt(p):
 def p_expr_list(p):
 	'''ExpressionList : Expression ExpressionRep'''
 	p[0] = p[2]
-	p[0].append(p[1])
+	p[0].exprlist.append(p[1].expr)
 
 def p_expr_rep(p):
 	'''ExpressionRep : ExpressionRep COMMA Expression
 					 | epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[3])
+		p[0].exprlist.append(p[3].expr)
 	else:
-		p[0] = []
+		p[0] = Node()
 
 # ---------------------------------------------------------
 
@@ -739,62 +787,6 @@ def p_unary_expr(p):
 	else:
 		p[0] = make_node(str(p[1]))
 		make_edge(p[0], p[2])
-
-# def p_binary_op(p):
-# 	'''BinaryOp : OROR
-# 				| AMPAMP
-# 				| EQEQ
-# 				| NOTEQ
-# 				| LESS
-# 				| GREAT
-# 				| LEQ
-# 				| GEQ
-# 				| PLUS
-# 				| MINUS
-# 				| OR
-# 				| CARET
-# 				| TIMES
-# 				| DIVIDE
-# 				| MOD
-# 				| AMPERS
-# 				| LL
-# 				| GG
-# 				| AMPCAR'''
-# 	p[0] = p[1]
-
-# def p_binary_op(p):
-# 	'''BinaryOp : OROR
-# 				| AMPAMP
-# 				| RelOp
-# 				| AddOp
-# 				| MulOp'''
-# 	p[0] = p[1]
-
-# def p_rel_op(p):
-# 	'''RelOp : EQEQ
-# 			 | NOTEQ
-# 			 | LESS
-# 			 | GREAT
-# 			 | LEQ
-# 			 | GEQ'''
-# 	p[0] = p[1]
-
-# def p_add_op(p):
-# 	'''AddOp : PLUS
-# 			 | MINUS
-# 			 | OR
-# 			 | CARET'''
-# 	p[0] = p[1]
-
-# def p_mul_op(p):
-# 	'''MulOp : TIMES
-# 			 | DIVIDE
-# 			 | MOD
-# 			 | AMPERS
-# 			 | LL
-# 			 | GG
-# 			 | AMPCAR'''
-# 	p[0] = p[1]
 
 def p_unary_op(p):
 	'''UnaryOp : PLUS
@@ -1205,7 +1197,7 @@ parser = yacc.yacc()
 
 with open(infile,'r') as f:
 	input_str = f.read()
-t = parser.parse(input_str)
+t = parser.parse(input_str, tracking=True)
 
 pp.pprint(t)
 dot.render(outfile)

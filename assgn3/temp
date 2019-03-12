@@ -1,5 +1,4 @@
 package main;
-var y int = 4;
-var z string;
-var x = 4;
-var x = 3;
+var x, y int = 99, 1;
+var z float = 4.0;
+var x float = 66;

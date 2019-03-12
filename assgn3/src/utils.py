@@ -2,6 +2,26 @@ class Node:
 	def __init__(self):
 		self.code = []
 		self.type = ""
+		self.idlist = []
+		self.exprlist = []
+		self.expr = Expr()
+	def __str__(self):
+		print "code:", self.code
+		print "type:", self.type
+		print "idlist:", self.idlist
+		print "exprlist:"
+		for i in self.exprlist:
+			print i.__dict__
+		print "expr:", self.expr.__dict__
+
+class Expr:
+	def __init__(self):
+		self.value = "None"
+		self.type = "None"
+	def __str__(self):
+		return str(self.__dict__)
+		# print "value:", self.value 
+		# print "type:", self.type
 
 class SymbolTable:
 	def __init__(self, parent):
