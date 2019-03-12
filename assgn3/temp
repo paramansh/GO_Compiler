@@ -1,0 +1,5 @@
+package main;
+var y int = 4;
+var z string;
+var x = 4;
+var x = 3;
