@@ -28,14 +28,9 @@ precedence = (
 	('right','EQUAL', 'NOT'),
 	('left', 'OROR'),
 	('left', 'AMPAMP'),
-	('left', 'OR'),
-	('left', 'CARET'),
-	('left', 'AMPERS'),
-	('left', 'EQEQ', 'NOTEQ'),
-	('left', 'LESS', 'GREAT','LEQ','GEQ'),
-	('left', 'LL', 'GG'),
-	('left', 'PLUS', 'MINUS'),
-	('left', 'TIMES', 'DIVIDE','MOD'),
+	('left', 'EQEQ', 'NOTEQ', 'LESS', 'GREAT','LEQ','GEQ'),
+	('left', 'PLUS', 'MINUS', 'OR', 'CARET'),
+	('left', 'TIMES', 'DIVIDE', 'MOD', 'LL', 'GG', 'AMPERS', 'AMPCAR')
 )
 
 #-------------------------------Start------------------------------#
@@ -621,7 +616,6 @@ def p_slice(p):
 
 def p_argument(p):
 	'''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
-	# p[0] = ['Arguments', '(', p[2], ')']
 	p[0] = make_node('args')
 	for i in p[2]:
 		make_edge(p[0], i)
@@ -630,10 +624,8 @@ def p_expr_list_type_opt(p):
 	'''ExpressionListTypeOpt : ExpressionList
 							 | epsilon'''
 	if p[1] == 'epsilon':
-		# p[0] = ['ExpressionListTypeOpt', p[1], p[2]]
 		p[0] = []
 	else:
-		# p[0] = ['ExpressionListTypeOpt', p[1]]
 		p[0] = p[1]
 
 #def p_comma_opt(p):
@@ -673,7 +665,25 @@ def p_expr_rep(p):
 
 def p_expression(p):
 	'''Expression : UnaryExpr
-				  | Expression BinaryOp Expression'''
+				  | Expression OROR Expression
+					| Expression AMPAMP Expression
+					| Expression EQEQ Expression
+					| Expression NOTEQ Expression
+					| Expression LESS Expression
+					| Expression GREAT Expression
+					| Expression LEQ Expression
+					| Expression GEQ Expression
+					| Expression PLUS Expression
+					| Expression MINUS Expression
+					| Expression OR Expression
+					| Expression CARET Expression
+					| Expression TIMES Expression
+					| Expression DIVIDE Expression
+					| Expression MOD Expression
+					| Expression AMPERS Expression
+					| Expression LL Expression
+					| Expression GG Expression
+					| Expression AMPCAR Expression'''
 	if len(p) == 4:
 		p[0] = make_node(p[2])
 		make_edge(p[0], p[1])
@@ -681,11 +691,9 @@ def p_expression(p):
 	else:
 		p[0] = p[1]
 
-### TODO requirement ??
 def p_expr_opt(p):
 	'''ExpressionOpt : Expression
 					 | epsilon'''
-	# p[0] = ['ExpressionOpt', p[1]]
 	if p[1] == 'epsilon':
 		p[0] = -1
 	else:
@@ -701,39 +709,61 @@ def p_unary_expr(p):
 		p[0] = make_node(str(p[1]))
 		make_edge(p[0], p[2])
 
-def p_binary_op(p):
-	'''BinaryOp : OROR
-				| AMPAMP
-				| RelOp
-				| AddOp
-				| MulOp'''
-	p[0] = p[1]
+# def p_binary_op(p):
+# 	'''BinaryOp : OROR
+# 				| AMPAMP
+# 				| EQEQ
+# 				| NOTEQ
+# 				| LESS
+# 				| GREAT
+# 				| LEQ
+# 				| GEQ
+# 				| PLUS
+# 				| MINUS
+# 				| OR
+# 				| CARET
+# 				| TIMES
+# 				| DIVIDE
+# 				| MOD
+# 				| AMPERS
+# 				| LL
+# 				| GG
+# 				| AMPCAR'''
+# 	p[0] = p[1]
 
-def p_rel_op(p):
-	'''RelOp : EQEQ
-			 | NOTEQ
-			 | LESS
-			 | GREAT
-			 | LEQ
-			 | GEQ'''
-	p[0] = p[1]
+# def p_binary_op(p):
+# 	'''BinaryOp : OROR
+# 				| AMPAMP
+# 				| RelOp
+# 				| AddOp
+# 				| MulOp'''
+# 	p[0] = p[1]
 
-def p_add_op(p):
-	'''AddOp : PLUS
-			 | MINUS
-			 | OR
-			 | CARET'''
-	p[0] = p[1]
+# def p_rel_op(p):
+# 	'''RelOp : EQEQ
+# 			 | NOTEQ
+# 			 | LESS
+# 			 | GREAT
+# 			 | LEQ
+# 			 | GEQ'''
+# 	p[0] = p[1]
 
-def p_mul_op(p):
-	'''MulOp : TIMES
-			 | DIVIDE
-			 | MOD
-			 | AMPERS
-			 | LL
-			 | GG
-			 | AMPCAR'''
-	p[0] = p[1]
+# def p_add_op(p):
+# 	'''AddOp : PLUS
+# 			 | MINUS
+# 			 | OR
+# 			 | CARET'''
+# 	p[0] = p[1]
+
+# def p_mul_op(p):
+# 	'''MulOp : TIMES
+# 			 | DIVIDE
+# 			 | MOD
+# 			 | AMPERS
+# 			 | LL
+# 			 | GG
+# 			 | AMPCAR'''
+# 	p[0] = p[1]
 
 def p_unary_op(p):
 	'''UnaryOp : PLUS
@@ -758,8 +788,8 @@ def p_statement(p):
 				 | GotoStmt
 				 | Block
 				 | IfStmt
-				 | SwitchStmt
 				 | ForStmt '''
+				#  SwitchStmt'''
 	p[0] = p[1]
 
 def p_simple_stmt(p):
@@ -856,84 +886,84 @@ def p_else_opt(p):
 
 # ----------- SWITCH STATEMENTS ---------------------------------
 
-def p_switch_statement(p):
-	''' SwitchStmt : ExprSwitchStmt
-					| TypeSwitchStmt '''
-	p[0] = ['SwitchStmt', p[1]]
+# def p_switch_statement(p):
+# 	''' SwitchStmt : ExprSwitchStmt
+# 					| TypeSwitchStmt '''
+# 	p[0] = ['SwitchStmt', p[1]]
 
-def p_expr_switch_stmt(p):
-	''' ExprSwitchStmt : SWITCH ExpressionOpt LBRACE ExprCaseClauseRep RBRACE'''
-	p[0] = ['ExpressionStmt', 'switch', p[2], p[3], '{', p[5], '}']
+# def p_expr_switch_stmt(p):
+# 	''' ExprSwitchStmt : SWITCH ExpressionOpt LBRACE ExprCaseClauseRep RBRACE'''
+# 	p[0] = ['ExpressionStmt', 'switch', p[2], p[3], '{', p[5], '}']
 
-def p_expr_case_clause_rep(p):
-	''' ExprCaseClauseRep : ExprCaseClauseRep ExprCaseClause
-							| epsilon'''
-	if len(p) == 3:
-		p[0] = ['ExprCaseClauseRep', p[1], p[2]]
-	else:
-		p[0] = ['ExprCaseClauseRep', p[1]]
+# def p_expr_case_clause_rep(p):
+# 	''' ExprCaseClauseRep : ExprCaseClauseRep ExprCaseClause
+# 							| epsilon'''
+# 	if len(p) == 3:
+# 		p[0] = ['ExprCaseClauseRep', p[1], p[2]]
+# 	else:
+# 		p[0] = ['ExprCaseClauseRep', p[1]]
 
-def p_expr_case_clause(p):
-	''' ExprCaseClause : ExprSwitchCase COLON StatementList'''
-	p[0] = ['ExprCaseClause', p[1], ':', p[3]]
+# def p_expr_case_clause(p):
+# 	''' ExprCaseClause : ExprSwitchCase COLON StatementList'''
+# 	p[0] = ['ExprCaseClause', p[1], ':', p[3]]
 
-def p_expr_switch_case(p):
-	''' ExprSwitchCase : CASE ExpressionList
-						| DEFAULT '''
-	if len(p) == 3:
-		p[0] = ['ExprSwitchCase', 'case', p[2]]
-	else:
-		p[0] = ['ExprSwitchCase', p[1]]
+# def p_expr_switch_case(p):
+# 	''' ExprSwitchCase : CASE ExpressionList
+# 						| DEFAULT '''
+# 	if len(p) == 3:
+# 		p[0] = ['ExprSwitchCase', 'case', p[2]]
+# 	else:
+# 		p[0] = ['ExprSwitchCase', p[1]]
 
-def p_type_switch_stmt(p):
-	''' TypeSwitchStmt : SWITCH SimpleStmtOpt TypeSwitchGuard LBRACE TypeCaseClauseOpt RBRACE'''
-	p[0] = ['TypeSwitchStmt', 'switch', p[2], p[3],'{', p[5], '}']
+# def p_type_switch_stmt(p):
+# 	''' TypeSwitchStmt : SWITCH SimpleStmtOpt TypeSwitchGuard LBRACE TypeCaseClauseOpt RBRACE'''
+# 	p[0] = ['TypeSwitchStmt', 'switch', p[2], p[3],'{', p[5], '}']
 
-def p_type_switch_guard(p):
-	''' TypeSwitchGuard : IdentifierOpt PrimaryExpr DOT LPAREN TYPE RPAREN '''
+# def p_type_switch_guard(p):
+# 	''' TypeSwitchGuard : IdentifierOpt PrimaryExpr DOT LPAREN TYPE RPAREN '''
 
-	p[0] = ['TypeSwitchGuard', p[1], p[2], '.', '(', 'type', ')']
+# 	p[0] = ['TypeSwitchGuard', p[1], p[2], '.', '(', 'type', ')']
 
-def p_identifier_opt(p):
-	''' IdentifierOpt : IDENTIFIER COLONEQ
-						| epsilon '''
+# def p_identifier_opt(p):
+# 	''' IdentifierOpt : IDENTIFIER COLONEQ
+# 						| epsilon '''
 
-	if len(p) == 3:
-		p[0] = ['IdentifierOpt', p[1], ':=']
-	else:
-		p[0] = ['IdentifierOpt', p[1]]
+# 	if len(p) == 3:
+# 		p[0] = ['IdentifierOpt', p[1], ':=']
+# 	else:
+# 		p[0] = ['IdentifierOpt', p[1]]
 
-def p_type_case_clause_opt(p):
-	''' TypeCaseClauseOpt : TypeCaseClauseOpt TypeCaseClause
-							| epsilon '''
-	if len(p) == 3:
-		p[0] = ['TypeCaseClauseOpt', p[1], p[2]]
-	else:
-		p[0] = ['TypeCaseClauseOpt', p[1]]
+# def p_type_case_clause_opt(p):
+# 	''' TypeCaseClauseOpt : TypeCaseClauseOpt TypeCaseClause
+# 							| epsilon '''
+# 	if len(p) == 3:
+# 		p[0] = ['TypeCaseClauseOpt', p[1], p[2]]
+# 	else:
+# 		p[0] = ['TypeCaseClauseOpt', p[1]]
 
-def p_type_case_clause(p):
-	''' TypeCaseClause : TypeSwitchCase COLON StatementList'''
-	p[0] = ['TypeCaseClause', p[1], ':', p[3]]
+# def p_type_case_clause(p):
+# 	''' TypeCaseClause : TypeSwitchCase COLON StatementList'''
+# 	p[0] = ['TypeCaseClause', p[1], ':', p[3]]
 
-def p_type_switch_case(p):
-	''' TypeSwitchCase : CASE TypeList
-						| DEFAULT '''
-	if len(p) == 3:
-		p[0] = ['TypeSwitchCase', p[1], p[2]]
-	else:
-		p[0] = ['TypeSwitchCase', p[1]]
+# def p_type_switch_case(p):
+# 	''' TypeSwitchCase : CASE TypeList
+# 						| DEFAULT '''
+# 	if len(p) == 3:
+# 		p[0] = ['TypeSwitchCase', p[1], p[2]]
+# 	else:
+# 		p[0] = ['TypeSwitchCase', p[1]]
 
-def p_type_list(p):
-	''' TypeList : Type TypeRep'''
-	p[0] = ['TypeList', p[1], p[2]]
+# def p_type_list(p):
+# 	''' TypeList : Type TypeRep'''
+# 	p[0] = ['TypeList', p[1], p[2]]
 
-def p_type_rep(p):
-	''' TypeRep : TypeRep COMMA Type
-				| epsilon '''
-	if len(p) == 4:
-		p[0] = ['TypeRep', p[1], ',', p[3]]
-	else:
-		p[0] = ['TypeRep', p[1]]
+# def p_type_rep(p):
+# 	''' TypeRep : TypeRep COMMA Type
+# 				| epsilon '''
+# 	if len(p) == 4:
+# 		p[0] = ['TypeRep', p[1], ',', p[3]]
+# 	else:
+# 		p[0] = ['TypeRep', p[1]]
 
 # -----------------------------------------------------------
 
