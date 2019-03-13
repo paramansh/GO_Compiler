@@ -8,6 +8,7 @@ from scope import *
 from mytypes import *
 import json 
 
+
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
 argparser.add_argument("--output",help = "Specify the output dot file.")
@@ -70,6 +71,13 @@ def newTemp(idtype):
 	temp_var_count += 1
 	return new_temp
 	# need to remove this from variable lists??
+
+label_count = 0
+def newLabel():
+	global label_count
+	new_label = 'label' + str(label_count)
+	label_count += 1
+	return new_label
 
 
 
@@ -757,6 +765,7 @@ def p_expression(p):
 					| Expression AMPCAR Expression'''
 	if len(p) == 4:
 		p[0] = Node()
+
 		if p[2] == '+':
 			if p[1].expr.type == 'int' and p[3].expr.type == 'int':
 				if p[1].expr.is_constant and p[3].expr.is_constant:
@@ -776,6 +785,10 @@ def p_expression(p):
 					p[0].place = newTemp('int')
 					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place +' int+ '+  p[3].place]  #second operand is the immediate operand
 					p[0].expr.type = 'int'
+		
+		if p[2] == '>':
+			#TODO check expression mismatch
+			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + ' > ' + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
 
 		# print p[0]
 		# p[0] = make_node(p[2])
@@ -828,7 +841,9 @@ def p_statement(p):
 				 | ForStmt '''
 				#  SwitchStmt'''
 	p[0] = p[1]
-
+	new_label = newLabel()
+	p[0].next[0] = new_label
+	p[0].code += [new_label + ':']
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
 				  | ExpressionStmt
@@ -878,7 +893,6 @@ def p_assignment(p):
 			else:
 				p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + \
 					[p[1].exprlist[i].expr.value + ' := ' + p[3].exprlist[i].place]
-	print 'code', p[0].code
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
@@ -905,19 +919,30 @@ def p_AssignOp(p):
 
 def p_if_statement(p):
 	''' IfStmt : IF Expression Block ElseOpt '''
-	p[0] = make_node(p[1])
-	make_edge(p[0], p[2], 'condition')
-	make_edge(p[0], p[3], 'then')
-	if p[4] != -1:
-		make_edge(p[0], p[4], 'else')
+	# no else statement
+	p[0] = Node()
+	if p[4] is None:
+		new_label = newLabel()
+		p[2].expr.true_label[0] = new_label
+		p[2].expr.false_label[0] = p[0].next
+		p[3].next[0] = p[0].next
+		p[0].code += p[2].code + [new_label + ":"] + p[3].code
+	
+	else:
+		p[2].expr.true_label[0] = newLabel()
+		p[2].expr.false_label[0] = newLabel()
+		p[3].next[0] = p[0].next
+		p[4].next[0] = p[0].next
+		p[0].code += p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto ', p[0].next]] + [p[2].expr.false_label[0] + ":"] + p[4].code
 
-def p_SimpleStmtOpt(p):
-	''' SimpleStmtOpt : SimpleStmt SEMICOL
-						| epsilon '''
-	if len(p) == 3:
-		p[0] = ['SimpleStmtOpt', p[1], ';']
-	else :
-		p[0] = ['SimpleStmtOpt', p[1]]
+
+# def p_SimpleStmtOpt(p):
+# 	''' SimpleStmtOpt : SimpleStmt SEMICOL
+# 						| epsilon '''
+# 	if len(p) == 3:
+# 		p[0] = ['SimpleStmtOpt', p[1], ';']
+# 	else :
+# 		p[0] = ['SimpleStmtOpt', p[1]]
 
 def p_else_opt(p):
 	''' ElseOpt : ELSE IfStmt
@@ -926,7 +951,7 @@ def p_else_opt(p):
 	if len(p) == 3:
 		p[0] = p[2]
 	else:
-		p[0] = -1
+		p[0] = None
 
 # ----------------------------------------------------------------
 
@@ -1019,10 +1044,23 @@ def p_else_opt(p):
 
 def p_for(p):
 	'''ForStmt : FOR ConditionBlockOpt Block'''
-	p[0] = make_node(p[1])
-	make_edge(p[0], p[3])
-	if p[2] != -1:
-		make_edge(p[0], p[2])
+	p[0] = Node()
+	if p[2] is not None:
+		if p[2].forclause.isClause:
+			p[0].begin = newLabel()
+			cond = p[2].forclause.condition
+			cond.expr.true_label[0] = newLabel()
+			cond.expr.false_label[0] = p[0].next
+			p[3].next[0] = p[0].begin
+			p[0].code += p[2].forclause.initialise
+			p[0].code += [p[0].begin + ":"] + cond.code + [cond.expr.true_label[0] + ":"] 
+			p[0].code += p[3].code + p[2].forclause.update + ['goto: '+p[0].begin]
+		else:
+			p[0].begin = newLabel()
+			p[2].expr.true_label[0] = newLabel()
+			p[2].expr.false_label[0] = p[0].next
+			p[3].next[0] = p[0].begin
+			p[0].code += [p[0].begin + ":"] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + ['goto: '+p[0].begin]
 
 def p_conditionblockopt(p):
 	'''ConditionBlockOpt : epsilon
@@ -1030,7 +1068,7 @@ def p_conditionblockopt(p):
 				| ForClause'''
 				# | RangeClause'''
 	if p[1] == 'epsilon':
-		p[0] = -1
+		p[0] = None
 	else:
 		p[0] = p[1]
 
@@ -1040,17 +1078,17 @@ def p_condition(p):
 
 def p_forclause(p):
 	'''ForClause : SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt'''
-	p[0] = make_node('ForClause')
-	make_edge(p[0], p[1])
-	if p[3] != -1:
-		make_edge(p[0], p[3])
-	make_edge(p[0], p[5])
+	p[0] = Node()
+	p[0].forclause.initialise = p[1].code
+	p[0].forclause.update = p[5].code
+	p[0].forclause.condition = p[3]
+	p[0].forclause.isClause = True
 
 def p_conditionopt(p):
 	'''ConditionOpt : epsilon
 			| Condition '''
 	if p[1] == 'epsilon':
-		p[0] = -1
+		p[0] = Node()
 	else:
 		p[0] = p[1]
 
@@ -1224,7 +1262,27 @@ with open(infile,'r') as f:
 	input_str = f.read()
 t = parser.parse(input_str, tracking=True)
 
-pp.pprint(t.code)
+# pp.pprint(t.code)
 
+def myprint(item):
+	if type(item) == list:
+		out = ""
+		for i in item:
+			if type(i) == list:
+				out += myprint(i)
+			else:
+				out += i
+		return out
+	else:
+		return item
+def printall(code):
+	for item in code:
+		print myprint(item)
+# for item in t.code:
+# 	myprint(item)
+printall(t.code)
+
+print ''
+print "symbol table\n"
 for scope in scope_list[::-1]:
-	print scope.getAllEntries()
+	pp.pprint(scope.getAllEntries())

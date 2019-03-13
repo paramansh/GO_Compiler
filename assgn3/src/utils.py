@@ -6,6 +6,10 @@ class Node:
 		self.idlist = []
 		self.exprlist = []
 		self.expr = Expr()
+		self.next = ['not initialised next label']
+		self.begin = 'begin not initialised'
+		self.extra = {}
+		self.forclause = ForClause()
 	def __str__(self):
 		print "code:", self.code
 		print "type:", self.type # denotes type of expression
@@ -20,7 +24,23 @@ class Expr:
 	def __init__(self):
 		self.value = "None"
 		self.type = "None"
-		self.is_constant = False
+		self.is_constant = False # whether is expression an constant eg: 4
+		# self.is_true = True # for bool expressions
+		self.true_label = ['not initialise true label'] #list so as store pointer
+		self.false_label = ['not initialised false label']
+	def __str__(self):
+		if self is None:
+			return ""
+		return str(self.__dict__)
+		# print "value:", self.value 
+		# print "type:", self.type
+
+class ForClause:
+	def __init__(self):
+		self.isClause = False
+		self.initialise = []
+		self.condition = []
+		self.update = []
 	def __str__(self):
 		if self is None:
 			return ""
