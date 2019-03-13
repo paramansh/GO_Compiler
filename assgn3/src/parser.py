@@ -20,19 +20,22 @@ nodecount = 0
 dot = Digraph()
 
 def make_node(label):
-	global nodecount
-	dot.node(str(nodecount), label)
-	nodecount += 1
-	return nodecount - 1
+	None
+	# global nodecount
+	# dot.node(str(nodecount), label)
+	# nodecount += 1
+	# return nodecount - 1
 
 def make_edge(node1, node2, label=''):
-	dot.edge(str(node1), str(node2), label=label)
+	None
+	# dot.edge(str(node1), str(node2), label=label)
 
 def getIdInfo(ide):
-	if not scopeCheck(ide):
-		print "variable not in correct scope"
+	if not inScope(ide):
+		# print "variable not in correct scope"
 		return None 
 	else:
+		id_scope = getScope(ide)
 		if id_scope is not None:
 			return id_scope.getEntry(ide)
 		else:
@@ -40,15 +43,15 @@ def getIdInfo(ide):
 
 def insertId(idname, idtype):
 	err = ""
-	if scopeCheck(idname):
-		err = "Variable Already exists"
+	if inCurrentScope(idname):
+		err = "Variable Already exists in current scope"
 		return err
 	else:
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
 
 def insertInfo(idname, attr, value):
-	if not scopeCheck(idname):
+	if not inScope(idname):
 		err = "variable does not exists"
 		print err
 	else:
@@ -58,6 +61,7 @@ def insertInfo(idname, attr, value):
 
 global_symbol_table = SymbolTable(None)
 scope_stack.append(global_symbol_table)
+scope_list.append(global_symbol_table)
 # addScope()
 # scope_stack[-1].insert('b', 'float')
 # scope_stack[-1].setArgs('b', 'value', 4.0)
@@ -278,6 +282,7 @@ def p_parameter_decl(p):
 def p_block(p):
 	'''Block : LBRACE StatementList RBRACE'''
 	p[0] = make_node('Block')
+	deleteScope()
 	for i in p[2]:
 		if i != -1:
 			make_edge(p[0], i)
@@ -293,6 +298,7 @@ def p_statement_rep(p):
 		p[0] = p[1]
 		p[0].append(p[2])
 	else:
+		addScope()
 		p[0] = []
 
 # -------------------------------------------------------
@@ -455,7 +461,9 @@ def p_var_spec(p):
 	else:
 		if not p[3]:
 			for i in p[1].idlist:
-				insertId(i, p[2].type)
+				err = insertId(i, p[2].type)
+				if err:
+					print 'error: at line', p.lineno(0), err
 		else:
 			if len(p[3].exprlist) != len(p[1].idlist):
 				lineno = p.lineno(2) # TODO correct line send up where actual token is
@@ -578,66 +586,16 @@ def p_string_literal(p):
 
 def p_operand_name(p):
 	'''OperandName : IDENTIFIER'''
-	p[0] = make_node(p[1])
+	# p[0] = Node()
+	if not inScope(p[1]):
+		print "error at line", p.lineno(0), 'Variable not Declared'
 
-# ---------------------------------------------------------
-
-
-# -----------------COMPOSITE LITERALS----------------------
-
-# def p_comp_lit(p):
-# 	'''CompositeLit : LiteralType LiteralValue'''
-# 	p[0] = ['CompositeLit', p[1], p[2]]
-
-# def p_lit_type(p):
-# 	'''LiteralType : ArrayType
-# 				   | ElementType
-# 				   | TypeName'''
-# 	p[0] = ['LiteralType', p[1]]
-
-# def p_lit_val(p):
-# 	'''LiteralValue : LBRACE ElementListOpt RBRACE'''
-# 	p[0] = ['LiteralValue', '{', p[2], '}']
-
-# def p_elem_list_comma_opt(p):
-# 	'''ElementListOpt : ElementList
-# 						   | epsilon'''
-# 	p[0] = ['ElementListOpt', p[1]]
-
-# def p_elem_list(p):
-# 	'''ElementList : KeyedElement KeyedElementCommaRep'''
-# 	p[0] = ['ElementList', p[1], p[2]]
-
-# def p_key_elem_comma_rep(p):
-# 	'''KeyedElementCommaRep : KeyedElementCommaRep COMMA KeyedElement
-# 							| epsilon'''
-# 	if len(p) == 4:
-# 		p[0] = ['KeyedElementCommaRep', p[1], ',', p[3]]
-# 	else:
-# 		p[0] = ['KeyedElementCommaRep', p[1]]
-
-# def p_key_elem(p):
-# 	'''KeyedElement : Key COLON Element
-# 					| Element'''
-# 	if len(p) == 4:
-# 		p[0] = ['KeyedElement', p[1], ':', p[3]]
-# 	else:
-# 		p[0] = ['KeyedElement', p[1]]
-
-# def p_key(p):
-# 	'''Key : FieldName
-# 		   | Expression
-# 		   | LiteralValue'''
-# 	p[0] = ['Key', p[1]]
-
-# def p_field_name(p):
-# 	'''FieldName : IDENTIFIER'''
-# 	p[0] = ['FieldName', p[1]]
-
-# def p_elem(p):
-# 	'''Element : Expression
-# 			   | LiteralValue'''
-# 	p[0] = ['Element', p[1]]
+	# we are preceeding forward assumng the variable had already been declared!
+	p[0] = Node()
+	p[0].expr.value = p[1]
+	temp = getIdInfo(p[1])
+	if temp is not None:
+		p[0].expr.type = temp['type']
 
 # ---------------------------------------------------------
 
@@ -845,8 +803,11 @@ def p_inc_dec(p):
 	''' IncDecStmt : Expression PLUSPLUS
 					| Expression MINUSMIN '''
 	p[0] = p[1]
-	temp = make_node(p[2])
-	make_edge(p[1], temp)
+	if p[0].expr.type != 'int':
+		print "error at line", p.lineno(0), 'can not increment non-int variable'
+	
+	# temp = make_node(p[2])
+	# make_edge(p[1], temp)
 
 def p_assignment(p):
 	'''Assignment : ExpressionList assign_op ExpressionList'''
@@ -1202,5 +1163,5 @@ t = parser.parse(input_str, tracking=True)
 pp.pprint(t)
 dot.render(outfile)
 
-for scope in scope_stack[::-1]:
+for scope in scope_list[::-1]:
 	print scope.getAllEntries()

@@ -1,4 +1,16 @@
 package main;
 var x, y int = 99, 1;
 var z float = 4.0;
-var x float = 66;
+func main() {
+    var x int;
+    var y float= 4.0;
+};
+
+func into(){
+    var a int;
+    if a {
+        var x int;
+        b++;
+    };
+};
+

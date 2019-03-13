@@ -1,19 +1,27 @@
 from utils import SymbolTable
 
 scope_stack = []
+scope_list = []
 scope_label = 0
 
+# returns current or enclosing scope of the variable
 def getScope(ide):
 	for scope in scope_stack[::-1]:
 		if scope.lookup(ide):
 			return scope
 	return None
 
-def scopeCheck(ide):
+#checks if the variable is in current or some other enclosing scope
+def inScope(ide):
 	for scope in scope_stack[::-1]:
 		if scope.lookup(ide):
 			return True
 	return False
+
+#checks if variable is in current scope
+def inCurrentScope(ide):
+	scope = scope_stack[-1]
+	return scope.lookup(ide)
 
 def addScope():
 	if not scope_stack:
@@ -25,6 +33,7 @@ def addScope():
 		scope_label += 1
 		new_scope.label = scope_label
 		scope_stack.append(new_scope)
+		scope_list.append(new_scope)
 
 def deleteScope():
 	if not scope_stack:
