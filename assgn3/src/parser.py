@@ -43,6 +43,9 @@ def getIdInfo(ide):
 
 def insertId(idname, idtype):
 	err = ""
+	if len(idname) >= 8 and idname[:8] == 'TEMP_VAR':
+		err = "Can't use temp_var as variable name: Reserved"
+		return err 
 	if inCurrentScope(idname):
 		err = "Variable Already exists in current scope"
 		return err
@@ -57,6 +60,17 @@ def insertInfo(idname, attr, value):
 	else:
 		curr_scope = scope_stack[-1]
 		curr_scope.setArgs(idname, attr, value)
+
+temp_var_count = 0
+def newTemp(idtype):
+	curr_scope = scope_stack[-1]
+	global temp_var_count
+	new_temp = 'TEMP_VAR' + str(temp_var_count)
+	curr_scope.insert(new_temp, idtype)
+	temp_var_count += 1
+	return new_temp
+	# need to remove this from variable lists??
+
 
 
 global_symbol_table = SymbolTable(None)
@@ -281,11 +295,11 @@ def p_parameter_decl(p):
 
 def p_block(p):
 	'''Block : LBRACE StatementList RBRACE'''
-	p[0] = make_node('Block')
+	p[0] = p[2]
 	deleteScope()
-	for i in p[2]:
-		if i != -1:
-			make_edge(p[0], i)
+	# for i in p[2]:
+	# 	if i != -1:
+	# 		make_edge(p[0], i)
 
 def p_statement_list(p):
 	'''StatementList : StatementRep'''
@@ -296,10 +310,10 @@ def p_statement_rep(p):
 					| epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[2])
+		p[0].code += p[2].code
 	else:
 		addScope()
-		p[0] = []
+		p[0] = Node()
 
 # -------------------------------------------------------
 
@@ -432,33 +446,35 @@ def p_type_def(p):
 
 def p_var_decl(p):
 	'''VarDecl : VAR VarSpec
-			   | VAR LPAREN VarSpecRep RPAREN'''
-	p[0] = make_node(p[1])
+			   | VAR LPAREN VarSpecRep RPAREN'''	
+	p[0] = Node()
 	if len(p) == 3:
-		make_edge(p[0], p[2])
+		p[0] = p[2]
 	else:
-		for i in p[3]:
-			make_edge(p[0], i)
+		p[0] = p[3]
+		# for i in p[3]:
+		# 	make_edge(p[0], i)
 
 def p_var_spec_rep(p):
 	'''VarSpecRep : VarSpecRep VarSpec SEMICOL
 				  | epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[2])
+		p[0].code += p[2].code 
 	else:
-		p[0] = []
+		p[0] = Node()
 
 def p_var_spec(p):
 	'''VarSpec : IdentifierList Type ExpressionListOpt
 			   | IdentifierList EQUAL ExpressionList'''
-	p[0] = make_node('VarSpec')
+	p[0] = Node()
 	if p[2] == '=':
 		for i in p[1]:
 			make_edge(p[0], i, 'id')
 		for i in p[3]:
 			make_edge(p[0], i, 'exp')
 	else:
+		p[0] = Node()
 		if not p[3]:
 			for i in p[1].idlist:
 				err = insertId(i, p[2].type)
@@ -470,12 +486,16 @@ def p_var_spec(p):
 				print "error: unequal number of arguments on lhs and rhs at line", lineno 
 			else:
 				for i in range(len(p[3].exprlist)):
-					if p[3].exprlist[i].type != p[2].type:
+					if p[3].exprlist[i].expr.type != p[2].type:
 						print 'error: at line', p.lineno(0), 'type mismatch in variable and expression'
 					err = insertId(p[1].idlist[i], p[2].type)
 					if err:
 						print 'error: at line', p.lineno(0), err
-					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].value)
+					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
+					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+					#TODO always insert info??????????? what is attribute value
+					#TODO which attributes to be added in symbol table!
+		# print 'here', p[0]
 
 def p_expr_list_opt(p):
 	'''ExpressionListOpt : EQUAL ExpressionList
@@ -506,7 +526,7 @@ def p_func_decl(p):
 	'''FunctionDecl : FUNC FunctionName Function
 					| FUNC FunctionName Signature'''
 	p[0] = p[3]
-	make_edge(p[3], p[2])
+	# make_edge(p[3], p[2])
 
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
@@ -514,8 +534,8 @@ def p_func_name(p):
 
 def p_func(p):
 	'''Function : Signature FunctionBody'''
-	p[0] = p[1]
-	make_edge(p[1], p[2])
+	p[0] = p[2]
+	# make_edge(p[1], p[2])
 
 def p_func_body(p):
 	'''FunctionBody : Block'''
@@ -562,27 +582,40 @@ def p_int_literal(p):
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	p[0].expr.type = 'int'
+	p[0].expr.is_constant = True
+	p[0].place = str(p[0].expr.value)
 
 def p_float_literal(p):
 	'''FloatLiteral : FLOAT'''
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	p[0].expr.type = 'float'
+	p[0].expr.is_constant = True
+	p[0].place = str(p[0].expr.value)
+
 def p_img_literal(p):
 	'''ImgLiteral : IMAGINARY'''
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	p[0].expr.type = 'imaginary'
+	p[0].expr.is_constant = True
+	p[0].place = str(p[0].expr.value)
+
 def p_rune_literal(p):
 	'''RuneLiteral : RUNE'''
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	p[0].expr.type = 'rune'
+	p[0].expr.is_constant = True
+	p[0].place = str(p[0].expr.value)
+
 def p_string_literal(p):
 	'''StringLiteral : STRING'''
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	p[0].expr.type = 'string'
+	p[0].expr.is_constant = True
+	p[0].place = str(p[0].expr.value)
 
 def p_operand_name(p):
 	'''OperandName : IDENTIFIER'''
@@ -594,6 +627,7 @@ def p_operand_name(p):
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	temp = getIdInfo(p[1])
+	p[0].place = str(p[0].expr.value)
 	if temp is not None:
 		p[0].expr.type = temp['type']
 
@@ -684,14 +718,14 @@ def p_expr_list_type_opt(p):
 def p_expr_list(p):
 	'''ExpressionList : Expression ExpressionRep'''
 	p[0] = p[2]
-	p[0].exprlist.append(p[1].expr)
+	p[0].exprlist.append(p[1])
 
 def p_expr_rep(p):
 	'''ExpressionRep : ExpressionRep COMMA Expression
 					 | epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].exprlist.append(p[3].expr)
+		p[0].exprlist.append(p[3])
 	else:
 		p[0] = Node()
 
@@ -722,9 +756,31 @@ def p_expression(p):
 					| Expression GG Expression
 					| Expression AMPCAR Expression'''
 	if len(p) == 4:
-		p[0] = make_node(p[2])
-		make_edge(p[0], p[1])
-		make_edge(p[0], p[3])
+		p[0] = Node()
+		if p[2] == '+':
+			if p[1].expr.type == 'int' and p[3].expr.type == 'int':
+				if p[1].expr.is_constant and p[3].expr.is_constant:
+					p[0].expr.type = 'int'
+					p[0].expr.is_constant = True
+					p[0].expr.value = p[1].expr.value + p[2].expr.value
+					p[0].place = str(p[0].expr.value)
+				elif p[1].expr.is_constant:
+					p[0].place = newTemp('int')
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[3].place +' int+i ' + p[1].place]  #second operand is the immediate operand
+					p[0].expr.type = 'int'
+				elif p[3].expr.is_constant:
+					p[0].place = newTemp('int')
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place +' int+i ' + p[3].place]  #second operand is the immediate operand
+					p[0].expr.type = 'int'
+				else:
+					p[0].place = newTemp('int')
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place +' int+ '+  p[3].place]  #second operand is the immediate operand
+					p[0].expr.type = 'int'
+
+		# print p[0]
+		# p[0] = make_node(p[2])
+		# make_edge(p[0], p[1])
+		# make_edge(p[0], p[3])
 	else:
 		p[0] = p[1]
 
@@ -811,11 +867,18 @@ def p_inc_dec(p):
 
 def p_assignment(p):
 	'''Assignment : ExpressionList assign_op ExpressionList'''
-	p[0] = make_node(p[2])
-	for i in p[1]:
-	    make_edge(p[0], i)
-	for i in p[3]:
-		make_edge(p[0], i)
+	#TODO restriction on LHS expressions
+	p[0] = Node()
+	if len(p[1].exprlist) != len(p[3].exprlist):
+		print "error: at line", p.lineno(0), "Unequal number of arguments"
+	else:
+		for i in range(len(p[1].exprlist)):
+			if not inScope(p[1].exprlist[i].expr.value):
+				print "error: at line", p.lineno(0), "variable not in scope"
+			else:
+				p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + \
+					[p[1].exprlist[i].expr.value + ' := ' + p[3].exprlist[i].place]
+	print 'code', p[0].code
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
@@ -1060,12 +1123,13 @@ def p_goto(p):
 
 def p_source_file(p):
 	'''Source : PackageClause SEMICOL ImportDeclRep TopLevelDeclRep'''
-	p[0] = make_node('Source')
-	make_edge(p[0], p[1])
-	for i in p[3]:
-		make_edge(p[0], i)
-	for i in p[4]:
-		make_edge(p[0], i)
+	# p[0] = make_node('Source')
+	# make_edge(p[0], p[1])
+	# for i in p[3]:
+	# 	make_edge(p[0], i)
+	# for i in p[4]:
+	# 	make_edge(p[0], i)
+	p[0] = p[4]
 
 def p_import_decl_rep(p):
 	'''ImportDeclRep : epsilon
@@ -1081,9 +1145,9 @@ def p_toplevel_decl_rep(p):
 						| epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[2])
+		p[0].code += p[2].code 
 	else:
-		p[0] = []
+		p[0] = Node()
 # --------------------------------------------------------
 
 
@@ -1160,8 +1224,7 @@ with open(infile,'r') as f:
 	input_str = f.read()
 t = parser.parse(input_str, tracking=True)
 
-pp.pprint(t)
-dot.render(outfile)
+pp.pprint(t.code)
 
 for scope in scope_list[::-1]:
 	print scope.getAllEntries()

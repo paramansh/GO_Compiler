@@ -1,24 +1,29 @@
 class Node:
 	def __init__(self):
 		self.code = []
-		self.type = ""
+		self.place = None
+		self.type = "" # this denotes type variable int/float etc
 		self.idlist = []
 		self.exprlist = []
 		self.expr = Expr()
 	def __str__(self):
 		print "code:", self.code
-		print "type:", self.type
+		print "type:", self.type # denotes type of expression
 		print "idlist:", self.idlist
 		print "exprlist:"
 		for i in self.exprlist:
 			print i.__dict__
-		print "expr:", self.expr.__dict__
+		print "expr:", self.expr
+		return ""
 
 class Expr:
 	def __init__(self):
 		self.value = "None"
 		self.type = "None"
+		self.is_constant = False
 	def __str__(self):
+		if self is None:
+			return ""
 		return str(self.__dict__)
 		# print "value:", self.value 
 		# print "type:", self.type

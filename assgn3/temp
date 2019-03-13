@@ -1,16 +1,19 @@
 package main;
-var x, y int = 99, 1;
-var z float = 4.0;
+var x int = 1;
+var y int = 2;
+var a, b int = 3, 4;
+var z int = 93 + x + y;
 func main() {
     var x int;
-    var y float= 4.0;
+    var y int = 4;
 };
 
 func into(){
     var a int;
-    if a {
-        var x int;
-        b++;
-    };
+    //if a {
+    //    var x int;
+    //   // x = x + 4 + a + 3;
+    //};
 };
-
+//
+//
