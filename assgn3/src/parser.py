@@ -137,7 +137,7 @@ def p_type_opt(p):
 	'''TypeOpt : Type
 			   | epsilon'''
 	if p[1] == 'epsilon':
-		p[0] = -1
+		p[0] = None
 	else:
 		p[0] = p[1]
 
@@ -348,41 +348,63 @@ def p_toplevel_decl(p):
 def p_const_decl(p):
 	'''ConstDecl : CONST ConstSpec
 				 | CONST LPAREN ConstSpecRep RPAREN'''
-	p[0] = make_node(p[1])
+	p[0] = Node()
 	if len(p) == 3:
-		make_edge(p[0], p[2])
+		p[0] = p[2]
 	else:
-		for i in p[3]:
-			make_edge(p[0], i)
+		p[0] = p[3]
 
 def p_const_spec_rep(p):
 	'''ConstSpecRep : ConstSpecRep ConstSpec SEMICOL
 					| epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[2])
+		p[0].code += p[2].code
 	else:
-		p[0] = []
+		p[0] = Node()
 
+#TODO check constant modification
 def p_const_spec(p):
 	'''ConstSpec : IdentifierList TypeExprListOpt'''
-	p[0] = make_node('ConstSpec')
-	for i in p[1]:
-		make_edge(p[0], i)
-	if p[2] != -1:
-		make_edge(p[0], p[2])
+	p[0] = Node()
+	if p[2] is None:
+		print "error: at line", p.lineno(0), "No assigned values to constants"
+	else: 
+		if len(p[2].exprlist) != len(p[1].idlist):
+			lineno = p.lineno(0)
+			print "error: unequal number of arguments on lhs and rhs at line", lineno
+		else:
+			if p[2].type:
+				for i in range(len(p[2].exprlist)):
+					if p[2].exprlist[i].expr.type != p[2].type:
+						print 'error: at line', p.lineno(0), 'type mismatch in variable and expression'
+					err = insertId(p[1].idlist[i], p[2].type)
+					if err:
+						print 'error: at line', p.lineno(0), err
+					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
+					insertInfo(p[1].idlist[i], 'constant', True)
+					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+			else:
+				for i in range(len(p[2].exprlist)):
+					err = insertId(p[1].idlist[i], p[2].exprlist[i].expr.type)
+					if err:
+						print 'error: at line', p.lineno(0), err
+					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
+					insertInfo(p[1].idlist[i], 'constant', True)
+
+					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 
 def p_type_expr_list(p):
 	'''TypeExprListOpt : TypeOpt EQUAL ExpressionList
 					   | epsilon'''
 	if len(p) == 4:
-		p[0] = make_node(p[2])
-		if p[1] != -1:
-			make_edge(p[0], p[1], 'type')
-		for i in p[3]:
-			make_edge(p[0], i)
+		p[0] = Node()
+		if p[1] is not None:
+			p[0].type = p[1].type
+		
+		p[0].exprlist = p[3].exprlist 
 	else:
-		p[0] = -1
+		p[0] = None
 
 def p_identifier_list(p):
 	'''IdentifierList : IDENTIFIER IdentifierRep'''
@@ -477,15 +499,23 @@ def p_var_spec(p):
 			   | IdentifierList EQUAL ExpressionList'''
 	p[0] = Node()
 	if p[2] == '=':
-		for i in p[1]:
-			make_edge(p[0], i, 'id')
-		for i in p[3]:
-			make_edge(p[0], i, 'exp')
+		if len(p[3].exprlist) != len(p[1].idlist):
+			lineno = p.lineno(2)
+			print "error: unequal number of arguments on lhs and rhs at line", lineno 
+		else:
+			for i in range(len(p[3].exprlist)):
+				err = insertId(p[1].idlist[i], p[3].exprlist[i].expr.type)
+				if err:
+					print 'error: at line', p.lineno(0), err
+				insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
+				insertInfo(p[1].idlist[i], 'constant', False)
+				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
 	else:
 		p[0] = Node()
 		if not p[3]:
 			for i in p[1].idlist:
 				err = insertId(i, p[2].type)
+				insertInfo(i, 'constant', False)
 				if err:
 					print 'error: at line', p.lineno(0), err
 		else:
@@ -500,7 +530,9 @@ def p_var_spec(p):
 					if err:
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
+					insertInfo(p[1].idlist[i], 'constant', False)
 					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+					
 					#TODO always insert info??????????? what is attribute value
 					#TODO which attributes to be added in symbol table!
 		# print 'here', p[0]
@@ -627,10 +659,10 @@ def p_string_literal(p):
 
 def p_operand_name(p):
 	'''OperandName : IDENTIFIER'''
-	# p[0] = Node()
+	p[0] = Node()
 	if not inScope(p[1]):
 		print "error at line", p.lineno(0), 'Variable not Declared'
-
+		 
 	# we are preceeding forward assumng the variable had already been declared!
 	p[0] = Node()
 	p[0].expr.value = p[1]
@@ -766,34 +798,68 @@ def p_expression(p):
 	if len(p) == 4:
 		p[0] = Node()
 
-		if p[2] == '+':
-			if p[1].expr.type == 'int' and p[3].expr.type == 'int':
+		binary_ops = ['+', '-', '*', '/', '%']
+		if p[2] in binary_ops:
+			exprtypes = ['int', 'float', 'imaginary']
+			if p[1].expr.type != p[3].expr.type:
+				#TODO int/float typecasting
+				print 'error: at line', p.lineno(0), "type mismatch in comparison"
+				return
+			exprtype = p[1].expr.type
+			if exprtype not in exprtypes:
+				print 'error: at line', p.lineno(0), "operation not supported on the given type"
+				return
+			else:
 				if p[1].expr.is_constant and p[3].expr.is_constant:
-					p[0].expr.type = 'int'
+					p[0].expr.type = exprtype
 					p[0].expr.is_constant = True
-					p[0].expr.value = p[1].expr.value + p[2].expr.value
+					if p[2] == '+':
+						p[0].expr.value = p[1].expr.value + p[3].expr.value
+					if p[2] == '-':
+						p[0].expr.value = p[1].expr.value - p[3].expr.value
+					if p[2] == '*':
+						p[0].expr.value = p[1].expr.value * p[3].expr.value
+					if p[2] == '/':
+						p[0].expr.value = p[1].expr.value / p[3].expr.value
+					if p[2] == '%':
+						p[0].expr.value = p[1].expr.value % p[3].expr.value
 					p[0].place = str(p[0].expr.value)
 				elif p[1].expr.is_constant:
-					p[0].place = newTemp('int')
-					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[3].place +' int+i ' + p[1].place]  #second operand is the immediate operand
-					p[0].expr.type = 'int'
+					p[0].place = newTemp(exprtype)
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[3].place +' ' + exprtype + p[2]+ 'i ' + p[1].place]  #second operand is the immediate operand
+					p[0].expr.type = exprtype
 				elif p[3].expr.is_constant:
-					p[0].place = newTemp('int')
-					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place +' int+i ' + p[3].place]  #second operand is the immediate operand
-					p[0].expr.type = 'int'
+					p[0].place = newTemp(exprtype)
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place + ' ' + exprtype + p[2]+ 'i '+ p[3].place]  #second operand is the immediate operand
+					p[0].expr.type = exprtype
 				else:
-					p[0].place = newTemp('int')
-					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place +' int+ '+  p[3].place]  #second operand is the immediate operand
-					p[0].expr.type = 'int'
+					p[0].place = newTemp(exprtype)
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place + ' ' + exprtype + p[2]+ ' ' +  p[3].place]  #second operand is the immediate operand
+					p[0].expr.type = exprtype
 		
-		if p[2] == '>':
+		rel_ops = ['==', '!=', '<', '>', '<=', '>=']
+		if p[2] in rel_ops:
 			#TODO check expression mismatch
-			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + ' > ' + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
+			if p[1].expr.type != p[3].expr.type:
+				print 'error: at line', p.lineno(0), "type mismatch in comparison"
+				return 
+			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + p[2] + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
 
-		# print p[0]
-		# p[0] = make_node(p[2])
-		# make_edge(p[0], p[1])
-		# make_edge(p[0], p[3])
+		if p[2] == '||':
+			p[1].expr.true_label[0] = p[0].expr.true_label
+			p[1].expr.false_label[0] = newLabel()
+			p[3].expr.true_label[0] = p[0].expr.true_label
+			p[3].expr.false_label[0] = p[0].expr.false_label
+			p[0].code = p[1].code + [p[1].expr.false_label[0] + ':'] + p[3].code
+		if p[2] == '&&':
+			p[1].expr.true_label[0] = newLabel()
+			p[1].expr.false_label[0] = p[0].expr.false_label
+			p[3].expr.true_label[0] = p[0].expr.true_label
+			p[3].expr.false_label[0] = p[0].expr.false_label
+			p[0].code = p[1].code + [p[1].expr.true_label[0] + ':'] + p[3].code
+
+
+
 	else:
 		p[0] = p[1]
 
@@ -812,8 +878,26 @@ def p_unary_expr(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		p[0] = make_node(str(p[1]))
-		make_edge(p[0], p[2])
+		p[0] = Node()
+		if p[1] == '+':
+			p[0] = p[2]
+		if p[1] == '-':
+			p[0] = p[2]
+			if p[2].expr.is_constant:
+				p[0].expr.value = -p[0].expr.value
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + p[2].place]
+		if p[1] == '*':
+			# TODO
+			p[0] = p[2]
+		if p[1] == '&':
+			# TODO
+			p[0] = p[2]
+		if p[1] == '!':
+			p[0] = Node()
+			p[0].code = p[1].code
+			p[1].expr.true_label[0] = p[0].expr.false_label
+			p[1].expr.false_label[0] = p[0].expr.true_label
 
 def p_unary_op(p):
 	'''UnaryOp : PLUS

@@ -1,7 +1,7 @@
 class Node:
 	def __init__(self):
 		self.code = []
-		self.place = None
+		self.place = ""
 		self.type = "" # this denotes type variable int/float etc
 		self.idlist = []
 		self.exprlist = []
