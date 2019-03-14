@@ -7,7 +7,7 @@ from utils import Node, SymbolTable
 from scope import *
 from mytypes import *
 import json 
-
+import ast
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
@@ -149,9 +149,8 @@ def p_type_opt(p):
 
 def p_array_type(p):
 	'''ArrayType : LBRACK ArrayLength RBRACK ElementType'''
-	p[0] = make_node('ArrayType')
-	make_edge(p[0], p[2])
-	make_edge(p[0], p[4])
+	p[0] = Node()
+	p[0].type = 'Array(' + str(p[2].place) + ', ' + p[4].type + ')'
 
 def p_array_length(p):
 	''' ArrayLength : Expression '''
@@ -168,28 +167,27 @@ def p_element_type(p):
 
 def p_struct_type(p):
 	'''StructType : STRUCT LBRACE FieldDeclRep RBRACE'''
-	p[0] = make_node(p[1])
-	for i in p[3]:
-		make_edge(p[0], i)
+	p[0] = Node()
+	p[0].type = "Struct{" + p[3][1:] + "}"
 
 def p_field_decl_rep(p):
   	''' FieldDeclRep : FieldDeclRep FieldDecl SEMICOL
 				  | epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[2])
+		p[0] += ',' + p[2]
 	else:
-		p[0] = []
+		p[0] = ""
 
 def p_field_decl(p):
 	''' FieldDecl : IdentifierList Type TagOpt'''
-	### TODO Embedded Field
-	p[0] = make_node('field')
-	for i in p[1]:
-		make_edge(p[0], i)
-	make_edge(p[0], p[2], 'type')
-	if p[3] != -1:
-		make_edge(p[0], p[3], 'tag')
+	### TODO Embedded Field and TAG
+	p[0] = ""
+	for i in p[1].idlist:
+		p[0] += "'" + i + "'" + ':' + "'" + p[2].type + "'"
+	# make_edge(p[0], p[2], 'type')
+	# if p[3] != -1:
+	# 	make_edge(p[0], p[3], 'tag')
 
 def p_tag_opt(p):
   	''' TagOpt : Tag
@@ -705,19 +703,39 @@ def p_prim_expr(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		p[0] = p[1]
-		make_edge(p[0], p[2])
+		p[0] = Node()
+		if 'is_index' in p[2].extra:
+			temp_type = p[1].expr.type
+			if temp_type[0:5] != 'Array':
+				print 'error at line', p.lineno(0), "can't index non-array types"
+			element_type = (temp_type[6:-1].split(',')[1])[1:]
+			p[0].expr.type = element_type
+			p[0].place = newTemp(element_type)
+			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+		if 'selector' in p[2].extra:
+			selector = p[2].extra['selector']
+			temp_type = p[1].expr.type
+			if temp_type[0:6] != 'Struct':
+				print 'error at line', p.lineno(0), "can't selct on non-struct types"
+				return
+			field_dic = ast.literal_eval(temp_type[6:])
+			if selector not in field_dic:
+				print 'error at line', p.lineno(0), "invalid selector"
+				return
+			p[0].expr.type = field_dic[selector]
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+			
 
 def p_selector(p):
 	'''Selector : DOT IDENTIFIER'''
-	p[0] = make_node(p[1])
-	temp = make_node(p[2])
-	make_edge(p[0], temp, 'select')
+	p[0] = Node()
+	p[0].extra['selector'] = p[2]
 
 def p_index(p):
 	'''Index : LBRACK Expression RBRACK'''
-	p[0] = make_node('[]')
-	make_edge(p[0], p[2], 'index')
+	p[0] = p[2]
+	p[0].extra['is_index'] = True
 
 def p_slice(p):
 	'''Slice : LBRACK ExpressionOpt COLON ExpressionOpt RBRACK'''
@@ -1157,7 +1175,6 @@ def p_else_opt(p):
 def p_for(p):
 	'''ForStmt : FOR ConditionBlockOpt Block'''
 	p[0] = Node()
-	print 'here', p[3].next[0]
 	if p[2] is not None:
 		if p[2].forclause.isClause:
 			p[0].begin = [newLabel()]
@@ -1179,7 +1196,6 @@ def p_for(p):
 			p[3].begin[0] = p[0].begin
 			p[0].code += [[p[0].begin , ":"]] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()
-	print 'here', p[3].next[0]
 
 def p_conditionblockopt(p):
 	'''ConditionBlockOpt : epsilon
