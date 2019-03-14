@@ -7,8 +7,9 @@ class Node:
 		self.exprlist = []
 		self.expr = Expr()
 		self.next = ['not initialised next label']
-		self.begin = 'begin not initialised'
+		self.begin = ['begin not initialised']
 		self.extra = {}
+		self.struct_extra = {}
 		self.forclause = ForClause()
 	def __str__(self):
 		print "code:", self.code

@@ -7,7 +7,7 @@ from utils import Node, SymbolTable
 from scope import *
 from mytypes import *
 import json 
-
+import ast
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
@@ -149,9 +149,8 @@ def p_type_opt(p):
 
 def p_array_type(p):
 	'''ArrayType : LBRACK ArrayLength RBRACK ElementType'''
-	p[0] = make_node('ArrayType')
-	make_edge(p[0], p[2])
-	make_edge(p[0], p[4])
+	p[0] = Node()
+	p[0].type = 'Array(' + str(p[2].place) + ', ' + p[4].type + ')'
 
 def p_array_length(p):
 	''' ArrayLength : Expression '''
@@ -168,28 +167,27 @@ def p_element_type(p):
 
 def p_struct_type(p):
 	'''StructType : STRUCT LBRACE FieldDeclRep RBRACE'''
-	p[0] = make_node(p[1])
-	for i in p[3]:
-		make_edge(p[0], i)
+	p[0] = Node()
+	p[0].type = "Struct{" + p[3][1:] + "}"
 
 def p_field_decl_rep(p):
   	''' FieldDeclRep : FieldDeclRep FieldDecl SEMICOL
 				  | epsilon'''
 	if len(p) == 4:
 		p[0] = p[1]
-		p[0].append(p[2])
+		p[0] += ',' + p[2]
 	else:
-		p[0] = []
+		p[0] = ""
 
 def p_field_decl(p):
 	''' FieldDecl : IdentifierList Type TagOpt'''
-	### TODO Embedded Field
-	p[0] = make_node('field')
-	for i in p[1]:
-		make_edge(p[0], i)
-	make_edge(p[0], p[2], 'type')
-	if p[3] != -1:
-		make_edge(p[0], p[3], 'tag')
+	### TODO Embedded Field and TAG
+	p[0] = ""
+	for i in p[1].idlist:
+		p[0] += "'" + i + "'" + ':' + "'" + p[2].type + "'"
+	# make_edge(p[0], p[2], 'type')
+	# if p[3] != -1:
+	# 	make_edge(p[0], p[3], 'tag')
 
 def p_tag_opt(p):
   	''' TagOpt : Tag
@@ -306,9 +304,7 @@ def p_block(p):
 	'''Block : LBRACE StatementList RBRACE'''
 	p[0] = p[2]
 	deleteScope()
-	# for i in p[2]:
-	# 	if i != -1:
-	# 		make_edge(p[0], i)
+
 
 def p_statement_list(p):
 	'''StatementList : StatementRep'''
@@ -320,6 +316,11 @@ def p_statement_rep(p):
 	if len(p) == 4:
 		p[0] = p[1]
 		p[0].code += p[2].code
+		if p[2].extra:
+			if 'is_continue' in p[2].extra and p[2].extra['is_continue']:
+				p[2].next[0] = p[0].begin
+			if 'is_break' in p[2].extra and p[2].extra['is_break']:
+				p[2].next[0] = p[0].next
 	else:
 		addScope()
 		p[0] = Node()
@@ -598,7 +599,7 @@ def p_func_body(p):
 # -------------------------------------------------------
 
 
-# ----------------------OPERAND----------------------------
+# -------------------	---OPERAND----------------------------
 
 def p_operand(p):
 	'''Operand : Literal
@@ -702,19 +703,39 @@ def p_prim_expr(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		p[0] = p[1]
-		make_edge(p[0], p[2])
+		p[0] = Node()
+		if 'is_index' in p[2].extra:
+			temp_type = p[1].expr.type
+			if temp_type[0:5] != 'Array':
+				print 'error at line', p.lineno(0), "can't index non-array types"
+			element_type = (temp_type[6:-1].split(',')[1])[1:]
+			p[0].expr.type = element_type
+			p[0].place = newTemp(element_type)
+			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+		if 'selector' in p[2].extra:
+			selector = p[2].extra['selector']
+			temp_type = p[1].expr.type
+			if temp_type[0:6] != 'Struct':
+				print 'error at line', p.lineno(0), "can't selct on non-struct types"
+				return
+			field_dic = ast.literal_eval(temp_type[6:])
+			if selector not in field_dic:
+				print 'error at line', p.lineno(0), "invalid selector"
+				return
+			p[0].expr.type = field_dic[selector]
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+			
 
 def p_selector(p):
 	'''Selector : DOT IDENTIFIER'''
-	p[0] = make_node(p[1])
-	temp = make_node(p[2])
-	make_edge(p[0], temp, 'select')
+	p[0] = Node()
+	p[0].extra['selector'] = p[2]
 
 def p_index(p):
 	'''Index : LBRACK Expression RBRACK'''
-	p[0] = make_node('[]')
-	make_edge(p[0], p[2], 'index')
+	p[0] = p[2]
+	p[0].extra['is_index'] = True
 
 def p_slice(p):
 	'''Slice : LBRACK ExpressionOpt COLON ExpressionOpt RBRACK'''
@@ -930,13 +951,15 @@ def p_statement(p):
 				 | IfStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
-	p[0] = p[1]
+	p[0] = p[1] 
 	# new_label = newLabel()
 	# p[0].next[0] = new_label
 	
 	# p[0].code += [new_label + ':']
 	if p[0].next[0][0] == 'l': 
 		p[0].code += [p[0].next[0] + ':'] #otherwisw not labelx
+	# if p[0].begin[0] == 'l': 
+	# 	p[0].code += [p[0].next[0] + ':']
 
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
@@ -1154,20 +1177,24 @@ def p_for(p):
 	p[0] = Node()
 	if p[2] is not None:
 		if p[2].forclause.isClause:
-			p[0].begin = newLabel()
+			p[0].begin = [newLabel()]
 			cond = p[2].forclause.condition
 			cond.expr.true_label[0] = newLabel()
 			cond.expr.false_label[0] = p[0].next
-			p[3].next[0] = p[0].begin
+			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
+			p[3].next[0] = p[0].next
+			p[3].begin[0] = p[0].begin
 			p[0].code += p[2].forclause.initialise
-			p[0].code += [p[0].begin + ":"] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[3].code + p[2].forclause.update + ['goto: '+p[0].begin]
+			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
+			p[0].code += p[3].code + p[2].forclause.update + [['goto: ',p[0].begin]]
 		else:
-			p[0].begin = newLabel()
+			p[0].begin = [newLabel()]
 			p[2].expr.true_label[0] = newLabel()
 			p[2].expr.false_label[0] = p[0].next
-			p[3].next[0] = p[0].begin
-			p[0].code += [p[0].begin + ":"] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + ['goto: '+p[0].begin]
+			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
+			p[3].next[0] = p[0].next 
+			p[3].begin[0] = p[0].begin
+			p[0].code += [[p[0].begin , ":"]] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()
 
 def p_conditionblockopt(p):
@@ -1238,15 +1265,20 @@ def p_expressionlist_pure_opt(p):
 
 def p_break(p):
 	'''BreakStmt : BREAK LabelOpt'''
-	p[0] = make_node(p[1])
-	if p[2] != -1:
-		make_edge(p[0], p[2])
+	p[0] = Node()
+	p[0].code = [['goto ', p[0].next]]
+	p[0].extra['is_break'] = True
+	# if p[2] != -1:
+	# 	make_edge(p[0], p[2])
 
 def p_continue(p):
 	'''ContinueStmt : CONTINUE LabelOpt'''
-	p[0] = make_node(p[1])
-	if p[2] != -1:
-		make_edge(p[0], p[2])
+	p[0] = Node()
+	
+	p[0].code = [['goto ', p[0].next]]
+	p[0].extra['is_continue'] = True
+	# if p[2] != -1:
+	# 	make_edge(p[0], p[2]) #TODO label
 
 def p_labelopt(p):
 	'''LabelOpt : Label
