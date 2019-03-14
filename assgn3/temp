@@ -20,6 +20,7 @@ package main;
 //    var y int = 4;
 //};
 //
+
 func into(){
     var a int = +-5;
     if a == 5 || a < 6 {

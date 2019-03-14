@@ -1,2 +1,3 @@
 TODO: type declaration
 type specific operators in <, >, ||, && etc. eg: int<, int&& etc.
+place variable in assignment
