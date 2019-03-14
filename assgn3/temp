@@ -20,30 +20,31 @@ package main;
 //    var y int = 4;
 //};
 //
-
+var a int;
 func into(){
     var a =5;
+    a--;
+    b := a+a;
     //var b = 6;
     //var c = 7;
-    var b, c int;
     //b = b + a;
     a = a+ b;
-    c = a+b;
+    var c = a+b;
     //b *= c;
-    //if a == 5 && a < 6 {
-    //    var x int;
-    //    a = 3;
-    //    x = x  + a;
-    //};
-    //else {
-    //    a = 5;
-    //};
+    if a == 5 && a < 6 {
+        var x int;
+        a = 3;
+        x = x  + a;
+    }
+    else {
+        a = 5;
+    };
     var y int = 4;
 };
 //func forloop(){
 //    var a, b int=5,6;
-//    var i int;
-//    for i = 0; i > 5; i = i + 1 {
+//    var i, x int;
+//    for i = 0; i < 5; i = i + 1 {
 //        x = x+5;
 //    };
 //};

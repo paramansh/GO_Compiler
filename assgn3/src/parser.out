@@ -178,8 +178,8 @@ Rule 155   SimpleStmt -> ShortVarDecl
 Rule 156   LabeledStmt -> Label COLON Statement
 Rule 157   Label -> IDENTIFIER
 Rule 158   ExpressionStmt -> Expression
-Rule 159   IncDecStmt -> Expression PLUSPLUS
-Rule 160   IncDecStmt -> Expression MINUSMIN
+Rule 159   IncDecStmt -> PrimaryExpr PLUSPLUS
+Rule 160   IncDecStmt -> PrimaryExpr MINUSMIN
 Rule 161   Assignment -> ExpressionList assign_op ExpressionList
 Rule 162   assign_op -> AssignOp
 Rule 163   AssignOp -> PLUSEQ
@@ -342,7 +342,7 @@ Conversion           : 98
 Declaration          : 47 141
 ElementType          : 12
 ElseOpt              : 174
-Expression           : 13 75 83 96 104 109 110 113 113 114 114 115 115 116 116 117 117 118 118 119 119 120 120 121 121 122 122 123 123 124 124 125 125 126 126 127 127 128 128 129 129 130 130 131 131 132 158 159 160 174 182 186
+Expression           : 13 75 83 96 104 109 110 113 113 114 114 115 115 116 116 117 117 118 118 119 119 120 120 121 121 122 122 123 123 124 124 125 125 126 126 127 127 128 128 129 129 130 130 131 131 132 158 174 182 186
 ExpressionIdentListOpt : 186
 ExpressionIdentifier : 188
 ExpressionList       : 54 72 73 107 161 161 189 191
@@ -390,7 +390,7 @@ ParameterListOpt     : 30
 Parameters           : 25 28
 ParametersList       : 31
 PointerType          : 8
-PrimaryExpr          : 99 100 101 102 134
+PrimaryExpr          : 99 100 101 102 134 159 160
 RangeClause          : 
 Result               : 26
 ResultOpt            : 25
@@ -1953,8 +1953,6 @@ state 92
     SEMICOL         reduce using rule 93 (RuneLiteral -> RUNE .)
     RPAREN          reduce using rule 93 (RuneLiteral -> RUNE .)
     COLON           reduce using rule 93 (RuneLiteral -> RUNE .)
-    PLUSPLUS        reduce using rule 93 (RuneLiteral -> RUNE .)
-    MINUSMIN        reduce using rule 93 (RuneLiteral -> RUNE .)
     PLUSEQ          reduce using rule 93 (RuneLiteral -> RUNE .)
     MINUSEQ         reduce using rule 93 (RuneLiteral -> RUNE .)
     TIMESEQ         reduce using rule 93 (RuneLiteral -> RUNE .)
@@ -1967,6 +1965,8 @@ state 92
     GGEQ            reduce using rule 93 (RuneLiteral -> RUNE .)
     EQUAL           reduce using rule 93 (RuneLiteral -> RUNE .)
     LBRACE          reduce using rule 93 (RuneLiteral -> RUNE .)
+    PLUSPLUS        reduce using rule 93 (RuneLiteral -> RUNE .)
+    MINUSMIN        reduce using rule 93 (RuneLiteral -> RUNE .)
 
 
 state 93
@@ -1999,7 +1999,7 @@ state 93
     PLUSPLUS        reduce using rule 98 (PrimaryExpr -> Conversion .)
     MINUSMIN        reduce using rule 98 (PrimaryExpr -> Conversion .)
     COMMA           reduce using rule 98 (PrimaryExpr -> Conversion .)
-    SEMICOL         reduce using rule 98 (PrimaryExpr -> Conversion .)
+    LBRACE          reduce using rule 98 (PrimaryExpr -> Conversion .)
     PLUSEQ          reduce using rule 98 (PrimaryExpr -> Conversion .)
     MINUSEQ         reduce using rule 98 (PrimaryExpr -> Conversion .)
     TIMESEQ         reduce using rule 98 (PrimaryExpr -> Conversion .)
@@ -2012,8 +2012,8 @@ state 93
     GGEQ            reduce using rule 98 (PrimaryExpr -> Conversion .)
     EQUAL           reduce using rule 98 (PrimaryExpr -> Conversion .)
     RBRACK          reduce using rule 98 (PrimaryExpr -> Conversion .)
+    SEMICOL         reduce using rule 98 (PrimaryExpr -> Conversion .)
     COLON           reduce using rule 98 (PrimaryExpr -> Conversion .)
-    LBRACE          reduce using rule 98 (PrimaryExpr -> Conversion .)
 
 
 state 94
@@ -2094,8 +2094,6 @@ state 95
     SEMICOL         reduce using rule 81 (Operand -> Literal .)
     RPAREN          reduce using rule 81 (Operand -> Literal .)
     COLON           reduce using rule 81 (Operand -> Literal .)
-    PLUSPLUS        reduce using rule 81 (Operand -> Literal .)
-    MINUSMIN        reduce using rule 81 (Operand -> Literal .)
     PLUSEQ          reduce using rule 81 (Operand -> Literal .)
     MINUSEQ         reduce using rule 81 (Operand -> Literal .)
     TIMESEQ         reduce using rule 81 (Operand -> Literal .)
@@ -2108,6 +2106,8 @@ state 95
     GGEQ            reduce using rule 81 (Operand -> Literal .)
     EQUAL           reduce using rule 81 (Operand -> Literal .)
     LBRACE          reduce using rule 81 (Operand -> Literal .)
+    PLUSPLUS        reduce using rule 81 (Operand -> Literal .)
+    MINUSMIN        reduce using rule 81 (Operand -> Literal .)
 
 
 state 96
@@ -2193,8 +2193,6 @@ state 99
     DOT             reduce using rule 94 (StringLiteral -> STRING .)
     LBRACK          reduce using rule 94 (StringLiteral -> STRING .)
     LPAREN          reduce using rule 94 (StringLiteral -> STRING .)
-    PLUSPLUS        reduce using rule 94 (StringLiteral -> STRING .)
-    MINUSMIN        reduce using rule 94 (StringLiteral -> STRING .)
     OROR            reduce using rule 94 (StringLiteral -> STRING .)
     AMPAMP          reduce using rule 94 (StringLiteral -> STRING .)
     EQEQ            reduce using rule 94 (StringLiteral -> STRING .)
@@ -2215,7 +2213,10 @@ state 99
     GG              reduce using rule 94 (StringLiteral -> STRING .)
     AMPCAR          reduce using rule 94 (StringLiteral -> STRING .)
     COMMA           reduce using rule 94 (StringLiteral -> STRING .)
+    SEMICOL         reduce using rule 94 (StringLiteral -> STRING .)
     LBRACE          reduce using rule 94 (StringLiteral -> STRING .)
+    PLUSPLUS        reduce using rule 94 (StringLiteral -> STRING .)
+    MINUSMIN        reduce using rule 94 (StringLiteral -> STRING .)
     PLUSEQ          reduce using rule 94 (StringLiteral -> STRING .)
     MINUSEQ         reduce using rule 94 (StringLiteral -> STRING .)
     TIMESEQ         reduce using rule 94 (StringLiteral -> STRING .)
@@ -2227,7 +2228,6 @@ state 99
     LLEQ            reduce using rule 94 (StringLiteral -> STRING .)
     GGEQ            reduce using rule 94 (StringLiteral -> STRING .)
     EQUAL           reduce using rule 94 (StringLiteral -> STRING .)
-    SEMICOL         reduce using rule 94 (StringLiteral -> STRING .)
     RBRACK          reduce using rule 94 (StringLiteral -> STRING .)
     RPAREN          reduce using rule 94 (StringLiteral -> STRING .)
     COLON           reduce using rule 94 (StringLiteral -> STRING .)
@@ -2264,8 +2264,6 @@ state 100
     SEMICOL         reduce using rule 82 (Operand -> OperandName .)
     RPAREN          reduce using rule 82 (Operand -> OperandName .)
     COLON           reduce using rule 82 (Operand -> OperandName .)
-    PLUSPLUS        reduce using rule 82 (Operand -> OperandName .)
-    MINUSMIN        reduce using rule 82 (Operand -> OperandName .)
     PLUSEQ          reduce using rule 82 (Operand -> OperandName .)
     MINUSEQ         reduce using rule 82 (Operand -> OperandName .)
     TIMESEQ         reduce using rule 82 (Operand -> OperandName .)
@@ -2278,6 +2276,8 @@ state 100
     GGEQ            reduce using rule 82 (Operand -> OperandName .)
     EQUAL           reduce using rule 82 (Operand -> OperandName .)
     LBRACE          reduce using rule 82 (Operand -> OperandName .)
+    PLUSPLUS        reduce using rule 82 (Operand -> OperandName .)
+    MINUSMIN        reduce using rule 82 (Operand -> OperandName .)
 
 
 state 101
@@ -2311,8 +2311,6 @@ state 101
     SEMICOL         reduce using rule 84 (Literal -> BasicLit .)
     RPAREN          reduce using rule 84 (Literal -> BasicLit .)
     COLON           reduce using rule 84 (Literal -> BasicLit .)
-    PLUSPLUS        reduce using rule 84 (Literal -> BasicLit .)
-    MINUSMIN        reduce using rule 84 (Literal -> BasicLit .)
     PLUSEQ          reduce using rule 84 (Literal -> BasicLit .)
     MINUSEQ         reduce using rule 84 (Literal -> BasicLit .)
     TIMESEQ         reduce using rule 84 (Literal -> BasicLit .)
@@ -2325,6 +2323,8 @@ state 101
     GGEQ            reduce using rule 84 (Literal -> BasicLit .)
     EQUAL           reduce using rule 84 (Literal -> BasicLit .)
     LBRACE          reduce using rule 84 (Literal -> BasicLit .)
+    PLUSPLUS        reduce using rule 84 (Literal -> BasicLit .)
+    MINUSMIN        reduce using rule 84 (Literal -> BasicLit .)
 
 
 state 102
@@ -2485,8 +2485,6 @@ state 105
     SEMICOL         reduce using rule 90 (IntLiteral -> INTEGER .)
     RPAREN          reduce using rule 90 (IntLiteral -> INTEGER .)
     COLON           reduce using rule 90 (IntLiteral -> INTEGER .)
-    PLUSPLUS        reduce using rule 90 (IntLiteral -> INTEGER .)
-    MINUSMIN        reduce using rule 90 (IntLiteral -> INTEGER .)
     PLUSEQ          reduce using rule 90 (IntLiteral -> INTEGER .)
     MINUSEQ         reduce using rule 90 (IntLiteral -> INTEGER .)
     TIMESEQ         reduce using rule 90 (IntLiteral -> INTEGER .)
@@ -2499,6 +2497,8 @@ state 105
     GGEQ            reduce using rule 90 (IntLiteral -> INTEGER .)
     EQUAL           reduce using rule 90 (IntLiteral -> INTEGER .)
     LBRACE          reduce using rule 90 (IntLiteral -> INTEGER .)
+    PLUSPLUS        reduce using rule 90 (IntLiteral -> INTEGER .)
+    MINUSMIN        reduce using rule 90 (IntLiteral -> INTEGER .)
 
 
 state 106
@@ -2532,8 +2532,6 @@ state 106
     SEMICOL         reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     RPAREN          reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     COLON           reduce using rule 92 (ImgLiteral -> IMAGINARY .)
-    PLUSPLUS        reduce using rule 92 (ImgLiteral -> IMAGINARY .)
-    MINUSMIN        reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     PLUSEQ          reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     MINUSEQ         reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     TIMESEQ         reduce using rule 92 (ImgLiteral -> IMAGINARY .)
@@ -2546,6 +2544,8 @@ state 106
     GGEQ            reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     EQUAL           reduce using rule 92 (ImgLiteral -> IMAGINARY .)
     LBRACE          reduce using rule 92 (ImgLiteral -> IMAGINARY .)
+    PLUSPLUS        reduce using rule 92 (ImgLiteral -> IMAGINARY .)
+    MINUSMIN        reduce using rule 92 (ImgLiteral -> IMAGINARY .)
 
 
 state 107
@@ -2579,8 +2579,6 @@ state 107
     SEMICOL         reduce using rule 95 (OperandName -> IDENTIFIER .)
     RPAREN          reduce using rule 95 (OperandName -> IDENTIFIER .)
     COLON           reduce using rule 95 (OperandName -> IDENTIFIER .)
-    PLUSPLUS        reduce using rule 95 (OperandName -> IDENTIFIER .)
-    MINUSMIN        reduce using rule 95 (OperandName -> IDENTIFIER .)
     PLUSEQ          reduce using rule 95 (OperandName -> IDENTIFIER .)
     MINUSEQ         reduce using rule 95 (OperandName -> IDENTIFIER .)
     TIMESEQ         reduce using rule 95 (OperandName -> IDENTIFIER .)
@@ -2693,8 +2691,6 @@ state 110
 
     (112) Expression -> UnaryExpr .
 
-    PLUSPLUS        reduce using rule 112 (Expression -> UnaryExpr .)
-    MINUSMIN        reduce using rule 112 (Expression -> UnaryExpr .)
     OROR            reduce using rule 112 (Expression -> UnaryExpr .)
     AMPAMP          reduce using rule 112 (Expression -> UnaryExpr .)
     EQEQ            reduce using rule 112 (Expression -> UnaryExpr .)
@@ -2714,8 +2710,11 @@ state 110
     LL              reduce using rule 112 (Expression -> UnaryExpr .)
     GG              reduce using rule 112 (Expression -> UnaryExpr .)
     AMPCAR          reduce using rule 112 (Expression -> UnaryExpr .)
+    RBRACK          reduce using rule 112 (Expression -> UnaryExpr .)
     COMMA           reduce using rule 112 (Expression -> UnaryExpr .)
     SEMICOL         reduce using rule 112 (Expression -> UnaryExpr .)
+    RPAREN          reduce using rule 112 (Expression -> UnaryExpr .)
+    COLON           reduce using rule 112 (Expression -> UnaryExpr .)
     PLUSEQ          reduce using rule 112 (Expression -> UnaryExpr .)
     MINUSEQ         reduce using rule 112 (Expression -> UnaryExpr .)
     TIMESEQ         reduce using rule 112 (Expression -> UnaryExpr .)
@@ -2727,9 +2726,6 @@ state 110
     LLEQ            reduce using rule 112 (Expression -> UnaryExpr .)
     GGEQ            reduce using rule 112 (Expression -> UnaryExpr .)
     EQUAL           reduce using rule 112 (Expression -> UnaryExpr .)
-    RBRACK          reduce using rule 112 (Expression -> UnaryExpr .)
-    RPAREN          reduce using rule 112 (Expression -> UnaryExpr .)
-    COLON           reduce using rule 112 (Expression -> UnaryExpr .)
     LBRACE          reduce using rule 112 (Expression -> UnaryExpr .)
 
 
@@ -2861,7 +2857,7 @@ state 113
     PLUSPLUS        reduce using rule 97 (PrimaryExpr -> Operand .)
     MINUSMIN        reduce using rule 97 (PrimaryExpr -> Operand .)
     COMMA           reduce using rule 97 (PrimaryExpr -> Operand .)
-    SEMICOL         reduce using rule 97 (PrimaryExpr -> Operand .)
+    LBRACE          reduce using rule 97 (PrimaryExpr -> Operand .)
     PLUSEQ          reduce using rule 97 (PrimaryExpr -> Operand .)
     MINUSEQ         reduce using rule 97 (PrimaryExpr -> Operand .)
     TIMESEQ         reduce using rule 97 (PrimaryExpr -> Operand .)
@@ -2874,8 +2870,8 @@ state 113
     GGEQ            reduce using rule 97 (PrimaryExpr -> Operand .)
     EQUAL           reduce using rule 97 (PrimaryExpr -> Operand .)
     RBRACK          reduce using rule 97 (PrimaryExpr -> Operand .)
+    SEMICOL         reduce using rule 97 (PrimaryExpr -> Operand .)
     COLON           reduce using rule 97 (PrimaryExpr -> Operand .)
-    LBRACE          reduce using rule 97 (PrimaryExpr -> Operand .)
 
 
 state 114
@@ -3066,8 +3062,6 @@ state 117
     SEMICOL         reduce using rule 91 (FloatLiteral -> FLOAT .)
     RPAREN          reduce using rule 91 (FloatLiteral -> FLOAT .)
     COLON           reduce using rule 91 (FloatLiteral -> FLOAT .)
-    PLUSPLUS        reduce using rule 91 (FloatLiteral -> FLOAT .)
-    MINUSMIN        reduce using rule 91 (FloatLiteral -> FLOAT .)
     PLUSEQ          reduce using rule 91 (FloatLiteral -> FLOAT .)
     MINUSEQ         reduce using rule 91 (FloatLiteral -> FLOAT .)
     TIMESEQ         reduce using rule 91 (FloatLiteral -> FLOAT .)
@@ -3080,6 +3074,8 @@ state 117
     GGEQ            reduce using rule 91 (FloatLiteral -> FLOAT .)
     EQUAL           reduce using rule 91 (FloatLiteral -> FLOAT .)
     LBRACE          reduce using rule 91 (FloatLiteral -> FLOAT .)
+    PLUSPLUS        reduce using rule 91 (FloatLiteral -> FLOAT .)
+    MINUSMIN        reduce using rule 91 (FloatLiteral -> FLOAT .)
 
 
 state 118
@@ -3116,8 +3112,6 @@ state 119
     (105) Slice -> . LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
     (106) Arguments -> . LPAREN ExpressionListTypeOpt RPAREN
 
-    PLUSPLUS        reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
-    MINUSMIN        reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     OROR            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     AMPAMP          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     EQEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
@@ -3137,8 +3131,11 @@ state 119
     LL              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     GG              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     AMPCAR          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    RBRACK          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     COMMA           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
-    LBRACE          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    SEMICOL         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    RPAREN          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    COLON           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     PLUSEQ          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     MINUSEQ         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     TIMESEQ         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
@@ -3150,10 +3147,7 @@ state 119
     LLEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     GGEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     EQUAL           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
-    RBRACK          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
-    SEMICOL         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
-    RPAREN          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
-    COLON           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LBRACE          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
     DOT             shift and go to state 184
     LBRACK          shift and go to state 180
     LPAREN          shift and go to state 183
@@ -3312,12 +3306,12 @@ state 128
     TYPE            reduce using rule 214 (epsilon -> .)
     VAR             reduce using rule 214 (epsilon -> .)
     IDENTIFIER      reduce using rule 214 (epsilon -> .)
+    LPAREN          reduce using rule 214 (epsilon -> .)
     PLUS            reduce using rule 214 (epsilon -> .)
     MINUS           reduce using rule 214 (epsilon -> .)
     TIMES           reduce using rule 214 (epsilon -> .)
     AMPERS          reduce using rule 214 (epsilon -> .)
     NOT             reduce using rule 214 (epsilon -> .)
-    LPAREN          reduce using rule 214 (epsilon -> .)
     TYPEX           reduce using rule 214 (epsilon -> .)
     INTEGER         reduce using rule 214 (epsilon -> .)
     FLOAT           reduce using rule 214 (epsilon -> .)
@@ -3801,8 +3795,6 @@ state 154
 
     (135) UnaryExpr -> UnaryOp UnaryExpr .
 
-    PLUSPLUS        reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
-    MINUSMIN        reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     OROR            reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     AMPAMP          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     EQEQ            reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
@@ -3822,8 +3814,11 @@ state 154
     LL              reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     GG              reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     AMPCAR          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
+    RBRACK          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     COMMA           reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
-    LBRACE          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
+    SEMICOL         reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
+    RPAREN          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
+    COLON           reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     PLUSEQ          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     MINUSEQ         reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     TIMESEQ         reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
@@ -3835,10 +3830,7 @@ state 154
     LLEQ            reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     GGEQ            reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
     EQUAL           reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
-    RBRACK          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
-    SEMICOL         reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
-    RPAREN          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
-    COLON           reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
+    LBRACE          reduce using rule 135 (UnaryExpr -> UnaryOp UnaryExpr .)
 
 
 state 155
@@ -6039,7 +6031,7 @@ state 178
     PLUSPLUS        reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     MINUSMIN        reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     COMMA           reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
-    SEMICOL         reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
+    LBRACE          reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     PLUSEQ          reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     MINUSEQ         reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     TIMESEQ         reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
@@ -6052,8 +6044,8 @@ state 178
     GGEQ            reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     EQUAL           reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     RBRACK          reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
+    SEMICOL         reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
     COLON           reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
-    LBRACE          reduce using rule 100 (PrimaryExpr -> PrimaryExpr Index .)
 
 
 state 179
@@ -6086,7 +6078,7 @@ state 179
     PLUSPLUS        reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     MINUSMIN        reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     COMMA           reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
-    SEMICOL         reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
+    LBRACE          reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     PLUSEQ          reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     MINUSEQ         reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     TIMESEQ         reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
@@ -6099,8 +6091,8 @@ state 179
     GGEQ            reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     EQUAL           reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     RBRACK          reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
+    SEMICOL         reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
     COLON           reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
-    LBRACE          reduce using rule 101 (PrimaryExpr -> PrimaryExpr Slice .)
 
 
 state 180
@@ -6244,7 +6236,7 @@ state 181
     PLUSPLUS        reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     MINUSMIN        reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     COMMA           reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
-    SEMICOL         reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
+    LBRACE          reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     PLUSEQ          reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     MINUSEQ         reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     TIMESEQ         reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
@@ -6257,8 +6249,8 @@ state 181
     GGEQ            reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     EQUAL           reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     RBRACK          reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
+    SEMICOL         reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
     COLON           reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
-    LBRACE          reduce using rule 99 (PrimaryExpr -> PrimaryExpr Selector .)
 
 
 state 182
@@ -6291,7 +6283,7 @@ state 182
     PLUSPLUS        reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     MINUSMIN        reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     COMMA           reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
-    SEMICOL         reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
+    LBRACE          reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     PLUSEQ          reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     MINUSEQ         reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     TIMESEQ         reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
@@ -6304,8 +6296,8 @@ state 182
     GGEQ            reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     EQUAL           reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     RBRACK          reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
+    SEMICOL         reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
     COLON           reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
-    LBRACE          reduce using rule 102 (PrimaryExpr -> PrimaryExpr Arguments .)
 
 
 state 183
@@ -6494,8 +6486,8 @@ state 187
     (157) Label -> . IDENTIFIER
     (214) epsilon -> .
     (158) ExpressionStmt -> . Expression
-    (159) IncDecStmt -> . Expression PLUSPLUS
-    (160) IncDecStmt -> . Expression MINUSMIN
+    (159) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (160) IncDecStmt -> . PrimaryExpr MINUSMIN
     (161) Assignment -> . ExpressionList assign_op ExpressionList
     (75) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (112) Expression -> . UnaryExpr
@@ -6518,24 +6510,24 @@ state 187
     (129) Expression -> . Expression LL Expression
     (130) Expression -> . Expression GG Expression
     (131) Expression -> . Expression AMPCAR Expression
-    (109) ExpressionList -> . Expression ExpressionRep
-    (134) UnaryExpr -> . PrimaryExpr
-    (135) UnaryExpr -> . UnaryOp UnaryExpr
     (97) PrimaryExpr -> . Operand
     (98) PrimaryExpr -> . Conversion
     (99) PrimaryExpr -> . PrimaryExpr Selector
     (100) PrimaryExpr -> . PrimaryExpr Index
     (101) PrimaryExpr -> . PrimaryExpr Slice
     (102) PrimaryExpr -> . PrimaryExpr Arguments
+    (109) ExpressionList -> . Expression ExpressionRep
+    (134) UnaryExpr -> . PrimaryExpr
+    (135) UnaryExpr -> . UnaryOp UnaryExpr
+    (81) Operand -> . Literal
+    (82) Operand -> . OperandName
+    (83) Operand -> . LPAREN Expression RPAREN
+    (96) Conversion -> . Type LPAREN Expression RPAREN
     (136) UnaryOp -> . PLUS
     (137) UnaryOp -> . MINUS
     (138) UnaryOp -> . TIMES
     (139) UnaryOp -> . AMPERS
     (140) UnaryOp -> . NOT
-    (81) Operand -> . Literal
-    (82) Operand -> . OperandName
-    (83) Operand -> . LPAREN Expression RPAREN
-    (96) Conversion -> . Type LPAREN Expression RPAREN
     (84) Literal -> . BasicLit
     (95) OperandName -> . IDENTIFIER
     (2) Type -> . TypeName
@@ -6563,23 +6555,23 @@ state 187
 
     RBRACE          reduce using rule 41 (StatementList -> StatementRep .)
     RETURN          shift and go to state 238
-    BREAK           shift and go to state 251
-    CONTINUE        shift and go to state 244
-    GOTO            shift and go to state 255
+    BREAK           shift and go to state 252
+    CONTINUE        shift and go to state 245
+    GOTO            shift and go to state 256
     LBRACE          shift and go to state 128
-    IF              shift and go to state 257
+    IF              shift and go to state 258
     FOR             shift and go to state 242
     CONST           shift and go to state 14
     TYPE            shift and go to state 23
     VAR             shift and go to state 21
-    IDENTIFIER      shift and go to state 246
+    IDENTIFIER      shift and go to state 247
     SEMICOL         reduce using rule 214 (epsilon -> .)
+    LPAREN          shift and go to state 115
     PLUS            shift and go to state 104
     MINUS           shift and go to state 98
     TIMES           shift and go to state 112
     AMPERS          shift and go to state 118
     NOT             shift and go to state 103
-    LPAREN          shift and go to state 115
     TYPEX           shift and go to state 57
     INTEGER         shift and go to state 105
     FLOAT           shift and go to state 117
@@ -6590,26 +6582,26 @@ state 187
     STRUCT          shift and go to state 63
     FUNC            shift and go to state 52
 
+    Conversion                     shift and go to state 93
     UnaryOp                        shift and go to state 102
     ContinueStmt                   shift and go to state 233
-    Conversion                     shift and go to state 93
-    SimpleStmt                     shift and go to state 253
+    SimpleStmt                     shift and go to state 254
     Label                          shift and go to state 239
     ExpressionStmt                 shift and go to state 234
     PointerType                    shift and go to state 66
-    ForStmt                        shift and go to state 254
+    ForStmt                        shift and go to state 255
     Statement                      shift and go to state 235
     RuneLiteral                    shift and go to state 111
     ImgLiteral                     shift and go to state 109
     FloatLiteral                   shift and go to state 96
     Type                           shift and go to state 97
-    IfStmt                         shift and go to state 248
+    IfStmt                         shift and go to state 249
     OperandName                    shift and go to state 100
     ArrayType                      shift and go to state 53
     Assignment                     shift and go to state 236
     TypeName                       shift and go to state 56
     IncDecStmt                     shift and go to state 240
-    Declaration                    shift and go to state 245
+    Declaration                    shift and go to state 246
     FunctionType                   shift and go to state 67
     StringLiteral                  shift and go to state 94
     GotoStmt                       shift and go to state 241
@@ -6617,20 +6609,20 @@ state 187
     IntLiteral                     shift and go to state 108
     TypeDecl                       shift and go to state 19
     LabeledStmt                    shift and go to state 237
-    epsilon                        shift and go to state 247
+    epsilon                        shift and go to state 248
     UnaryExpr                      shift and go to state 110
     Operand                        shift and go to state 113
-    ExpressionList                 shift and go to state 249
-    Expression                     shift and go to state 250
-    ShortVarDecl                   shift and go to state 256
-    Block                          shift and go to state 243
-    BreakStmt                      shift and go to state 258
+    ExpressionList                 shift and go to state 250
+    Expression                     shift and go to state 251
+    ShortVarDecl                   shift and go to state 257
+    Block                          shift and go to state 244
+    BreakStmt                      shift and go to state 259
     VarDecl                        shift and go to state 22
     Literal                        shift and go to state 95
     TypeLit                        shift and go to state 55
     BasicLit                       shift and go to state 101
-    PrimaryExpr                    shift and go to state 119
-    ReturnStmt                     shift and go to state 252
+    PrimaryExpr                    shift and go to state 243
+    ReturnStmt                     shift and go to state 253
     ConstDecl                      shift and go to state 18
 
 state 188
@@ -6648,12 +6640,12 @@ state 188
     TYPE            reduce using rule 43 (StatementRep -> epsilon .)
     VAR             reduce using rule 43 (StatementRep -> epsilon .)
     IDENTIFIER      reduce using rule 43 (StatementRep -> epsilon .)
+    LPAREN          reduce using rule 43 (StatementRep -> epsilon .)
     PLUS            reduce using rule 43 (StatementRep -> epsilon .)
     MINUS           reduce using rule 43 (StatementRep -> epsilon .)
     TIMES           reduce using rule 43 (StatementRep -> epsilon .)
     AMPERS          reduce using rule 43 (StatementRep -> epsilon .)
     NOT             reduce using rule 43 (StatementRep -> epsilon .)
-    LPAREN          reduce using rule 43 (StatementRep -> epsilon .)
     TYPEX           reduce using rule 43 (StatementRep -> epsilon .)
     INTEGER         reduce using rule 43 (StatementRep -> epsilon .)
     FLOAT           reduce using rule 43 (StatementRep -> epsilon .)
@@ -6671,7 +6663,7 @@ state 189
 
     (40) Block -> LBRACE StatementList . RBRACE
 
-    RBRACE          shift and go to state 259
+    RBRACE          shift and go to state 260
 
 
 state 190
@@ -6729,14 +6721,14 @@ state 192
     FUNC            shift and go to state 52
 
     StructType                     shift and go to state 58
-    ParameterDecl                  shift and go to state 262
+    ParameterDecl                  shift and go to state 263
     ArrayType                      shift and go to state 53
     TypeName                       shift and go to state 56
     TypeLit                        shift and go to state 55
-    IdentifierList                 shift and go to state 260
+    IdentifierList                 shift and go to state 261
     PointerType                    shift and go to state 66
     FunctionType                   shift and go to state 67
-    Type                           shift and go to state 261
+    Type                           shift and go to state 262
 
 state 193
 
@@ -6769,11 +6761,11 @@ state 193
     TypeLit                        shift and go to state 55
     ArrayType                      shift and go to state 53
     TypeName                       shift and go to state 56
-    IdentifierList                 shift and go to state 260
+    IdentifierList                 shift and go to state 261
     PointerType                    shift and go to state 66
     FunctionType                   shift and go to state 67
-    Type                           shift and go to state 261
-    ParameterDecl                  shift and go to state 263
+    Type                           shift and go to state 262
+    ParameterDecl                  shift and go to state 264
 
 state 194
 
@@ -6789,7 +6781,6 @@ state 195
     (110) ExpressionRep -> ExpressionRep . COMMA Expression
 
     SEMICOL         reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
-    LBRACE          reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
     PLUSEQ          reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
     MINUSEQ         reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
     TIMESEQ         reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
@@ -6802,7 +6793,8 @@ state 195
     GGEQ            reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
     EQUAL           reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
     RPAREN          reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
-    COMMA           shift and go to state 264
+    LBRACE          reduce using rule 109 (ExpressionList -> Expression ExpressionRep .)
+    COMMA           shift and go to state 265
 
 
 state 196
@@ -6845,7 +6837,7 @@ state 199
 
     (16) FieldDeclRep -> FieldDeclRep FieldDecl . SEMICOL
 
-    SEMICOL         shift and go to state 265
+    SEMICOL         shift and go to state 266
 
 
 state 200
@@ -6872,7 +6864,7 @@ state 200
     FUNC            shift and go to state 52
 
     StructType                     shift and go to state 58
-    Type                           shift and go to state 266
+    Type                           shift and go to state 267
     ArrayType                      shift and go to state 53
     TypeName                       shift and go to state 56
     PointerType                    shift and go to state 66
@@ -6915,7 +6907,7 @@ state 202
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    RPAREN          shift and go to state 267
+    RPAREN          shift and go to state 268
     OROR            shift and go to state 159
     AMPAMP          shift and go to state 174
     EQEQ            shift and go to state 165
@@ -7045,8 +7037,6 @@ state 206
     SEMICOL         reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     RPAREN          reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     COLON           reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
-    PLUSPLUS        reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
-    MINUSMIN        reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     PLUSEQ          reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     MINUSEQ         reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     TIMESEQ         reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
@@ -7059,6 +7049,8 @@ state 206
     GGEQ            reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     EQUAL           reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
     LBRACE          reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
+    PLUSPLUS        reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
+    MINUSMIN        reduce using rule 83 (Operand -> LPAREN Expression RPAREN .)
 
 
 state 207
@@ -7084,11 +7076,12 @@ state 207
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 113 (Expression -> Expression OROR Expression .)
-    MINUSMIN        reduce using rule 113 (Expression -> Expression OROR Expression .)
     OROR            reduce using rule 113 (Expression -> Expression OROR Expression .)
+    RBRACK          reduce using rule 113 (Expression -> Expression OROR Expression .)
     COMMA           reduce using rule 113 (Expression -> Expression OROR Expression .)
     SEMICOL         reduce using rule 113 (Expression -> Expression OROR Expression .)
+    RPAREN          reduce using rule 113 (Expression -> Expression OROR Expression .)
+    COLON           reduce using rule 113 (Expression -> Expression OROR Expression .)
     PLUSEQ          reduce using rule 113 (Expression -> Expression OROR Expression .)
     MINUSEQ         reduce using rule 113 (Expression -> Expression OROR Expression .)
     TIMESEQ         reduce using rule 113 (Expression -> Expression OROR Expression .)
@@ -7100,9 +7093,6 @@ state 207
     LLEQ            reduce using rule 113 (Expression -> Expression OROR Expression .)
     GGEQ            reduce using rule 113 (Expression -> Expression OROR Expression .)
     EQUAL           reduce using rule 113 (Expression -> Expression OROR Expression .)
-    RBRACK          reduce using rule 113 (Expression -> Expression OROR Expression .)
-    RPAREN          reduce using rule 113 (Expression -> Expression OROR Expression .)
-    COLON           reduce using rule 113 (Expression -> Expression OROR Expression .)
     LBRACE          reduce using rule 113 (Expression -> Expression OROR Expression .)
     AMPAMP          shift and go to state 174
     EQEQ            shift and go to state 165
@@ -7167,8 +7157,6 @@ state 208
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 124 (Expression -> Expression CARET Expression .)
-    MINUSMIN        reduce using rule 124 (Expression -> Expression CARET Expression .)
     OROR            reduce using rule 124 (Expression -> Expression CARET Expression .)
     AMPAMP          reduce using rule 124 (Expression -> Expression CARET Expression .)
     EQEQ            reduce using rule 124 (Expression -> Expression CARET Expression .)
@@ -7181,8 +7169,11 @@ state 208
     MINUS           reduce using rule 124 (Expression -> Expression CARET Expression .)
     OR              reduce using rule 124 (Expression -> Expression CARET Expression .)
     CARET           reduce using rule 124 (Expression -> Expression CARET Expression .)
+    RBRACK          reduce using rule 124 (Expression -> Expression CARET Expression .)
     COMMA           reduce using rule 124 (Expression -> Expression CARET Expression .)
     SEMICOL         reduce using rule 124 (Expression -> Expression CARET Expression .)
+    RPAREN          reduce using rule 124 (Expression -> Expression CARET Expression .)
+    COLON           reduce using rule 124 (Expression -> Expression CARET Expression .)
     PLUSEQ          reduce using rule 124 (Expression -> Expression CARET Expression .)
     MINUSEQ         reduce using rule 124 (Expression -> Expression CARET Expression .)
     TIMESEQ         reduce using rule 124 (Expression -> Expression CARET Expression .)
@@ -7194,9 +7185,6 @@ state 208
     LLEQ            reduce using rule 124 (Expression -> Expression CARET Expression .)
     GGEQ            reduce using rule 124 (Expression -> Expression CARET Expression .)
     EQUAL           reduce using rule 124 (Expression -> Expression CARET Expression .)
-    RBRACK          reduce using rule 124 (Expression -> Expression CARET Expression .)
-    RPAREN          reduce using rule 124 (Expression -> Expression CARET Expression .)
-    COLON           reduce using rule 124 (Expression -> Expression CARET Expression .)
     LBRACE          reduce using rule 124 (Expression -> Expression CARET Expression .)
     TIMES           shift and go to state 175
     DIVIDE          shift and go to state 162
@@ -7250,8 +7238,6 @@ state 209
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 118 (Expression -> Expression GREAT Expression .)
-    MINUSMIN        reduce using rule 118 (Expression -> Expression GREAT Expression .)
     OROR            reduce using rule 118 (Expression -> Expression GREAT Expression .)
     AMPAMP          reduce using rule 118 (Expression -> Expression GREAT Expression .)
     EQEQ            reduce using rule 118 (Expression -> Expression GREAT Expression .)
@@ -7260,8 +7246,11 @@ state 209
     GREAT           reduce using rule 118 (Expression -> Expression GREAT Expression .)
     LEQ             reduce using rule 118 (Expression -> Expression GREAT Expression .)
     GEQ             reduce using rule 118 (Expression -> Expression GREAT Expression .)
+    RBRACK          reduce using rule 118 (Expression -> Expression GREAT Expression .)
     COMMA           reduce using rule 118 (Expression -> Expression GREAT Expression .)
     SEMICOL         reduce using rule 118 (Expression -> Expression GREAT Expression .)
+    RPAREN          reduce using rule 118 (Expression -> Expression GREAT Expression .)
+    COLON           reduce using rule 118 (Expression -> Expression GREAT Expression .)
     PLUSEQ          reduce using rule 118 (Expression -> Expression GREAT Expression .)
     MINUSEQ         reduce using rule 118 (Expression -> Expression GREAT Expression .)
     TIMESEQ         reduce using rule 118 (Expression -> Expression GREAT Expression .)
@@ -7273,9 +7262,6 @@ state 209
     LLEQ            reduce using rule 118 (Expression -> Expression GREAT Expression .)
     GGEQ            reduce using rule 118 (Expression -> Expression GREAT Expression .)
     EQUAL           reduce using rule 118 (Expression -> Expression GREAT Expression .)
-    RBRACK          reduce using rule 118 (Expression -> Expression GREAT Expression .)
-    RPAREN          reduce using rule 118 (Expression -> Expression GREAT Expression .)
-    COLON           reduce using rule 118 (Expression -> Expression GREAT Expression .)
     LBRACE          reduce using rule 118 (Expression -> Expression GREAT Expression .)
     PLUS            shift and go to state 172
     MINUS           shift and go to state 176
@@ -7333,8 +7319,6 @@ state 210
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
-    MINUSMIN        reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     OROR            reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     AMPAMP          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     EQEQ            reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
@@ -7354,8 +7338,11 @@ state 210
     LL              reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     GG              reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     AMPCAR          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
+    RBRACK          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     COMMA           reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     SEMICOL         reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
+    RPAREN          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
+    COLON           reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     PLUSEQ          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     MINUSEQ         reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     TIMESEQ         reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
@@ -7367,9 +7354,6 @@ state 210
     LLEQ            reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     GGEQ            reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     EQUAL           reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
-    RBRACK          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
-    RPAREN          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
-    COLON           reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
     LBRACE          reduce using rule 126 (Expression -> Expression DIVIDE Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -7416,8 +7400,6 @@ state 211
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
-    MINUSMIN        reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     OROR            reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     AMPAMP          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     EQEQ            reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
@@ -7437,8 +7419,11 @@ state 211
     LL              reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     GG              reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     AMPCAR          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
+    RBRACK          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     COMMA           reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     SEMICOL         reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
+    RPAREN          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
+    COLON           reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     PLUSEQ          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     MINUSEQ         reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     TIMESEQ         reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
@@ -7450,9 +7435,6 @@ state 211
     LLEQ            reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     GGEQ            reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     EQUAL           reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
-    RBRACK          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
-    RPAREN          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
-    COLON           reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
     LBRACE          reduce using rule 131 (Expression -> Expression AMPCAR Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -7499,8 +7481,6 @@ state 212
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 117 (Expression -> Expression LESS Expression .)
-    MINUSMIN        reduce using rule 117 (Expression -> Expression LESS Expression .)
     OROR            reduce using rule 117 (Expression -> Expression LESS Expression .)
     AMPAMP          reduce using rule 117 (Expression -> Expression LESS Expression .)
     EQEQ            reduce using rule 117 (Expression -> Expression LESS Expression .)
@@ -7509,8 +7489,11 @@ state 212
     GREAT           reduce using rule 117 (Expression -> Expression LESS Expression .)
     LEQ             reduce using rule 117 (Expression -> Expression LESS Expression .)
     GEQ             reduce using rule 117 (Expression -> Expression LESS Expression .)
+    RBRACK          reduce using rule 117 (Expression -> Expression LESS Expression .)
     COMMA           reduce using rule 117 (Expression -> Expression LESS Expression .)
     SEMICOL         reduce using rule 117 (Expression -> Expression LESS Expression .)
+    RPAREN          reduce using rule 117 (Expression -> Expression LESS Expression .)
+    COLON           reduce using rule 117 (Expression -> Expression LESS Expression .)
     PLUSEQ          reduce using rule 117 (Expression -> Expression LESS Expression .)
     MINUSEQ         reduce using rule 117 (Expression -> Expression LESS Expression .)
     TIMESEQ         reduce using rule 117 (Expression -> Expression LESS Expression .)
@@ -7522,9 +7505,6 @@ state 212
     LLEQ            reduce using rule 117 (Expression -> Expression LESS Expression .)
     GGEQ            reduce using rule 117 (Expression -> Expression LESS Expression .)
     EQUAL           reduce using rule 117 (Expression -> Expression LESS Expression .)
-    RBRACK          reduce using rule 117 (Expression -> Expression LESS Expression .)
-    RPAREN          reduce using rule 117 (Expression -> Expression LESS Expression .)
-    COLON           reduce using rule 117 (Expression -> Expression LESS Expression .)
     LBRACE          reduce using rule 117 (Expression -> Expression LESS Expression .)
     PLUS            shift and go to state 172
     MINUS           shift and go to state 176
@@ -7582,8 +7562,6 @@ state 213
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 115 (Expression -> Expression EQEQ Expression .)
-    MINUSMIN        reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     OROR            reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     AMPAMP          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     EQEQ            reduce using rule 115 (Expression -> Expression EQEQ Expression .)
@@ -7592,8 +7570,11 @@ state 213
     GREAT           reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     LEQ             reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     GEQ             reduce using rule 115 (Expression -> Expression EQEQ Expression .)
+    RBRACK          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     COMMA           reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     SEMICOL         reduce using rule 115 (Expression -> Expression EQEQ Expression .)
+    RPAREN          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
+    COLON           reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     PLUSEQ          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     MINUSEQ         reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     TIMESEQ         reduce using rule 115 (Expression -> Expression EQEQ Expression .)
@@ -7605,9 +7586,6 @@ state 213
     LLEQ            reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     GGEQ            reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     EQUAL           reduce using rule 115 (Expression -> Expression EQEQ Expression .)
-    RBRACK          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
-    RPAREN          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
-    COLON           reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     LBRACE          reduce using rule 115 (Expression -> Expression EQEQ Expression .)
     PLUS            shift and go to state 172
     MINUS           shift and go to state 176
@@ -7665,8 +7643,6 @@ state 214
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 129 (Expression -> Expression LL Expression .)
-    MINUSMIN        reduce using rule 129 (Expression -> Expression LL Expression .)
     OROR            reduce using rule 129 (Expression -> Expression LL Expression .)
     AMPAMP          reduce using rule 129 (Expression -> Expression LL Expression .)
     EQEQ            reduce using rule 129 (Expression -> Expression LL Expression .)
@@ -7686,8 +7662,11 @@ state 214
     LL              reduce using rule 129 (Expression -> Expression LL Expression .)
     GG              reduce using rule 129 (Expression -> Expression LL Expression .)
     AMPCAR          reduce using rule 129 (Expression -> Expression LL Expression .)
+    RBRACK          reduce using rule 129 (Expression -> Expression LL Expression .)
     COMMA           reduce using rule 129 (Expression -> Expression LL Expression .)
     SEMICOL         reduce using rule 129 (Expression -> Expression LL Expression .)
+    RPAREN          reduce using rule 129 (Expression -> Expression LL Expression .)
+    COLON           reduce using rule 129 (Expression -> Expression LL Expression .)
     PLUSEQ          reduce using rule 129 (Expression -> Expression LL Expression .)
     MINUSEQ         reduce using rule 129 (Expression -> Expression LL Expression .)
     TIMESEQ         reduce using rule 129 (Expression -> Expression LL Expression .)
@@ -7699,9 +7678,6 @@ state 214
     LLEQ            reduce using rule 129 (Expression -> Expression LL Expression .)
     GGEQ            reduce using rule 129 (Expression -> Expression LL Expression .)
     EQUAL           reduce using rule 129 (Expression -> Expression LL Expression .)
-    RBRACK          reduce using rule 129 (Expression -> Expression LL Expression .)
-    RPAREN          reduce using rule 129 (Expression -> Expression LL Expression .)
-    COLON           reduce using rule 129 (Expression -> Expression LL Expression .)
     LBRACE          reduce using rule 129 (Expression -> Expression LL Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -7748,8 +7724,6 @@ state 215
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 128 (Expression -> Expression AMPERS Expression .)
-    MINUSMIN        reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     OROR            reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     AMPAMP          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     EQEQ            reduce using rule 128 (Expression -> Expression AMPERS Expression .)
@@ -7769,8 +7743,11 @@ state 215
     LL              reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     GG              reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     AMPCAR          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
+    RBRACK          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     COMMA           reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     SEMICOL         reduce using rule 128 (Expression -> Expression AMPERS Expression .)
+    RPAREN          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
+    COLON           reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     PLUSEQ          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     MINUSEQ         reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     TIMESEQ         reduce using rule 128 (Expression -> Expression AMPERS Expression .)
@@ -7782,9 +7759,6 @@ state 215
     LLEQ            reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     GGEQ            reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     EQUAL           reduce using rule 128 (Expression -> Expression AMPERS Expression .)
-    RBRACK          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
-    RPAREN          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
-    COLON           reduce using rule 128 (Expression -> Expression AMPERS Expression .)
     LBRACE          reduce using rule 128 (Expression -> Expression AMPERS Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -7831,8 +7805,6 @@ state 216
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 120 (Expression -> Expression GEQ Expression .)
-    MINUSMIN        reduce using rule 120 (Expression -> Expression GEQ Expression .)
     OROR            reduce using rule 120 (Expression -> Expression GEQ Expression .)
     AMPAMP          reduce using rule 120 (Expression -> Expression GEQ Expression .)
     EQEQ            reduce using rule 120 (Expression -> Expression GEQ Expression .)
@@ -7841,8 +7813,11 @@ state 216
     GREAT           reduce using rule 120 (Expression -> Expression GEQ Expression .)
     LEQ             reduce using rule 120 (Expression -> Expression GEQ Expression .)
     GEQ             reduce using rule 120 (Expression -> Expression GEQ Expression .)
+    RBRACK          reduce using rule 120 (Expression -> Expression GEQ Expression .)
     COMMA           reduce using rule 120 (Expression -> Expression GEQ Expression .)
     SEMICOL         reduce using rule 120 (Expression -> Expression GEQ Expression .)
+    RPAREN          reduce using rule 120 (Expression -> Expression GEQ Expression .)
+    COLON           reduce using rule 120 (Expression -> Expression GEQ Expression .)
     PLUSEQ          reduce using rule 120 (Expression -> Expression GEQ Expression .)
     MINUSEQ         reduce using rule 120 (Expression -> Expression GEQ Expression .)
     TIMESEQ         reduce using rule 120 (Expression -> Expression GEQ Expression .)
@@ -7854,9 +7829,6 @@ state 216
     LLEQ            reduce using rule 120 (Expression -> Expression GEQ Expression .)
     GGEQ            reduce using rule 120 (Expression -> Expression GEQ Expression .)
     EQUAL           reduce using rule 120 (Expression -> Expression GEQ Expression .)
-    RBRACK          reduce using rule 120 (Expression -> Expression GEQ Expression .)
-    RPAREN          reduce using rule 120 (Expression -> Expression GEQ Expression .)
-    COLON           reduce using rule 120 (Expression -> Expression GEQ Expression .)
     LBRACE          reduce using rule 120 (Expression -> Expression GEQ Expression .)
     PLUS            shift and go to state 172
     MINUS           shift and go to state 176
@@ -7914,8 +7886,6 @@ state 217
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 123 (Expression -> Expression OR Expression .)
-    MINUSMIN        reduce using rule 123 (Expression -> Expression OR Expression .)
     OROR            reduce using rule 123 (Expression -> Expression OR Expression .)
     AMPAMP          reduce using rule 123 (Expression -> Expression OR Expression .)
     EQEQ            reduce using rule 123 (Expression -> Expression OR Expression .)
@@ -7928,8 +7898,11 @@ state 217
     MINUS           reduce using rule 123 (Expression -> Expression OR Expression .)
     OR              reduce using rule 123 (Expression -> Expression OR Expression .)
     CARET           reduce using rule 123 (Expression -> Expression OR Expression .)
+    RBRACK          reduce using rule 123 (Expression -> Expression OR Expression .)
     COMMA           reduce using rule 123 (Expression -> Expression OR Expression .)
     SEMICOL         reduce using rule 123 (Expression -> Expression OR Expression .)
+    RPAREN          reduce using rule 123 (Expression -> Expression OR Expression .)
+    COLON           reduce using rule 123 (Expression -> Expression OR Expression .)
     PLUSEQ          reduce using rule 123 (Expression -> Expression OR Expression .)
     MINUSEQ         reduce using rule 123 (Expression -> Expression OR Expression .)
     TIMESEQ         reduce using rule 123 (Expression -> Expression OR Expression .)
@@ -7941,9 +7914,6 @@ state 217
     LLEQ            reduce using rule 123 (Expression -> Expression OR Expression .)
     GGEQ            reduce using rule 123 (Expression -> Expression OR Expression .)
     EQUAL           reduce using rule 123 (Expression -> Expression OR Expression .)
-    RBRACK          reduce using rule 123 (Expression -> Expression OR Expression .)
-    RPAREN          reduce using rule 123 (Expression -> Expression OR Expression .)
-    COLON           reduce using rule 123 (Expression -> Expression OR Expression .)
     LBRACE          reduce using rule 123 (Expression -> Expression OR Expression .)
     TIMES           shift and go to state 175
     DIVIDE          shift and go to state 162
@@ -7997,8 +7967,6 @@ state 218
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 130 (Expression -> Expression GG Expression .)
-    MINUSMIN        reduce using rule 130 (Expression -> Expression GG Expression .)
     OROR            reduce using rule 130 (Expression -> Expression GG Expression .)
     AMPAMP          reduce using rule 130 (Expression -> Expression GG Expression .)
     EQEQ            reduce using rule 130 (Expression -> Expression GG Expression .)
@@ -8018,8 +7986,11 @@ state 218
     LL              reduce using rule 130 (Expression -> Expression GG Expression .)
     GG              reduce using rule 130 (Expression -> Expression GG Expression .)
     AMPCAR          reduce using rule 130 (Expression -> Expression GG Expression .)
+    RBRACK          reduce using rule 130 (Expression -> Expression GG Expression .)
     COMMA           reduce using rule 130 (Expression -> Expression GG Expression .)
     SEMICOL         reduce using rule 130 (Expression -> Expression GG Expression .)
+    RPAREN          reduce using rule 130 (Expression -> Expression GG Expression .)
+    COLON           reduce using rule 130 (Expression -> Expression GG Expression .)
     PLUSEQ          reduce using rule 130 (Expression -> Expression GG Expression .)
     MINUSEQ         reduce using rule 130 (Expression -> Expression GG Expression .)
     TIMESEQ         reduce using rule 130 (Expression -> Expression GG Expression .)
@@ -8031,9 +8002,6 @@ state 218
     LLEQ            reduce using rule 130 (Expression -> Expression GG Expression .)
     GGEQ            reduce using rule 130 (Expression -> Expression GG Expression .)
     EQUAL           reduce using rule 130 (Expression -> Expression GG Expression .)
-    RBRACK          reduce using rule 130 (Expression -> Expression GG Expression .)
-    RPAREN          reduce using rule 130 (Expression -> Expression GG Expression .)
-    COLON           reduce using rule 130 (Expression -> Expression GG Expression .)
     LBRACE          reduce using rule 130 (Expression -> Expression GG Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -8080,8 +8048,6 @@ state 219
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
-    MINUSMIN        reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     OROR            reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     AMPAMP          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     EQEQ            reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
@@ -8090,8 +8056,11 @@ state 219
     GREAT           reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     LEQ             reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     GEQ             reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
+    RBRACK          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     COMMA           reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     SEMICOL         reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
+    RPAREN          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
+    COLON           reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     PLUSEQ          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     MINUSEQ         reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     TIMESEQ         reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
@@ -8103,9 +8072,6 @@ state 219
     LLEQ            reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     GGEQ            reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     EQUAL           reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
-    RBRACK          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
-    RPAREN          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
-    COLON           reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     LBRACE          reduce using rule 116 (Expression -> Expression NOTEQ Expression .)
     PLUS            shift and go to state 172
     MINUS           shift and go to state 176
@@ -8163,8 +8129,6 @@ state 220
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 121 (Expression -> Expression PLUS Expression .)
-    MINUSMIN        reduce using rule 121 (Expression -> Expression PLUS Expression .)
     OROR            reduce using rule 121 (Expression -> Expression PLUS Expression .)
     AMPAMP          reduce using rule 121 (Expression -> Expression PLUS Expression .)
     EQEQ            reduce using rule 121 (Expression -> Expression PLUS Expression .)
@@ -8177,8 +8141,11 @@ state 220
     MINUS           reduce using rule 121 (Expression -> Expression PLUS Expression .)
     OR              reduce using rule 121 (Expression -> Expression PLUS Expression .)
     CARET           reduce using rule 121 (Expression -> Expression PLUS Expression .)
+    RBRACK          reduce using rule 121 (Expression -> Expression PLUS Expression .)
     COMMA           reduce using rule 121 (Expression -> Expression PLUS Expression .)
     SEMICOL         reduce using rule 121 (Expression -> Expression PLUS Expression .)
+    RPAREN          reduce using rule 121 (Expression -> Expression PLUS Expression .)
+    COLON           reduce using rule 121 (Expression -> Expression PLUS Expression .)
     PLUSEQ          reduce using rule 121 (Expression -> Expression PLUS Expression .)
     MINUSEQ         reduce using rule 121 (Expression -> Expression PLUS Expression .)
     TIMESEQ         reduce using rule 121 (Expression -> Expression PLUS Expression .)
@@ -8190,9 +8157,6 @@ state 220
     LLEQ            reduce using rule 121 (Expression -> Expression PLUS Expression .)
     GGEQ            reduce using rule 121 (Expression -> Expression PLUS Expression .)
     EQUAL           reduce using rule 121 (Expression -> Expression PLUS Expression .)
-    RBRACK          reduce using rule 121 (Expression -> Expression PLUS Expression .)
-    RPAREN          reduce using rule 121 (Expression -> Expression PLUS Expression .)
-    COLON           reduce using rule 121 (Expression -> Expression PLUS Expression .)
     LBRACE          reduce using rule 121 (Expression -> Expression PLUS Expression .)
     TIMES           shift and go to state 175
     DIVIDE          shift and go to state 162
@@ -8246,8 +8210,6 @@ state 221
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 127 (Expression -> Expression MOD Expression .)
-    MINUSMIN        reduce using rule 127 (Expression -> Expression MOD Expression .)
     OROR            reduce using rule 127 (Expression -> Expression MOD Expression .)
     AMPAMP          reduce using rule 127 (Expression -> Expression MOD Expression .)
     EQEQ            reduce using rule 127 (Expression -> Expression MOD Expression .)
@@ -8267,8 +8229,11 @@ state 221
     LL              reduce using rule 127 (Expression -> Expression MOD Expression .)
     GG              reduce using rule 127 (Expression -> Expression MOD Expression .)
     AMPCAR          reduce using rule 127 (Expression -> Expression MOD Expression .)
+    RBRACK          reduce using rule 127 (Expression -> Expression MOD Expression .)
     COMMA           reduce using rule 127 (Expression -> Expression MOD Expression .)
     SEMICOL         reduce using rule 127 (Expression -> Expression MOD Expression .)
+    RPAREN          reduce using rule 127 (Expression -> Expression MOD Expression .)
+    COLON           reduce using rule 127 (Expression -> Expression MOD Expression .)
     PLUSEQ          reduce using rule 127 (Expression -> Expression MOD Expression .)
     MINUSEQ         reduce using rule 127 (Expression -> Expression MOD Expression .)
     TIMESEQ         reduce using rule 127 (Expression -> Expression MOD Expression .)
@@ -8280,9 +8245,6 @@ state 221
     LLEQ            reduce using rule 127 (Expression -> Expression MOD Expression .)
     GGEQ            reduce using rule 127 (Expression -> Expression MOD Expression .)
     EQUAL           reduce using rule 127 (Expression -> Expression MOD Expression .)
-    RBRACK          reduce using rule 127 (Expression -> Expression MOD Expression .)
-    RPAREN          reduce using rule 127 (Expression -> Expression MOD Expression .)
-    COLON           reduce using rule 127 (Expression -> Expression MOD Expression .)
     LBRACE          reduce using rule 127 (Expression -> Expression MOD Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -8329,12 +8291,13 @@ state 222
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
-    MINUSMIN        reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     OROR            reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     AMPAMP          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
+    RBRACK          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     COMMA           reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     SEMICOL         reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
+    RPAREN          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
+    COLON           reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     PLUSEQ          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     MINUSEQ         reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     TIMESEQ         reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
@@ -8346,9 +8309,6 @@ state 222
     LLEQ            reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     GGEQ            reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     EQUAL           reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
-    RBRACK          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
-    RPAREN          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
-    COLON           reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     LBRACE          reduce using rule 114 (Expression -> Expression AMPAMP Expression .)
     EQEQ            shift and go to state 165
     NOTEQ           shift and go to state 171
@@ -8412,8 +8372,6 @@ state 223
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 125 (Expression -> Expression TIMES Expression .)
-    MINUSMIN        reduce using rule 125 (Expression -> Expression TIMES Expression .)
     OROR            reduce using rule 125 (Expression -> Expression TIMES Expression .)
     AMPAMP          reduce using rule 125 (Expression -> Expression TIMES Expression .)
     EQEQ            reduce using rule 125 (Expression -> Expression TIMES Expression .)
@@ -8433,8 +8391,11 @@ state 223
     LL              reduce using rule 125 (Expression -> Expression TIMES Expression .)
     GG              reduce using rule 125 (Expression -> Expression TIMES Expression .)
     AMPCAR          reduce using rule 125 (Expression -> Expression TIMES Expression .)
+    RBRACK          reduce using rule 125 (Expression -> Expression TIMES Expression .)
     COMMA           reduce using rule 125 (Expression -> Expression TIMES Expression .)
     SEMICOL         reduce using rule 125 (Expression -> Expression TIMES Expression .)
+    RPAREN          reduce using rule 125 (Expression -> Expression TIMES Expression .)
+    COLON           reduce using rule 125 (Expression -> Expression TIMES Expression .)
     PLUSEQ          reduce using rule 125 (Expression -> Expression TIMES Expression .)
     MINUSEQ         reduce using rule 125 (Expression -> Expression TIMES Expression .)
     TIMESEQ         reduce using rule 125 (Expression -> Expression TIMES Expression .)
@@ -8446,9 +8407,6 @@ state 223
     LLEQ            reduce using rule 125 (Expression -> Expression TIMES Expression .)
     GGEQ            reduce using rule 125 (Expression -> Expression TIMES Expression .)
     EQUAL           reduce using rule 125 (Expression -> Expression TIMES Expression .)
-    RBRACK          reduce using rule 125 (Expression -> Expression TIMES Expression .)
-    RPAREN          reduce using rule 125 (Expression -> Expression TIMES Expression .)
-    COLON           reduce using rule 125 (Expression -> Expression TIMES Expression .)
     LBRACE          reduce using rule 125 (Expression -> Expression TIMES Expression .)
 
   ! OROR            [ shift and go to state 159 ]
@@ -8495,8 +8453,6 @@ state 224
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 122 (Expression -> Expression MINUS Expression .)
-    MINUSMIN        reduce using rule 122 (Expression -> Expression MINUS Expression .)
     OROR            reduce using rule 122 (Expression -> Expression MINUS Expression .)
     AMPAMP          reduce using rule 122 (Expression -> Expression MINUS Expression .)
     EQEQ            reduce using rule 122 (Expression -> Expression MINUS Expression .)
@@ -8509,8 +8465,11 @@ state 224
     MINUS           reduce using rule 122 (Expression -> Expression MINUS Expression .)
     OR              reduce using rule 122 (Expression -> Expression MINUS Expression .)
     CARET           reduce using rule 122 (Expression -> Expression MINUS Expression .)
+    RBRACK          reduce using rule 122 (Expression -> Expression MINUS Expression .)
     COMMA           reduce using rule 122 (Expression -> Expression MINUS Expression .)
     SEMICOL         reduce using rule 122 (Expression -> Expression MINUS Expression .)
+    RPAREN          reduce using rule 122 (Expression -> Expression MINUS Expression .)
+    COLON           reduce using rule 122 (Expression -> Expression MINUS Expression .)
     PLUSEQ          reduce using rule 122 (Expression -> Expression MINUS Expression .)
     MINUSEQ         reduce using rule 122 (Expression -> Expression MINUS Expression .)
     TIMESEQ         reduce using rule 122 (Expression -> Expression MINUS Expression .)
@@ -8522,9 +8481,6 @@ state 224
     LLEQ            reduce using rule 122 (Expression -> Expression MINUS Expression .)
     GGEQ            reduce using rule 122 (Expression -> Expression MINUS Expression .)
     EQUAL           reduce using rule 122 (Expression -> Expression MINUS Expression .)
-    RBRACK          reduce using rule 122 (Expression -> Expression MINUS Expression .)
-    RPAREN          reduce using rule 122 (Expression -> Expression MINUS Expression .)
-    COLON           reduce using rule 122 (Expression -> Expression MINUS Expression .)
     LBRACE          reduce using rule 122 (Expression -> Expression MINUS Expression .)
     TIMES           shift and go to state 175
     DIVIDE          shift and go to state 162
@@ -8578,8 +8534,6 @@ state 225
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    PLUSPLUS        reduce using rule 119 (Expression -> Expression LEQ Expression .)
-    MINUSMIN        reduce using rule 119 (Expression -> Expression LEQ Expression .)
     OROR            reduce using rule 119 (Expression -> Expression LEQ Expression .)
     AMPAMP          reduce using rule 119 (Expression -> Expression LEQ Expression .)
     EQEQ            reduce using rule 119 (Expression -> Expression LEQ Expression .)
@@ -8588,8 +8542,11 @@ state 225
     GREAT           reduce using rule 119 (Expression -> Expression LEQ Expression .)
     LEQ             reduce using rule 119 (Expression -> Expression LEQ Expression .)
     GEQ             reduce using rule 119 (Expression -> Expression LEQ Expression .)
+    RBRACK          reduce using rule 119 (Expression -> Expression LEQ Expression .)
     COMMA           reduce using rule 119 (Expression -> Expression LEQ Expression .)
     SEMICOL         reduce using rule 119 (Expression -> Expression LEQ Expression .)
+    RPAREN          reduce using rule 119 (Expression -> Expression LEQ Expression .)
+    COLON           reduce using rule 119 (Expression -> Expression LEQ Expression .)
     PLUSEQ          reduce using rule 119 (Expression -> Expression LEQ Expression .)
     MINUSEQ         reduce using rule 119 (Expression -> Expression LEQ Expression .)
     TIMESEQ         reduce using rule 119 (Expression -> Expression LEQ Expression .)
@@ -8601,9 +8558,6 @@ state 225
     LLEQ            reduce using rule 119 (Expression -> Expression LEQ Expression .)
     GGEQ            reduce using rule 119 (Expression -> Expression LEQ Expression .)
     EQUAL           reduce using rule 119 (Expression -> Expression LEQ Expression .)
-    RBRACK          reduce using rule 119 (Expression -> Expression LEQ Expression .)
-    RPAREN          reduce using rule 119 (Expression -> Expression LEQ Expression .)
-    COLON           reduce using rule 119 (Expression -> Expression LEQ Expression .)
     LBRACE          reduce using rule 119 (Expression -> Expression LEQ Expression .)
     PLUS            shift and go to state 172
     MINUS           shift and go to state 176
@@ -8642,7 +8596,7 @@ state 226
 
     (105) Slice -> LBRACK ExpressionOpt . COLON ExpressionOpt RBRACK
 
-    COLON           shift and go to state 268
+    COLON           shift and go to state 269
 
 
 state 227
@@ -8677,7 +8631,7 @@ state 228
     (131) Expression -> Expression . AMPCAR Expression
     (132) ExpressionOpt -> Expression .
 
-    RBRACK          shift and go to state 269
+    RBRACK          shift and go to state 270
     OROR            shift and go to state 159
     AMPAMP          shift and go to state 174
     EQEQ            shift and go to state 165
@@ -8718,13 +8672,15 @@ state 231
 
     (106) Arguments -> LPAREN ExpressionListTypeOpt . RPAREN
 
-    RPAREN          shift and go to state 270
+    RPAREN          shift and go to state 271
 
 
 state 232
 
     (103) Selector -> DOT IDENTIFIER .
 
+    PLUSPLUS        reduce using rule 103 (Selector -> DOT IDENTIFIER .)
+    MINUSMIN        reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     DOT             reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     LBRACK          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     LPAREN          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
@@ -8747,13 +8703,9 @@ state 232
     LL              reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     GG              reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     AMPCAR          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
-    RBRACK          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     COMMA           reduce using rule 103 (Selector -> DOT IDENTIFIER .)
+    LBRACE          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     SEMICOL         reduce using rule 103 (Selector -> DOT IDENTIFIER .)
-    RPAREN          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
-    COLON           reduce using rule 103 (Selector -> DOT IDENTIFIER .)
-    PLUSPLUS        reduce using rule 103 (Selector -> DOT IDENTIFIER .)
-    MINUSMIN        reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     PLUSEQ          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     MINUSEQ         reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     TIMESEQ         reduce using rule 103 (Selector -> DOT IDENTIFIER .)
@@ -8765,7 +8717,9 @@ state 232
     LLEQ            reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     GGEQ            reduce using rule 103 (Selector -> DOT IDENTIFIER .)
     EQUAL           reduce using rule 103 (Selector -> DOT IDENTIFIER .)
-    LBRACE          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
+    RBRACK          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
+    RPAREN          reduce using rule 103 (Selector -> DOT IDENTIFIER .)
+    COLON           reduce using rule 103 (Selector -> DOT IDENTIFIER .)
 
 
 state 233
@@ -8787,7 +8741,7 @@ state 235
 
     (42) StatementRep -> StatementRep Statement . SEMICOL
 
-    SEMICOL         shift and go to state 271
+    SEMICOL         shift and go to state 272
 
 
 state 236
@@ -8894,7 +8848,7 @@ state 238
 
     UnaryOp                        shift and go to state 102
     Conversion                     shift and go to state 93
-    ExpressionListPureOpt          shift and go to state 272
+    ExpressionListPureOpt          shift and go to state 273
     Literal                        shift and go to state 95
     FloatLiteral                   shift and go to state 96
     Type                           shift and go to state 97
@@ -8904,11 +8858,11 @@ state 238
     StructType                     shift and go to state 58
     IntLiteral                     shift and go to state 108
     ImgLiteral                     shift and go to state 109
-    epsilon                        shift and go to state 273
+    epsilon                        shift and go to state 274
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     PrimaryExpr                    shift and go to state 119
-    ExpressionList                 shift and go to state 274
+    ExpressionList                 shift and go to state 275
     ArrayType                      shift and go to state 53
     Expression                     shift and go to state 140
     PointerType                    shift and go to state 66
@@ -8921,7 +8875,7 @@ state 239
 
     (156) LabeledStmt -> Label . COLON Statement
 
-    COLON           shift and go to state 275
+    COLON           shift and go to state 276
 
 
 state 240
@@ -8976,8 +8930,8 @@ state 242
     (134) UnaryExpr -> . PrimaryExpr
     (135) UnaryExpr -> . UnaryOp UnaryExpr
     (158) ExpressionStmt -> . Expression
-    (159) IncDecStmt -> . Expression PLUSPLUS
-    (160) IncDecStmt -> . Expression MINUSMIN
+    (159) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (160) IncDecStmt -> . PrimaryExpr MINUSMIN
     (161) Assignment -> . ExpressionList assign_op ExpressionList
     (75) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (97) PrimaryExpr -> . Operand
@@ -9023,7 +8977,7 @@ state 242
 
     LBRACE          reduce using rule 214 (epsilon -> .)
     SEMICOL         reduce using rule 214 (epsilon -> .)
-    IDENTIFIER      shift and go to state 277
+    IDENTIFIER      shift and go to state 278
     PLUS            shift and go to state 104
     MINUS           shift and go to state 98
     TIMES           shift and go to state 112
@@ -9042,7 +8996,7 @@ state 242
 
     Conversion                     shift and go to state 93
     UnaryOp                        shift and go to state 102
-    SimpleStmt                     shift and go to state 276
+    SimpleStmt                     shift and go to state 277
     StringLiteral                  shift and go to state 94
     ExpressionStmt                 shift and go to state 234
     PointerType                    shift and go to state 66
@@ -9052,20 +9006,20 @@ state 242
     Assignment                     shift and go to state 236
     TypeName                       shift and go to state 56
     IncDecStmt                     shift and go to state 240
-    Condition                      shift and go to state 278
+    Condition                      shift and go to state 279
     StructType                     shift and go to state 58
     IntLiteral                     shift and go to state 108
     ImgLiteral                     shift and go to state 109
-    epsilon                        shift and go to state 279
+    epsilon                        shift and go to state 280
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
-    ConditionBlockOpt              shift and go to state 280
-    PrimaryExpr                    shift and go to state 119
-    ExpressionList                 shift and go to state 249
+    ConditionBlockOpt              shift and go to state 281
+    PrimaryExpr                    shift and go to state 284
+    ExpressionList                 shift and go to state 250
     ArrayType                      shift and go to state 53
-    ForClause                      shift and go to state 281
-    Expression                     shift and go to state 282
-    ShortVarDecl                   shift and go to state 256
+    ForClause                      shift and go to state 282
+    Expression                     shift and go to state 283
+    ShortVarDecl                   shift and go to state 257
     Literal                        shift and go to state 95
     TypeLit                        shift and go to state 55
     BasicLit                       shift and go to state 101
@@ -9074,12 +9028,70 @@ state 242
 
 state 243
 
+    (159) IncDecStmt -> PrimaryExpr . PLUSPLUS
+    (160) IncDecStmt -> PrimaryExpr . MINUSMIN
+    (99) PrimaryExpr -> PrimaryExpr . Selector
+    (100) PrimaryExpr -> PrimaryExpr . Index
+    (101) PrimaryExpr -> PrimaryExpr . Slice
+    (102) PrimaryExpr -> PrimaryExpr . Arguments
+    (134) UnaryExpr -> PrimaryExpr .
+    (103) Selector -> . DOT IDENTIFIER
+    (104) Index -> . LBRACK Expression RBRACK
+    (105) Slice -> . LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
+    (106) Arguments -> . LPAREN ExpressionListTypeOpt RPAREN
+
+    PLUSPLUS        shift and go to state 285
+    MINUSMIN        shift and go to state 286
+    OROR            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPAMP          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    EQEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    NOTEQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LESS            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GREAT           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LEQ             reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GEQ             reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    PLUS            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MINUS           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    OR              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    CARET           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    TIMES           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    DIVIDE          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MOD             reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPERS          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LL              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GG              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPCAR          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    COMMA           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    SEMICOL         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    PLUSEQ          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MINUSEQ         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    TIMESEQ         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    DIVIDEEQ        reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MODEQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPEQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    OREQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    CAREQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LLEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GGEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    EQUAL           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LBRACE          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    DOT             shift and go to state 184
+    LBRACK          shift and go to state 180
+    LPAREN          shift and go to state 183
+
+    Index                          shift and go to state 178
+    Slice                          shift and go to state 179
+    Selector                       shift and go to state 181
+    Arguments                      shift and go to state 182
+
+state 244
+
     (148) Statement -> Block .
 
     SEMICOL         reduce using rule 148 (Statement -> Block .)
 
 
-state 244
+state 245
 
     (194) ContinueStmt -> CONTINUE . LabelOpt
     (195) LabelOpt -> . Label
@@ -9087,33 +9099,33 @@ state 244
     (157) Label -> . IDENTIFIER
     (214) epsilon -> .
 
-    IDENTIFIER      shift and go to state 284
+    IDENTIFIER      shift and go to state 288
     SEMICOL         reduce using rule 214 (epsilon -> .)
 
-    epsilon                        shift and go to state 283
-    LabelOpt                       shift and go to state 285
-    Label                          shift and go to state 286
+    epsilon                        shift and go to state 287
+    LabelOpt                       shift and go to state 289
+    Label                          shift and go to state 290
 
-state 245
+state 246
 
     (141) Statement -> Declaration .
 
     SEMICOL         reduce using rule 141 (Statement -> Declaration .)
 
 
-state 246
+state 247
 
     (157) Label -> IDENTIFIER .
     (75) ShortVarDecl -> IDENTIFIER . COLONEQ Expression
     (95) OperandName -> IDENTIFIER .
 
     COLON           reduce using rule 157 (Label -> IDENTIFIER .)
-    COLONEQ         shift and go to state 287
+    COLONEQ         shift and go to state 291
+    PLUSPLUS        reduce using rule 95 (OperandName -> IDENTIFIER .)
+    MINUSMIN        reduce using rule 95 (OperandName -> IDENTIFIER .)
     DOT             reduce using rule 95 (OperandName -> IDENTIFIER .)
     LBRACK          reduce using rule 95 (OperandName -> IDENTIFIER .)
     LPAREN          reduce using rule 95 (OperandName -> IDENTIFIER .)
-    PLUSPLUS        reduce using rule 95 (OperandName -> IDENTIFIER .)
-    MINUSMIN        reduce using rule 95 (OperandName -> IDENTIFIER .)
     OROR            reduce using rule 95 (OperandName -> IDENTIFIER .)
     AMPAMP          reduce using rule 95 (OperandName -> IDENTIFIER .)
     EQEQ            reduce using rule 95 (OperandName -> IDENTIFIER .)
@@ -9148,7 +9160,7 @@ state 246
     EQUAL           reduce using rule 95 (OperandName -> IDENTIFIER .)
 
 
-state 247
+state 248
 
     (151) SimpleStmt -> epsilon .
 
@@ -9156,14 +9168,14 @@ state 247
     LBRACE          reduce using rule 151 (SimpleStmt -> epsilon .)
 
 
-state 248
+state 249
 
     (149) Statement -> IfStmt .
 
     SEMICOL         reduce using rule 149 (Statement -> IfStmt .)
 
 
-state 249
+state 250
 
     (161) Assignment -> ExpressionList . assign_op ExpressionList
     (162) assign_op -> . AssignOp
@@ -9179,26 +9191,24 @@ state 249
     (172) AssignOp -> . GGEQ
     (173) AssignOp -> . EQUAL
 
-    PLUSEQ          shift and go to state 292
-    MINUSEQ         shift and go to state 297
-    TIMESEQ         shift and go to state 291
-    DIVIDEEQ        shift and go to state 300
-    MODEQ           shift and go to state 293
-    AMPEQ           shift and go to state 298
-    OREQ            shift and go to state 296
-    CAREQ           shift and go to state 290
-    LLEQ            shift and go to state 295
-    GGEQ            shift and go to state 294
-    EQUAL           shift and go to state 289
+    PLUSEQ          shift and go to state 296
+    MINUSEQ         shift and go to state 301
+    TIMESEQ         shift and go to state 295
+    DIVIDEEQ        shift and go to state 304
+    MODEQ           shift and go to state 297
+    AMPEQ           shift and go to state 302
+    OREQ            shift and go to state 300
+    CAREQ           shift and go to state 294
+    LLEQ            shift and go to state 299
+    GGEQ            shift and go to state 298
+    EQUAL           shift and go to state 293
 
-    AssignOp                       shift and go to state 288
-    assign_op                      shift and go to state 299
+    AssignOp                       shift and go to state 292
+    assign_op                      shift and go to state 303
 
-state 250
+state 251
 
     (158) ExpressionStmt -> Expression .
-    (159) IncDecStmt -> Expression . PLUSPLUS
-    (160) IncDecStmt -> Expression . MINUSMIN
     (113) Expression -> Expression . OROR Expression
     (114) Expression -> Expression . AMPAMP Expression
     (115) Expression -> Expression . EQEQ Expression
@@ -9223,10 +9233,8 @@ state 250
     (111) ExpressionRep -> . epsilon
     (214) epsilon -> .
 
-    SEMICOL         reduce using rule 158 (ExpressionStmt -> Expression .)
     LBRACE          reduce using rule 158 (ExpressionStmt -> Expression .)
-    PLUSPLUS        shift and go to state 301
-    MINUSMIN        shift and go to state 302
+    SEMICOL         reduce using rule 158 (ExpressionStmt -> Expression .)
     OROR            shift and go to state 159
     AMPAMP          shift and go to state 174
     EQEQ            shift and go to state 165
@@ -9262,7 +9270,7 @@ state 250
     epsilon                        shift and go to state 196
     ExpressionRep                  shift and go to state 195
 
-state 251
+state 252
 
     (193) BreakStmt -> BREAK . LabelOpt
     (195) LabelOpt -> . Label
@@ -9270,44 +9278,44 @@ state 251
     (157) Label -> . IDENTIFIER
     (214) epsilon -> .
 
-    IDENTIFIER      shift and go to state 284
+    IDENTIFIER      shift and go to state 288
     SEMICOL         reduce using rule 214 (epsilon -> .)
 
-    epsilon                        shift and go to state 283
-    LabelOpt                       shift and go to state 303
-    Label                          shift and go to state 286
+    epsilon                        shift and go to state 287
+    LabelOpt                       shift and go to state 305
+    Label                          shift and go to state 290
 
-state 252
+state 253
 
     (144) Statement -> ReturnStmt .
 
     SEMICOL         reduce using rule 144 (Statement -> ReturnStmt .)
 
 
-state 253
+state 254
 
     (143) Statement -> SimpleStmt .
 
     SEMICOL         reduce using rule 143 (Statement -> SimpleStmt .)
 
 
-state 254
+state 255
 
     (150) Statement -> ForStmt .
 
     SEMICOL         reduce using rule 150 (Statement -> ForStmt .)
 
 
-state 255
+state 256
 
     (197) GotoStmt -> GOTO . Label
     (157) Label -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 284
+    IDENTIFIER      shift and go to state 288
 
-    Label                          shift and go to state 304
+    Label                          shift and go to state 306
 
-state 256
+state 257
 
     (155) SimpleStmt -> ShortVarDecl .
 
@@ -9315,7 +9323,7 @@ state 256
     LBRACE          reduce using rule 155 (SimpleStmt -> ShortVarDecl .)
 
 
-state 257
+state 258
 
     (174) IfStmt -> IF . Expression Block ElseOpt
     (112) Expression -> . UnaryExpr
@@ -9413,20 +9421,20 @@ state 257
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     Operand                        shift and go to state 113
-    Expression                     shift and go to state 305
+    Expression                     shift and go to state 307
     StringLiteral                  shift and go to state 94
     TypeLit                        shift and go to state 55
     ImgLiteral                     shift and go to state 109
     FunctionType                   shift and go to state 67
 
-state 258
+state 259
 
     (145) Statement -> BreakStmt .
 
     SEMICOL         reduce using rule 145 (Statement -> BreakStmt .)
 
 
-state 259
+state 260
 
     (40) Block -> LBRACE StatementList RBRACE .
 
@@ -9434,7 +9442,7 @@ state 259
     ELSE            reduce using rule 40 (Block -> LBRACE StatementList RBRACE .)
 
 
-state 260
+state 261
 
     (38) ParameterDecl -> IdentifierList . Type
     (2) Type -> . TypeName
@@ -9458,14 +9466,14 @@ state 260
     FUNC            shift and go to state 52
 
     StructType                     shift and go to state 58
-    Type                           shift and go to state 306
+    Type                           shift and go to state 308
     ArrayType                      shift and go to state 53
     TypeName                       shift and go to state 56
     PointerType                    shift and go to state 66
     FunctionType                   shift and go to state 67
     TypeLit                        shift and go to state 55
 
-state 261
+state 262
 
     (39) ParameterDecl -> Type .
 
@@ -9473,7 +9481,7 @@ state 261
     RPAREN          reduce using rule 39 (ParameterDecl -> Type .)
 
 
-state 262
+state 263
 
     (36) ParameterDeclCommaRep -> ParameterDeclCommaRep COMMA ParameterDecl .
 
@@ -9481,7 +9489,7 @@ state 262
     RPAREN          reduce using rule 36 (ParameterDeclCommaRep -> ParameterDeclCommaRep COMMA ParameterDecl .)
 
 
-state 263
+state 264
 
     (37) ParameterDeclCommaRep -> ParameterDecl COMMA ParameterDecl .
 
@@ -9489,7 +9497,7 @@ state 263
     RPAREN          reduce using rule 37 (ParameterDeclCommaRep -> ParameterDecl COMMA ParameterDecl .)
 
 
-state 264
+state 265
 
     (110) ExpressionRep -> ExpressionRep COMMA . Expression
     (112) Expression -> . UnaryExpr
@@ -9586,14 +9594,14 @@ state 264
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     Operand                        shift and go to state 113
-    Expression                     shift and go to state 307
+    Expression                     shift and go to state 309
     PointerType                    shift and go to state 66
     StringLiteral                  shift and go to state 94
     TypeLit                        shift and go to state 55
     ImgLiteral                     shift and go to state 109
     FunctionType                   shift and go to state 67
 
-state 265
+state 266
 
     (16) FieldDeclRep -> FieldDeclRep FieldDecl SEMICOL .
 
@@ -9601,7 +9609,7 @@ state 265
     IDENTIFIER      reduce using rule 16 (FieldDeclRep -> FieldDeclRep FieldDecl SEMICOL .)
 
 
-state 266
+state 267
 
     (18) FieldDecl -> IdentifierList Type . TagOpt
     (19) TagOpt -> . Tag
@@ -9609,14 +9617,14 @@ state 266
     (21) Tag -> . STRING
     (214) epsilon -> .
 
-    STRING          shift and go to state 308
+    STRING          shift and go to state 310
     SEMICOL         reduce using rule 214 (epsilon -> .)
 
-    epsilon                        shift and go to state 309
-    Tag                            shift and go to state 310
-    TagOpt                         shift and go to state 311
+    epsilon                        shift and go to state 311
+    Tag                            shift and go to state 312
+    TagOpt                         shift and go to state 313
 
-state 267
+state 268
 
     (96) Conversion -> Type LPAREN Expression RPAREN .
 
@@ -9643,12 +9651,10 @@ state 267
     LL              reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     GG              reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     AMPCAR          reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
-    SEMICOL         reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     RBRACK          reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     COMMA           reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
+    SEMICOL         reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     COLON           reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
-    PLUSPLUS        reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
-    MINUSMIN        reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     PLUSEQ          reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     MINUSEQ         reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     TIMESEQ         reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
@@ -9661,9 +9667,11 @@ state 267
     GGEQ            reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     EQUAL           reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
     LBRACE          reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
+    PLUSPLUS        reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
+    MINUSMIN        reduce using rule 96 (Conversion -> Type LPAREN Expression RPAREN .)
 
 
-state 268
+state 269
 
     (105) Slice -> LBRACK ExpressionOpt COLON . ExpressionOpt RBRACK
     (132) ExpressionOpt -> . Expression
@@ -9759,24 +9767,26 @@ state 268
     OperandName                    shift and go to state 100
     BasicLit                       shift and go to state 101
     TypeName                       shift and go to state 56
-    ExpressionOpt                  shift and go to state 312
+    ExpressionOpt                  shift and go to state 314
     StructType                     shift and go to state 58
     IntLiteral                     shift and go to state 108
     epsilon                        shift and go to state 227
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     Operand                        shift and go to state 113
-    Expression                     shift and go to state 313
+    Expression                     shift and go to state 315
     PointerType                    shift and go to state 66
     StringLiteral                  shift and go to state 94
     TypeLit                        shift and go to state 55
     ImgLiteral                     shift and go to state 109
     FunctionType                   shift and go to state 67
 
-state 269
+state 270
 
     (104) Index -> LBRACK Expression RBRACK .
 
+    PLUSPLUS        reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
+    MINUSMIN        reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     DOT             reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     LBRACK          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     LPAREN          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
@@ -9799,13 +9809,8 @@ state 269
     LL              reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     GG              reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     AMPCAR          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
-    RBRACK          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     COMMA           reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     SEMICOL         reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
-    RPAREN          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
-    COLON           reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
-    PLUSPLUS        reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
-    MINUSMIN        reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     PLUSEQ          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     MINUSEQ         reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     TIMESEQ         reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
@@ -9818,12 +9823,17 @@ state 269
     GGEQ            reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     EQUAL           reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
     LBRACE          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
+    RBRACK          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
+    RPAREN          reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
+    COLON           reduce using rule 104 (Index -> LBRACK Expression RBRACK .)
 
 
-state 270
+state 271
 
     (106) Arguments -> LPAREN ExpressionListTypeOpt RPAREN .
 
+    PLUSPLUS        reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    MINUSMIN        reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     DOT             reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     LBRACK          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     LPAREN          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
@@ -9846,13 +9856,8 @@ state 270
     LL              reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     GG              reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     AMPCAR          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    RBRACK          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     COMMA           reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     SEMICOL         reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    RPAREN          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    COLON           reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    PLUSPLUS        reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    MINUSMIN        reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     PLUSEQ          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     MINUSEQ         reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     TIMESEQ         reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
@@ -9865,9 +9870,12 @@ state 270
     GGEQ            reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     EQUAL           reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     LBRACE          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    RBRACK          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    RPAREN          reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    COLON           reduce using rule 106 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
 
 
-state 271
+state 272
 
     (42) StatementRep -> StatementRep Statement SEMICOL .
 
@@ -9882,12 +9890,12 @@ state 271
     TYPE            reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     VAR             reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     IDENTIFIER      reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
+    LPAREN          reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     PLUS            reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     MINUS           reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     TIMES           reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     AMPERS          reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     NOT             reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
-    LPAREN          reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     TYPEX           reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     INTEGER         reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
     FLOAT           reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
@@ -9901,28 +9909,28 @@ state 271
     RBRACE          reduce using rule 42 (StatementRep -> StatementRep Statement SEMICOL .)
 
 
-state 272
+state 273
 
     (190) ReturnStmt -> RETURN ExpressionListPureOpt .
 
     SEMICOL         reduce using rule 190 (ReturnStmt -> RETURN ExpressionListPureOpt .)
 
 
-state 273
+state 274
 
     (192) ExpressionListPureOpt -> epsilon .
 
     SEMICOL         reduce using rule 192 (ExpressionListPureOpt -> epsilon .)
 
 
-state 274
+state 275
 
     (191) ExpressionListPureOpt -> ExpressionList .
 
     SEMICOL         reduce using rule 191 (ExpressionListPureOpt -> ExpressionList .)
 
 
-state 275
+state 276
 
     (156) LabeledStmt -> Label COLON . Statement
     (141) Statement -> . Declaration
@@ -9960,8 +9968,8 @@ state 275
     (157) Label -> . IDENTIFIER
     (214) epsilon -> .
     (158) ExpressionStmt -> . Expression
-    (159) IncDecStmt -> . Expression PLUSPLUS
-    (160) IncDecStmt -> . Expression MINUSMIN
+    (159) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (160) IncDecStmt -> . PrimaryExpr MINUSMIN
     (161) Assignment -> . ExpressionList assign_op ExpressionList
     (75) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (112) Expression -> . UnaryExpr
@@ -9984,24 +9992,24 @@ state 275
     (129) Expression -> . Expression LL Expression
     (130) Expression -> . Expression GG Expression
     (131) Expression -> . Expression AMPCAR Expression
-    (109) ExpressionList -> . Expression ExpressionRep
-    (134) UnaryExpr -> . PrimaryExpr
-    (135) UnaryExpr -> . UnaryOp UnaryExpr
     (97) PrimaryExpr -> . Operand
     (98) PrimaryExpr -> . Conversion
     (99) PrimaryExpr -> . PrimaryExpr Selector
     (100) PrimaryExpr -> . PrimaryExpr Index
     (101) PrimaryExpr -> . PrimaryExpr Slice
     (102) PrimaryExpr -> . PrimaryExpr Arguments
+    (109) ExpressionList -> . Expression ExpressionRep
+    (134) UnaryExpr -> . PrimaryExpr
+    (135) UnaryExpr -> . UnaryOp UnaryExpr
+    (81) Operand -> . Literal
+    (82) Operand -> . OperandName
+    (83) Operand -> . LPAREN Expression RPAREN
+    (96) Conversion -> . Type LPAREN Expression RPAREN
     (136) UnaryOp -> . PLUS
     (137) UnaryOp -> . MINUS
     (138) UnaryOp -> . TIMES
     (139) UnaryOp -> . AMPERS
     (140) UnaryOp -> . NOT
-    (81) Operand -> . Literal
-    (82) Operand -> . OperandName
-    (83) Operand -> . LPAREN Expression RPAREN
-    (96) Conversion -> . Type LPAREN Expression RPAREN
     (84) Literal -> . BasicLit
     (95) OperandName -> . IDENTIFIER
     (2) Type -> . TypeName
@@ -10028,23 +10036,23 @@ state 275
     (24) FunctionType -> . FUNC Signature
 
     RETURN          shift and go to state 238
-    BREAK           shift and go to state 251
-    CONTINUE        shift and go to state 244
-    GOTO            shift and go to state 255
+    BREAK           shift and go to state 252
+    CONTINUE        shift and go to state 245
+    GOTO            shift and go to state 256
     LBRACE          shift and go to state 128
-    IF              shift and go to state 257
+    IF              shift and go to state 258
     FOR             shift and go to state 242
     CONST           shift and go to state 14
     TYPE            shift and go to state 23
     VAR             shift and go to state 21
-    IDENTIFIER      shift and go to state 246
+    IDENTIFIER      shift and go to state 247
     SEMICOL         reduce using rule 214 (epsilon -> .)
+    LPAREN          shift and go to state 115
     PLUS            shift and go to state 104
     MINUS           shift and go to state 98
     TIMES           shift and go to state 112
     AMPERS          shift and go to state 118
     NOT             shift and go to state 103
-    LPAREN          shift and go to state 115
     TYPEX           shift and go to state 57
     INTEGER         shift and go to state 105
     FLOAT           shift and go to state 117
@@ -10055,26 +10063,26 @@ state 275
     STRUCT          shift and go to state 63
     FUNC            shift and go to state 52
 
+    Conversion                     shift and go to state 93
     UnaryOp                        shift and go to state 102
     ContinueStmt                   shift and go to state 233
-    Conversion                     shift and go to state 93
-    SimpleStmt                     shift and go to state 253
+    SimpleStmt                     shift and go to state 254
     Label                          shift and go to state 239
     ExpressionStmt                 shift and go to state 234
     PointerType                    shift and go to state 66
-    ForStmt                        shift and go to state 254
-    Statement                      shift and go to state 314
+    ForStmt                        shift and go to state 255
+    Statement                      shift and go to state 316
     RuneLiteral                    shift and go to state 111
     ImgLiteral                     shift and go to state 109
     FloatLiteral                   shift and go to state 96
     Type                           shift and go to state 97
-    IfStmt                         shift and go to state 248
+    IfStmt                         shift and go to state 249
     OperandName                    shift and go to state 100
     ArrayType                      shift and go to state 53
     Assignment                     shift and go to state 236
     TypeName                       shift and go to state 56
     IncDecStmt                     shift and go to state 240
-    Declaration                    shift and go to state 245
+    Declaration                    shift and go to state 246
     FunctionType                   shift and go to state 67
     StringLiteral                  shift and go to state 94
     GotoStmt                       shift and go to state 241
@@ -10082,40 +10090,40 @@ state 275
     IntLiteral                     shift and go to state 108
     TypeDecl                       shift and go to state 19
     LabeledStmt                    shift and go to state 237
-    epsilon                        shift and go to state 247
+    epsilon                        shift and go to state 248
     UnaryExpr                      shift and go to state 110
     Operand                        shift and go to state 113
-    ExpressionList                 shift and go to state 249
-    Expression                     shift and go to state 250
-    ShortVarDecl                   shift and go to state 256
-    Block                          shift and go to state 243
-    BreakStmt                      shift and go to state 258
+    ExpressionList                 shift and go to state 250
+    Expression                     shift and go to state 251
+    ShortVarDecl                   shift and go to state 257
+    Block                          shift and go to state 244
+    BreakStmt                      shift and go to state 259
     VarDecl                        shift and go to state 22
     Literal                        shift and go to state 95
     TypeLit                        shift and go to state 55
     BasicLit                       shift and go to state 101
-    PrimaryExpr                    shift and go to state 119
-    ReturnStmt                     shift and go to state 252
+    PrimaryExpr                    shift and go to state 243
+    ReturnStmt                     shift and go to state 253
     ConstDecl                      shift and go to state 18
 
-state 276
+state 277
 
     (183) ForClause -> SimpleStmt . SEMICOL ConditionOpt SEMICOL SimpleStmt
 
-    SEMICOL         shift and go to state 315
+    SEMICOL         shift and go to state 317
 
 
-state 277
+state 278
 
     (75) ShortVarDecl -> IDENTIFIER . COLONEQ Expression
     (95) OperandName -> IDENTIFIER .
 
-    COLONEQ         shift and go to state 287
+    COLONEQ         shift and go to state 291
+    PLUSPLUS        reduce using rule 95 (OperandName -> IDENTIFIER .)
+    MINUSMIN        reduce using rule 95 (OperandName -> IDENTIFIER .)
     DOT             reduce using rule 95 (OperandName -> IDENTIFIER .)
     LBRACK          reduce using rule 95 (OperandName -> IDENTIFIER .)
     LPAREN          reduce using rule 95 (OperandName -> IDENTIFIER .)
-    PLUSPLUS        reduce using rule 95 (OperandName -> IDENTIFIER .)
-    MINUSMIN        reduce using rule 95 (OperandName -> IDENTIFIER .)
     OROR            reduce using rule 95 (OperandName -> IDENTIFIER .)
     AMPAMP          reduce using rule 95 (OperandName -> IDENTIFIER .)
     EQEQ            reduce using rule 95 (OperandName -> IDENTIFIER .)
@@ -10137,6 +10145,7 @@ state 277
     AMPCAR          reduce using rule 95 (OperandName -> IDENTIFIER .)
     COMMA           reduce using rule 95 (OperandName -> IDENTIFIER .)
     LBRACE          reduce using rule 95 (OperandName -> IDENTIFIER .)
+    SEMICOL         reduce using rule 95 (OperandName -> IDENTIFIER .)
     PLUSEQ          reduce using rule 95 (OperandName -> IDENTIFIER .)
     MINUSEQ         reduce using rule 95 (OperandName -> IDENTIFIER .)
     TIMESEQ         reduce using rule 95 (OperandName -> IDENTIFIER .)
@@ -10148,17 +10157,16 @@ state 277
     LLEQ            reduce using rule 95 (OperandName -> IDENTIFIER .)
     GGEQ            reduce using rule 95 (OperandName -> IDENTIFIER .)
     EQUAL           reduce using rule 95 (OperandName -> IDENTIFIER .)
-    SEMICOL         reduce using rule 95 (OperandName -> IDENTIFIER .)
 
 
-state 278
+state 279
 
     (180) ConditionBlockOpt -> Condition .
 
     LBRACE          reduce using rule 180 (ConditionBlockOpt -> Condition .)
 
 
-state 279
+state 280
 
     (179) ConditionBlockOpt -> epsilon .
     (151) SimpleStmt -> epsilon .
@@ -10167,23 +10175,23 @@ state 279
     SEMICOL         reduce using rule 151 (SimpleStmt -> epsilon .)
 
 
-state 280
+state 281
 
     (178) ForStmt -> FOR ConditionBlockOpt . Block
     (40) Block -> . LBRACE StatementList RBRACE
 
     LBRACE          shift and go to state 128
 
-    Block                          shift and go to state 316
+    Block                          shift and go to state 318
 
-state 281
+state 282
 
     (181) ConditionBlockOpt -> ForClause .
 
     LBRACE          reduce using rule 181 (ConditionBlockOpt -> ForClause .)
 
 
-state 282
+state 283
 
     (182) Condition -> Expression .
     (113) Expression -> Expression . OROR Expression
@@ -10206,8 +10214,6 @@ state 282
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
     (158) ExpressionStmt -> Expression .
-    (159) IncDecStmt -> Expression . PLUSPLUS
-    (160) IncDecStmt -> Expression . MINUSMIN
     (109) ExpressionList -> Expression . ExpressionRep
     (110) ExpressionRep -> . ExpressionRep COMMA Expression
     (111) ExpressionRep -> . epsilon
@@ -10234,8 +10240,6 @@ state 282
     GG              shift and go to state 170
     AMPCAR          shift and go to state 163
     SEMICOL         reduce using rule 158 (ExpressionStmt -> Expression .)
-    PLUSPLUS        shift and go to state 301
-    MINUSMIN        shift and go to state 302
     COMMA           reduce using rule 214 (epsilon -> .)
     PLUSEQ          reduce using rule 214 (epsilon -> .)
     MINUSEQ         reduce using rule 214 (epsilon -> .)
@@ -10252,35 +10256,109 @@ state 282
     epsilon                        shift and go to state 196
     ExpressionRep                  shift and go to state 195
 
-state 283
+state 284
+
+    (134) UnaryExpr -> PrimaryExpr .
+    (159) IncDecStmt -> PrimaryExpr . PLUSPLUS
+    (160) IncDecStmt -> PrimaryExpr . MINUSMIN
+    (99) PrimaryExpr -> PrimaryExpr . Selector
+    (100) PrimaryExpr -> PrimaryExpr . Index
+    (101) PrimaryExpr -> PrimaryExpr . Slice
+    (102) PrimaryExpr -> PrimaryExpr . Arguments
+    (103) Selector -> . DOT IDENTIFIER
+    (104) Index -> . LBRACK Expression RBRACK
+    (105) Slice -> . LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
+    (106) Arguments -> . LPAREN ExpressionListTypeOpt RPAREN
+
+    OROR            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPAMP          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    EQEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    NOTEQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LESS            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GREAT           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LEQ             reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GEQ             reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    PLUS            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MINUS           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    OR              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    CARET           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    TIMES           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    DIVIDE          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MOD             reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPERS          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LL              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GG              reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPCAR          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    COMMA           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LBRACE          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    SEMICOL         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    PLUSEQ          reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MINUSEQ         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    TIMESEQ         reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    DIVIDEEQ        reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    MODEQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    AMPEQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    OREQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    CAREQ           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    LLEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    GGEQ            reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    EQUAL           reduce using rule 134 (UnaryExpr -> PrimaryExpr .)
+    PLUSPLUS        shift and go to state 285
+    MINUSMIN        shift and go to state 286
+    DOT             shift and go to state 184
+    LBRACK          shift and go to state 180
+    LPAREN          shift and go to state 183
+
+    Index                          shift and go to state 178
+    Slice                          shift and go to state 179
+    Selector                       shift and go to state 181
+    Arguments                      shift and go to state 182
+
+state 285
+
+    (159) IncDecStmt -> PrimaryExpr PLUSPLUS .
+
+    SEMICOL         reduce using rule 159 (IncDecStmt -> PrimaryExpr PLUSPLUS .)
+    LBRACE          reduce using rule 159 (IncDecStmt -> PrimaryExpr PLUSPLUS .)
+
+
+state 286
+
+    (160) IncDecStmt -> PrimaryExpr MINUSMIN .
+
+    SEMICOL         reduce using rule 160 (IncDecStmt -> PrimaryExpr MINUSMIN .)
+    LBRACE          reduce using rule 160 (IncDecStmt -> PrimaryExpr MINUSMIN .)
+
+
+state 287
 
     (196) LabelOpt -> epsilon .
 
     SEMICOL         reduce using rule 196 (LabelOpt -> epsilon .)
 
 
-state 284
+state 288
 
     (157) Label -> IDENTIFIER .
 
     SEMICOL         reduce using rule 157 (Label -> IDENTIFIER .)
 
 
-state 285
+state 289
 
     (194) ContinueStmt -> CONTINUE LabelOpt .
 
     SEMICOL         reduce using rule 194 (ContinueStmt -> CONTINUE LabelOpt .)
 
 
-state 286
+state 290
 
     (195) LabelOpt -> Label .
 
     SEMICOL         reduce using rule 195 (LabelOpt -> Label .)
 
 
-state 287
+state 291
 
     (75) ShortVarDecl -> IDENTIFIER COLONEQ . Expression
     (112) Expression -> . UnaryExpr
@@ -10377,14 +10455,14 @@ state 287
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     Operand                        shift and go to state 113
-    Expression                     shift and go to state 317
+    Expression                     shift and go to state 319
     PointerType                    shift and go to state 66
     StringLiteral                  shift and go to state 94
     TypeLit                        shift and go to state 55
     ImgLiteral                     shift and go to state 109
     FunctionType                   shift and go to state 67
 
-state 288
+state 292
 
     (162) assign_op -> AssignOp .
 
@@ -10406,7 +10484,7 @@ state 288
     FUNC            reduce using rule 162 (assign_op -> AssignOp .)
 
 
-state 289
+state 293
 
     (173) AssignOp -> EQUAL .
 
@@ -10428,7 +10506,7 @@ state 289
     FUNC            reduce using rule 173 (AssignOp -> EQUAL .)
 
 
-state 290
+state 294
 
     (170) AssignOp -> CAREQ .
 
@@ -10450,7 +10528,7 @@ state 290
     FUNC            reduce using rule 170 (AssignOp -> CAREQ .)
 
 
-state 291
+state 295
 
     (165) AssignOp -> TIMESEQ .
 
@@ -10472,7 +10550,7 @@ state 291
     FUNC            reduce using rule 165 (AssignOp -> TIMESEQ .)
 
 
-state 292
+state 296
 
     (163) AssignOp -> PLUSEQ .
 
@@ -10494,7 +10572,7 @@ state 292
     FUNC            reduce using rule 163 (AssignOp -> PLUSEQ .)
 
 
-state 293
+state 297
 
     (167) AssignOp -> MODEQ .
 
@@ -10516,7 +10594,7 @@ state 293
     FUNC            reduce using rule 167 (AssignOp -> MODEQ .)
 
 
-state 294
+state 298
 
     (172) AssignOp -> GGEQ .
 
@@ -10538,7 +10616,7 @@ state 294
     FUNC            reduce using rule 172 (AssignOp -> GGEQ .)
 
 
-state 295
+state 299
 
     (171) AssignOp -> LLEQ .
 
@@ -10560,7 +10638,7 @@ state 295
     FUNC            reduce using rule 171 (AssignOp -> LLEQ .)
 
 
-state 296
+state 300
 
     (169) AssignOp -> OREQ .
 
@@ -10582,7 +10660,7 @@ state 296
     FUNC            reduce using rule 169 (AssignOp -> OREQ .)
 
 
-state 297
+state 301
 
     (164) AssignOp -> MINUSEQ .
 
@@ -10604,7 +10682,7 @@ state 297
     FUNC            reduce using rule 164 (AssignOp -> MINUSEQ .)
 
 
-state 298
+state 302
 
     (168) AssignOp -> AMPEQ .
 
@@ -10626,7 +10704,7 @@ state 298
     FUNC            reduce using rule 168 (AssignOp -> AMPEQ .)
 
 
-state 299
+state 303
 
     (161) Assignment -> ExpressionList assign_op . ExpressionList
     (109) ExpressionList -> . Expression ExpressionRep
@@ -10724,7 +10802,7 @@ state 299
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     Operand                        shift and go to state 113
-    ExpressionList                 shift and go to state 318
+    ExpressionList                 shift and go to state 320
     Expression                     shift and go to state 140
     PointerType                    shift and go to state 66
     StringLiteral                  shift and go to state 94
@@ -10732,7 +10810,7 @@ state 299
     ImgLiteral                     shift and go to state 109
     FunctionType                   shift and go to state 67
 
-state 300
+state 304
 
     (166) AssignOp -> DIVIDEEQ .
 
@@ -10754,37 +10832,21 @@ state 300
     FUNC            reduce using rule 166 (AssignOp -> DIVIDEEQ .)
 
 
-state 301
-
-    (159) IncDecStmt -> Expression PLUSPLUS .
-
-    SEMICOL         reduce using rule 159 (IncDecStmt -> Expression PLUSPLUS .)
-    LBRACE          reduce using rule 159 (IncDecStmt -> Expression PLUSPLUS .)
-
-
-state 302
-
-    (160) IncDecStmt -> Expression MINUSMIN .
-
-    SEMICOL         reduce using rule 160 (IncDecStmt -> Expression MINUSMIN .)
-    LBRACE          reduce using rule 160 (IncDecStmt -> Expression MINUSMIN .)
-
-
-state 303
+state 305
 
     (193) BreakStmt -> BREAK LabelOpt .
 
     SEMICOL         reduce using rule 193 (BreakStmt -> BREAK LabelOpt .)
 
 
-state 304
+state 306
 
     (197) GotoStmt -> GOTO Label .
 
     SEMICOL         reduce using rule 197 (GotoStmt -> GOTO Label .)
 
 
-state 305
+state 307
 
     (174) IfStmt -> IF Expression . Block ElseOpt
     (113) Expression -> Expression . OROR Expression
@@ -10829,9 +10891,9 @@ state 305
     AMPCAR          shift and go to state 163
     LBRACE          shift and go to state 128
 
-    Block                          shift and go to state 319
+    Block                          shift and go to state 321
 
-state 306
+state 308
 
     (38) ParameterDecl -> IdentifierList Type .
 
@@ -10839,7 +10901,7 @@ state 306
     RPAREN          reduce using rule 38 (ParameterDecl -> IdentifierList Type .)
 
 
-state 307
+state 309
 
     (110) ExpressionRep -> ExpressionRep COMMA Expression .
     (113) Expression -> Expression . OROR Expression
@@ -10898,42 +10960,42 @@ state 307
     AMPCAR          shift and go to state 163
 
 
-state 308
+state 310
 
     (21) Tag -> STRING .
 
     SEMICOL         reduce using rule 21 (Tag -> STRING .)
 
 
-state 309
+state 311
 
     (20) TagOpt -> epsilon .
 
     SEMICOL         reduce using rule 20 (TagOpt -> epsilon .)
 
 
-state 310
+state 312
 
     (19) TagOpt -> Tag .
 
     SEMICOL         reduce using rule 19 (TagOpt -> Tag .)
 
 
-state 311
+state 313
 
     (18) FieldDecl -> IdentifierList Type TagOpt .
 
     SEMICOL         reduce using rule 18 (FieldDecl -> IdentifierList Type TagOpt .)
 
 
-state 312
+state 314
 
     (105) Slice -> LBRACK ExpressionOpt COLON ExpressionOpt . RBRACK
 
-    RBRACK          shift and go to state 320
+    RBRACK          shift and go to state 322
 
 
-state 313
+state 315
 
     (132) ExpressionOpt -> Expression .
     (113) Expression -> Expression . OROR Expression
@@ -10978,14 +11040,14 @@ state 313
     AMPCAR          shift and go to state 163
 
 
-state 314
+state 316
 
     (156) LabeledStmt -> Label COLON Statement .
 
     SEMICOL         reduce using rule 156 (LabeledStmt -> Label COLON Statement .)
 
 
-state 315
+state 317
 
     (183) ForClause -> SimpleStmt SEMICOL . ConditionOpt SEMICOL SimpleStmt
     (184) ConditionOpt -> . epsilon
@@ -11080,31 +11142,31 @@ state 315
     OperandName                    shift and go to state 100
     BasicLit                       shift and go to state 101
     TypeName                       shift and go to state 56
-    Condition                      shift and go to state 321
+    Condition                      shift and go to state 323
     StructType                     shift and go to state 58
     IntLiteral                     shift and go to state 108
     ImgLiteral                     shift and go to state 109
-    epsilon                        shift and go to state 322
+    epsilon                        shift and go to state 324
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
     PrimaryExpr                    shift and go to state 119
-    ConditionOpt                   shift and go to state 323
+    ConditionOpt                   shift and go to state 325
     ArrayType                      shift and go to state 53
-    Expression                     shift and go to state 324
+    Expression                     shift and go to state 326
     PointerType                    shift and go to state 66
     StringLiteral                  shift and go to state 94
     TypeLit                        shift and go to state 55
     Operand                        shift and go to state 113
     FunctionType                   shift and go to state 67
 
-state 316
+state 318
 
     (178) ForStmt -> FOR ConditionBlockOpt Block .
 
     SEMICOL         reduce using rule 178 (ForStmt -> FOR ConditionBlockOpt Block .)
 
 
-state 317
+state 319
 
     (75) ShortVarDecl -> IDENTIFIER COLONEQ Expression .
     (113) Expression -> Expression . OROR Expression
@@ -11127,8 +11189,8 @@ state 317
     (130) Expression -> Expression . GG Expression
     (131) Expression -> Expression . AMPCAR Expression
 
-    SEMICOL         reduce using rule 75 (ShortVarDecl -> IDENTIFIER COLONEQ Expression .)
     LBRACE          reduce using rule 75 (ShortVarDecl -> IDENTIFIER COLONEQ Expression .)
+    SEMICOL         reduce using rule 75 (ShortVarDecl -> IDENTIFIER COLONEQ Expression .)
     OROR            shift and go to state 159
     AMPAMP          shift and go to state 174
     EQEQ            shift and go to state 165
@@ -11150,7 +11212,7 @@ state 317
     AMPCAR          shift and go to state 163
 
 
-state 318
+state 320
 
     (161) Assignment -> ExpressionList assign_op ExpressionList .
 
@@ -11158,7 +11220,7 @@ state 318
     LBRACE          reduce using rule 161 (Assignment -> ExpressionList assign_op ExpressionList .)
 
 
-state 319
+state 321
 
     (174) IfStmt -> IF Expression Block . ElseOpt
     (175) ElseOpt -> . ELSE IfStmt
@@ -11166,16 +11228,18 @@ state 319
     (177) ElseOpt -> . epsilon
     (214) epsilon -> .
 
-    ELSE            shift and go to state 326
+    ELSE            shift and go to state 328
     SEMICOL         reduce using rule 214 (epsilon -> .)
 
-    epsilon                        shift and go to state 325
-    ElseOpt                        shift and go to state 327
+    epsilon                        shift and go to state 327
+    ElseOpt                        shift and go to state 329
 
-state 320
+state 322
 
     (105) Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .
 
+    PLUSPLUS        reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
+    MINUSMIN        reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     DOT             reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     LBRACK          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     LPAREN          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
@@ -11198,13 +11262,8 @@ state 320
     LL              reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     GG              reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     AMPCAR          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
-    RBRACK          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     COMMA           reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     SEMICOL         reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
-    RPAREN          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
-    COLON           reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
-    PLUSPLUS        reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
-    MINUSMIN        reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     PLUSEQ          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     MINUSEQ         reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     TIMESEQ         reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
@@ -11217,30 +11276,33 @@ state 320
     GGEQ            reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     EQUAL           reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     LBRACE          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
+    RBRACK          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
+    RPAREN          reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
+    COLON           reduce using rule 105 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
 
 
-state 321
+state 323
 
     (185) ConditionOpt -> Condition .
 
     SEMICOL         reduce using rule 185 (ConditionOpt -> Condition .)
 
 
-state 322
+state 324
 
     (184) ConditionOpt -> epsilon .
 
     SEMICOL         reduce using rule 184 (ConditionOpt -> epsilon .)
 
 
-state 323
+state 325
 
     (183) ForClause -> SimpleStmt SEMICOL ConditionOpt . SEMICOL SimpleStmt
 
-    SEMICOL         shift and go to state 328
+    SEMICOL         shift and go to state 330
 
 
-state 324
+state 326
 
     (182) Condition -> Expression .
     (113) Expression -> Expression . OROR Expression
@@ -11285,34 +11347,34 @@ state 324
     AMPCAR          shift and go to state 163
 
 
-state 325
+state 327
 
     (177) ElseOpt -> epsilon .
 
     SEMICOL         reduce using rule 177 (ElseOpt -> epsilon .)
 
 
-state 326
+state 328
 
     (175) ElseOpt -> ELSE . IfStmt
     (176) ElseOpt -> ELSE . Block
     (174) IfStmt -> . IF Expression Block ElseOpt
     (40) Block -> . LBRACE StatementList RBRACE
 
-    IF              shift and go to state 257
+    IF              shift and go to state 258
     LBRACE          shift and go to state 128
 
-    IfStmt                         shift and go to state 329
-    Block                          shift and go to state 330
+    IfStmt                         shift and go to state 331
+    Block                          shift and go to state 332
 
-state 327
+state 329
 
     (174) IfStmt -> IF Expression Block ElseOpt .
 
     SEMICOL         reduce using rule 174 (IfStmt -> IF Expression Block ElseOpt .)
 
 
-state 328
+state 330
 
     (183) ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL . SimpleStmt
     (151) SimpleStmt -> . epsilon
@@ -11322,8 +11384,8 @@ state 328
     (155) SimpleStmt -> . ShortVarDecl
     (214) epsilon -> .
     (158) ExpressionStmt -> . Expression
-    (159) IncDecStmt -> . Expression PLUSPLUS
-    (160) IncDecStmt -> . Expression MINUSMIN
+    (159) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (160) IncDecStmt -> . PrimaryExpr MINUSMIN
     (161) Assignment -> . ExpressionList assign_op ExpressionList
     (75) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (112) Expression -> . UnaryExpr
@@ -11346,24 +11408,24 @@ state 328
     (129) Expression -> . Expression LL Expression
     (130) Expression -> . Expression GG Expression
     (131) Expression -> . Expression AMPCAR Expression
-    (109) ExpressionList -> . Expression ExpressionRep
-    (134) UnaryExpr -> . PrimaryExpr
-    (135) UnaryExpr -> . UnaryOp UnaryExpr
     (97) PrimaryExpr -> . Operand
     (98) PrimaryExpr -> . Conversion
     (99) PrimaryExpr -> . PrimaryExpr Selector
     (100) PrimaryExpr -> . PrimaryExpr Index
     (101) PrimaryExpr -> . PrimaryExpr Slice
     (102) PrimaryExpr -> . PrimaryExpr Arguments
+    (109) ExpressionList -> . Expression ExpressionRep
+    (134) UnaryExpr -> . PrimaryExpr
+    (135) UnaryExpr -> . UnaryOp UnaryExpr
+    (81) Operand -> . Literal
+    (82) Operand -> . OperandName
+    (83) Operand -> . LPAREN Expression RPAREN
+    (96) Conversion -> . Type LPAREN Expression RPAREN
     (136) UnaryOp -> . PLUS
     (137) UnaryOp -> . MINUS
     (138) UnaryOp -> . TIMES
     (139) UnaryOp -> . AMPERS
     (140) UnaryOp -> . NOT
-    (81) Operand -> . Literal
-    (82) Operand -> . OperandName
-    (83) Operand -> . LPAREN Expression RPAREN
-    (96) Conversion -> . Type LPAREN Expression RPAREN
     (84) Literal -> . BasicLit
     (95) OperandName -> . IDENTIFIER
     (2) Type -> . TypeName
@@ -11390,13 +11452,13 @@ state 328
     (24) FunctionType -> . FUNC Signature
 
     LBRACE          reduce using rule 214 (epsilon -> .)
-    IDENTIFIER      shift and go to state 277
+    IDENTIFIER      shift and go to state 278
+    LPAREN          shift and go to state 115
     PLUS            shift and go to state 104
     MINUS           shift and go to state 98
     TIMES           shift and go to state 112
     AMPERS          shift and go to state 118
     NOT             shift and go to state 103
-    LPAREN          shift and go to state 115
     TYPEX           shift and go to state 57
     INTEGER         shift and go to state 105
     FLOAT           shift and go to state 117
@@ -11409,7 +11471,7 @@ state 328
 
     UnaryOp                        shift and go to state 102
     Conversion                     shift and go to state 93
-    SimpleStmt                     shift and go to state 331
+    SimpleStmt                     shift and go to state 333
     StringLiteral                  shift and go to state 94
     ExpressionStmt                 shift and go to state 234
     FloatLiteral                   shift and go to state 96
@@ -11421,14 +11483,14 @@ state 328
     StructType                     shift and go to state 58
     IntLiteral                     shift and go to state 108
     ImgLiteral                     shift and go to state 109
-    epsilon                        shift and go to state 247
+    epsilon                        shift and go to state 248
     UnaryExpr                      shift and go to state 110
     RuneLiteral                    shift and go to state 111
-    PrimaryExpr                    shift and go to state 119
-    ExpressionList                 shift and go to state 249
+    PrimaryExpr                    shift and go to state 243
+    ExpressionList                 shift and go to state 250
     ArrayType                      shift and go to state 53
-    Expression                     shift and go to state 250
-    ShortVarDecl                   shift and go to state 256
+    Expression                     shift and go to state 251
+    ShortVarDecl                   shift and go to state 257
     PointerType                    shift and go to state 66
     Literal                        shift and go to state 95
     TypeLit                        shift and go to state 55
@@ -11436,21 +11498,21 @@ state 328
     Operand                        shift and go to state 113
     FunctionType                   shift and go to state 67
 
-state 329
+state 331
 
     (175) ElseOpt -> ELSE IfStmt .
 
     SEMICOL         reduce using rule 175 (ElseOpt -> ELSE IfStmt .)
 
 
-state 330
+state 332
 
     (176) ElseOpt -> ELSE Block .
 
     SEMICOL         reduce using rule 176 (ElseOpt -> ELSE Block .)
 
 
-state 331
+state 333
 
     (183) ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt .
 
