@@ -306,9 +306,7 @@ def p_block(p):
 	'''Block : LBRACE StatementList RBRACE'''
 	p[0] = p[2]
 	deleteScope()
-	# for i in p[2]:
-	# 	if i != -1:
-	# 		make_edge(p[0], i)
+
 
 def p_statement_list(p):
 	'''StatementList : StatementRep'''
@@ -320,6 +318,11 @@ def p_statement_rep(p):
 	if len(p) == 4:
 		p[0] = p[1]
 		p[0].code += p[2].code
+		if p[2].extra:
+			if 'is_continue' in p[2].extra and p[2].extra['is_continue']:
+				p[2].next[0] = p[0].begin
+			if 'is_break' in p[2].extra and p[2].extra['is_break']:
+				p[2].next[0] = p[0].next
 	else:
 		addScope()
 		p[0] = Node()
@@ -598,7 +601,7 @@ def p_func_body(p):
 # -------------------------------------------------------
 
 
-# ----------------------OPERAND----------------------------
+# -------------------	---OPERAND----------------------------
 
 def p_operand(p):
 	'''Operand : Literal
@@ -930,13 +933,15 @@ def p_statement(p):
 				 | IfStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
-	p[0] = p[1]
+	p[0] = p[1] 
 	# new_label = newLabel()
 	# p[0].next[0] = new_label
 	
 	# p[0].code += [new_label + ':']
 	if p[0].next[0][0] == 'l': 
 		p[0].code += [p[0].next[0] + ':'] #otherwisw not labelx
+	# if p[0].begin[0] == 'l': 
+	# 	p[0].code += [p[0].next[0] + ':']
 
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
@@ -1152,23 +1157,29 @@ def p_else_opt(p):
 def p_for(p):
 	'''ForStmt : FOR ConditionBlockOpt Block'''
 	p[0] = Node()
+	print 'here', p[3].next[0]
 	if p[2] is not None:
 		if p[2].forclause.isClause:
-			p[0].begin = newLabel()
+			p[0].begin = [newLabel()]
 			cond = p[2].forclause.condition
 			cond.expr.true_label[0] = newLabel()
 			cond.expr.false_label[0] = p[0].next
-			p[3].next[0] = p[0].begin
+			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
+			p[3].next[0] = p[0].next
+			p[3].begin[0] = p[0].begin
 			p[0].code += p[2].forclause.initialise
-			p[0].code += [p[0].begin + ":"] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[3].code + p[2].forclause.update + ['goto: '+p[0].begin]
+			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
+			p[0].code += p[3].code + p[2].forclause.update + [['goto: ',p[0].begin]]
 		else:
-			p[0].begin = newLabel()
+			p[0].begin = [newLabel()]
 			p[2].expr.true_label[0] = newLabel()
 			p[2].expr.false_label[0] = p[0].next
-			p[3].next[0] = p[0].begin
-			p[0].code += [p[0].begin + ":"] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + ['goto: '+p[0].begin]
+			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
+			p[3].next[0] = p[0].next 
+			p[3].begin[0] = p[0].begin
+			p[0].code += [[p[0].begin , ":"]] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()
+	print 'here', p[3].next[0]
 
 def p_conditionblockopt(p):
 	'''ConditionBlockOpt : epsilon
@@ -1238,15 +1249,20 @@ def p_expressionlist_pure_opt(p):
 
 def p_break(p):
 	'''BreakStmt : BREAK LabelOpt'''
-	p[0] = make_node(p[1])
-	if p[2] != -1:
-		make_edge(p[0], p[2])
+	p[0] = Node()
+	p[0].code = [['goto ', p[0].next]]
+	p[0].extra['is_break'] = True
+	# if p[2] != -1:
+	# 	make_edge(p[0], p[2])
 
 def p_continue(p):
 	'''ContinueStmt : CONTINUE LabelOpt'''
-	p[0] = make_node(p[1])
-	if p[2] != -1:
-		make_edge(p[0], p[2])
+	p[0] = Node()
+	
+	p[0].code = [['goto ', p[0].next]]
+	p[0].extra['is_continue'] = True
+	# if p[2] != -1:
+	# 	make_edge(p[0], p[2]) #TODO label
 
 def p_labelopt(p):
 	'''LabelOpt : Label
