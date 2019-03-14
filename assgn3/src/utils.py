@@ -12,6 +12,7 @@ class Node:
 		self.forclause = ForClause()
 	def __str__(self):
 		print "code:", self.code
+		print "place:", self.place 
 		print "type:", self.type # denotes type of expression
 		print "idlist:", self.idlist
 		print "exprlist:"

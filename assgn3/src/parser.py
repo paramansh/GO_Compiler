@@ -56,7 +56,7 @@ def insertId(idname, idtype):
 
 def insertInfo(idname, attr, value):
 	if not inScope(idname):
-		err = "variable does not exists"
+		err = "variable does not exists", idname, attr, value
 		print err
 	else:
 		curr_scope = scope_stack[-1]
@@ -68,6 +68,7 @@ def newTemp(idtype):
 	global temp_var_count
 	new_temp = 'TEMP_VAR' + str(temp_var_count)
 	curr_scope.insert(new_temp, idtype)
+	insertInfo(new_temp, 'constant', False)
 	temp_var_count += 1
 	return new_temp
 	# need to remove this from variable lists??
@@ -833,6 +834,7 @@ def p_expression(p):
 					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place + ' ' + exprtype + p[2]+ 'i '+ p[3].place]  #second operand is the immediate operand
 					p[0].expr.type = exprtype
 				else:
+					print 'here2', p[1].place, p[3].place 
 					p[0].place = newTemp(exprtype)
 					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place + ' ' + exprtype + p[2]+ ' ' +  p[3].place]  #second operand is the immediate operand
 					p[0].expr.type = exprtype
@@ -883,10 +885,11 @@ def p_unary_expr(p):
 			p[0] = p[2]
 		if p[1] == '-':
 			p[0] = p[2]
+			old_place = p[2].place
 			if p[2].expr.is_constant:
-				p[0].expr.value = -p[0].expr.value
+				p[0].expr.value = -p[2].expr.value
 			p[0].place = newTemp(p[0].expr.type)
-			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + p[2].place]
+			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + old_place]
 		if p[1] == '*':
 			# TODO
 			p[0] = p[2]
@@ -975,15 +978,26 @@ def p_assignment(p):
 			if not inScope(p[1].exprlist[i].expr.value):
 				print "error: at line", p.lineno(0), "variable not in scope"
 			else:
-				p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + \
-					[p[1].exprlist[i].expr.value + ' := ' + p[3].exprlist[i].place]
+				if p[1].exprlist[i].expr.type != p[3].exprlist[i].expr.type :
+					print "error: at line", p.lineno(0), "type mismatch is assighment"
+					return
+				exprtype = p[1].exprlist[i].expr.type
+				p[0].expr.type = exprtype
+				if p[2] == '=':
+					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].expr.value + ' := ' + p[3].exprlist[i].place]
+				ops = ['+=', '-=', '*=', '/=', '%=']
+				if p[2] in ops:
+					new_temp = newTemp(exprtype)			
+					p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
+					p[0].code += [p[1].exprlist[i].expr.value + ' := ' + new_temp]
+				print 'here', p[0]
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
 	p[0] = p[1]
 
 def p_AssignOp(p):
-	''' AssignOp : PLUSEQ
+	'''AssignOp : PLUSEQ
 				| MINUSEQ
 				| TIMESEQ
 				| DIVIDEEQ
