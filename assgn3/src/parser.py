@@ -928,6 +928,7 @@ def p_statement(p):
 	new_label = newLabel()
 	p[0].next[0] = new_label
 	p[0].code += [new_label + ':']
+	
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
 				  | ExpressionStmt
