@@ -14,10 +14,13 @@ package main;
 //var y int = 2;
 //var a, b int = 3, 4;
 //var z int = 93 + x + y;
-var x int;
-var a struct{x int; y float;z [4]int;};
+//var x int;
+//var a struct{x int; y float;z [4]int;};
 func main() {
-    var c int = a.x;
+    var c *int;
+    var a int = *c;
+    var b *int = &a;
+    c = a;
 };
 //
 //var a int;

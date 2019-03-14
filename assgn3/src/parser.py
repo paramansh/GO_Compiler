@@ -120,6 +120,7 @@ def p_type(p):
 	else:
 		p[0] = p[1]
 
+
 def p_type_name(p):
 	'''TypeName : TYPEX'''
 	# p[0] = make_node(p[1])
@@ -133,6 +134,8 @@ def p_type_lit(p):
 			   | PointerType
 			   | FunctionType'''
 	p[0] = p[1]
+	
+
      
 def p_type_opt(p):
 	'''TypeOpt : Type
@@ -208,8 +211,8 @@ def p_tag(p):
 
 def p_pointer_type(p):
 	'''PointerType : TIMES BaseType'''
-	p[0] = make_node('pointer')
-	make_edge(p[0], p[1])
+	p[0] = Node()
+	p[0].type = p[2].type + '*'
 
 def p_base_type(p):
 	'''BaseType : Type'''
@@ -537,7 +540,6 @@ def p_var_spec(p):
 					
 					#TODO always insert info??????????? what is attribute value
 					#TODO which attributes to be added in symbol table!
-		# print 'here', p[0]
 
 def p_expr_list_opt(p):
 	'''ExpressionListOpt : EQUAL ExpressionList
@@ -915,11 +917,21 @@ def p_unary_expr(p):
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + old_place]
 		if p[1] == '*':
-			# TODO
-			p[0] = p[2]
+			# p[0] = p[2]
+			p[0] = Node()
+			print 'here', p[2].expr.type
+			if p[2].expr.type[-1] != '*':
+				print 'error at line', p.lineno(0), "can't dereference: invalid type"
+				return
+			p[0].expr.type = p[2].expr.type[:-1]
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code = p[2].code + [p[0].place + ' := *' + p[2].place]
+
 		if p[1] == '&':
-			# TODO
-			p[0] = p[2]
+			p[0] = Node()
+			p[0].expr.type = p[2].expr.type + '*'
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code = p[2].code + [p[0].place + ' := &' + p[2].place] 
 		if p[1] == '!':
 			p[0] = Node()
 			p[0].code = p[1].code
