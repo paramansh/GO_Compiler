@@ -553,10 +553,13 @@ def p_expr_list_opt(p):
 
 def p_short_var_decl(p):
 	''' ShortVarDecl : IDENTIFIER COLONEQ Expression '''
-	p[0] = make_node(p[2])
-	temp = make_node(p[1])
-	make_edge(p[0], temp, 'id')
-	make_edge(p[0], p[3], 'exp')
+	p[0] = Node()
+	err = insertId(p[1], p[3].expr.type)
+	if err:
+		print 'error: at line', p.lineno(0), err
+		return
+	insertInfo(p[1], 'constant', False) 
+	p[0].code += p[3].code + [p[1] + ' := ' + p[3].place]
 
 # -------------------------------------------------------
 
@@ -567,11 +570,12 @@ def p_func_decl(p):
 	'''FunctionDecl : FUNC FunctionName Function
 					| FUNC FunctionName Signature'''
 	p[0] = p[3]
+	p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	# make_edge(p[3], p[2])
 
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
-	p[0] = make_node(p[1])
+	p[0] = p[1]
 
 def p_func(p):
 	'''Function : Signature FunctionBody'''
@@ -834,7 +838,6 @@ def p_expression(p):
 					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place + ' ' + exprtype + p[2]+ 'i '+ p[3].place]  #second operand is the immediate operand
 					p[0].expr.type = exprtype
 				else:
-					print 'here2', p[1].place, p[3].place 
 					p[0].place = newTemp(exprtype)
 					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place + ' ' + exprtype + p[2]+ ' ' +  p[3].place]  #second operand is the immediate operand
 					p[0].expr.type = exprtype
@@ -928,10 +931,13 @@ def p_statement(p):
 				 | ForStmt '''
 				#  SwitchStmt'''
 	p[0] = p[1]
-	new_label = newLabel()
-	p[0].next[0] = new_label
-	p[0].code += [new_label + ':']
+	# new_label = newLabel()
+	# p[0].next[0] = new_label
 	
+	# p[0].code += [new_label + ':']
+	if p[0].next[0][0] == 'l': 
+		p[0].code += [p[0].next[0] + ':'] #otherwisw not labelx
+
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
 				  | ExpressionStmt
@@ -959,14 +965,17 @@ def p_expression_stmt(p):
 	p[0] = p[1]
 
 def p_inc_dec(p):
-	''' IncDecStmt : Expression PLUSPLUS
-					| Expression MINUSMIN '''
+	''' IncDecStmt : PrimaryExpr PLUSPLUS
+					| PrimaryExpr MINUSMIN '''
+	# ''' IncDecStmt : Expression PLUSPLUS
+	# 				| Expression MINUSMIN '''
 	p[0] = p[1]
 	if p[0].expr.type != 'int':
 		print "error at line", p.lineno(0), 'can not increment non-int variable'
-	
-	# temp = make_node(p[2])
-	# make_edge(p[1], temp)
+		return
+	new_temp = newTemp('int')
+	p[0].code += p[1].code + [new_temp + ' := ' + p[1].place + ' int'+p[2][0] + 'i 1'] + [p[1].place + ' := ' + new_temp]
+
 
 def p_assignment(p):
 	'''Assignment : ExpressionList assign_op ExpressionList'''
@@ -991,7 +1000,6 @@ def p_assignment(p):
 					new_temp = newTemp(exprtype)			
 					p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
 					p[0].code += [p[1].exprlist[i].expr.value + ' := ' + new_temp]
-				print 'here', p[0]
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
@@ -1033,7 +1041,7 @@ def p_if_statement(p):
 		p[3].next[0] = p[0].next
 		p[4].next[0] = p[0].next
 		p[0].code += p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto ', p[0].next]] + [p[2].expr.false_label[0] + ":"] + p[4].code
-
+	p[0].next[0] = newLabel()
 
 # def p_SimpleStmtOpt(p):
 # 	''' SimpleStmtOpt : SimpleStmt SEMICOL
@@ -1160,6 +1168,7 @@ def p_for(p):
 			p[2].expr.false_label[0] = p[0].next
 			p[3].next[0] = p[0].begin
 			p[0].code += [p[0].begin + ":"] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + ['goto: '+p[0].begin]
+	p[0].next[0] = newLabel()
 
 def p_conditionblockopt(p):
 	'''ConditionBlockOpt : epsilon
