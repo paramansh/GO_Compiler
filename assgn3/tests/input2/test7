@@ -1,6 +1,0 @@
-package math;
-
-const f1, f2;
-const (f3 func(x int) int = f1; f4 func(int, int, float) (float, *int) = f2;);
-
-func flushICache(begin, end *int);  // implemented externally

@@ -1,4 +1,1 @@
-$ cd assgn2
-$ python src/parser.py --input=tests/<folder>/<infile> --output=<outfile>.dot
-
-check <outfile>.dot.pdf
+$ python src/parser.py --input=testfile --code=ircode --table=symtable

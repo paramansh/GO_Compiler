@@ -1,6 +1,5 @@
 import ply.yacc as yacc
 import mylexer
-from graphviz import Digraph
 import argparse
 import pprint as pp
 from utils import Node, SymbolTable
@@ -10,29 +9,23 @@ import ast
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
-argparser.add_argument("--output",help = "Specify the output dot file.")
+argparser.add_argument("--code",help = "Specify the 3AC output file.")
+argparser.add_argument("--table",help = "Specify the symbol table output file.")
 args = argparser.parse_args()
 infile = args.input
-outfile = args.output
+codefile = args.code
+tablefile = args.table
 
 tokens = mylexer.tokens
-nodecount = 0
-dot = Digraph()
 
 def make_node(label):
 	None
-	# global nodecount
-	# dot.node(str(nodecount), label)
-	# nodecount += 1
-	# return nodecount - 1
 
 def make_edge(node1, node2, label=''):
 	None
-	# dot.edge(str(node1), str(node2), label=label)
 
 def getIdInfo(ide):
 	if not inScope(ide):
-		# print "variable not in correct scope"
 		return None 
 	else:
 		id_scope = getScope(ide)
@@ -47,7 +40,7 @@ def insertId(idname, idtype):
 		err = "Can't use temp_var as variable name: Reserved"
 		return err 
 	if inCurrentScope(idname):
-		err = "Variable Already exists in current scope"
+		err = "Variable already exists in current scope"
 		return err
 	else:
 		curr_scope = scope_stack[-1]
@@ -63,12 +56,11 @@ def insertType(name, ttype):
 
 def insertInfo(idname, attr, value):
 	if not inScope(idname):
-		err = "variable does not exists", idname, attr, value
+		err = "variable does not exist", idname, attr, value
 		print err
 	else:
 		curr_scope = getScope(idname)
 		curr_scope.setArgs(idname, attr, value)
-
 
 def typeInScope(name):
 	for scope in scope_stack[::-1]:
@@ -78,16 +70,14 @@ def typeInScope(name):
 	return False
 
 def validTypeConversion(type1, type2):
-	#todo type1 is converted type2
 	if type1 == 'string':
 		return False
 	if type1 == 'float' and type2 == 'int':
 		return False
-	
-
 	return True
 
 temp_var_count = 0
+
 def newTemp(idtype):
 	curr_scope = scope_stack[-1]
 	global temp_var_count
@@ -105,16 +95,9 @@ def newLabel():
 	label_count += 1
 	return new_label
 
-
-
 global_symbol_table = SymbolTable(None)
 scope_stack.append(global_symbol_table)
 scope_list.append(global_symbol_table)
-# addScope()
-# scope_stack[-1].insert('b', 'float')
-# scope_stack[-1].setArgs('b', 'value', 4.0)
-# global_symbol_table.insert('a', 'int')
-# global_symbol_table.setArgs('a', 'value', 45)
 
 precedence = (
 	('right','EQUAL', 'NOT'),
@@ -149,12 +132,12 @@ def p_type(p):
 def p_type_name(p):
 	'''TypeName : TYPEX
 				| TTYPE IDENTIFIER'''
-	# p[0] = make_node(p[1])
+
 	temp = Node()
 	if len(p) == 3:
 		temp.type = p[1] + '_' + p[2]
-		if not typeInScope(temp.type):
-			print 'error at line', p.lineno(0), 'type not in scope'
+		if not typeInScope(p[2]):
+			print 'error at line', p.lineno(0), 'type ' + temp.type + ' not in scope'
 	else:
 		temp.type = p[1]
 	p[0] = temp
@@ -165,9 +148,7 @@ def p_type_lit(p):
 			   | PointerType
 			   | FunctionType'''
 	p[0] = p[1]
-	
-
-     
+	  
 def p_type_opt(p):
 	'''TypeOpt : Type
 			   | epsilon'''
@@ -260,10 +241,8 @@ def p_function_type(p):
 
 def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
-	#TODO result 
+	# TODO result 
 	p[0] = [p[1]] # append p[2] if result
-	# for i in p[2]:
-	# 	make_edge(p[0], i, 'return')
 
 def p_result_opt(p):
 	'''ResultOpt : Result
@@ -615,8 +594,6 @@ def p_func_decl(p):
 		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	else:
 		insertInfo(p[2], 'func_signature', p[3])
-	# make_edge(p[3], p[2])
-	# print p[0]
 
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
@@ -757,9 +734,15 @@ def p_prim_expr(p):
 			temp_type = p[1].expr.type
 			if temp_type[0:5] != 'Array':
 				print 'error at line', p.lineno(0), "can't index non-array types"
+
+			length = int(temp_type[6:-1].split(',')[0])
+			if type(p[2].expr.value) == int and p[2].expr.value >= length:
+				print 'error at line', p.lineno(0), "index out of bounds"
+				
 			element_type = (temp_type[6:-1].split(',')[1])[1:]
 			p[0].expr.type = element_type
 			p[0].place = newTemp(element_type)
+			p[0].expr.value = p[1].expr.value
 			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
@@ -794,7 +777,6 @@ def p_prim_expr(p):
 			exprlist.insert(0, exprlist[-1])
 			exprlist.pop()
 			exprlist_types = [a.expr.type for a in exprlist]
-			print exprlist_types, signature_type_list
 			if len(signature_type_list) != len(exprlist_types):
 				print 'error at line', p.lineno(0), "unequal number of arguments"
 				return
@@ -906,7 +888,7 @@ def p_expression(p):
 		if p[2] in binary_ops:
 			exprtypes = ['int', 'float', 'imaginary']
 			if p[1].expr.type != p[3].expr.type:
-				#TODO int/float typecasting
+				# TODO int/float typecasting
 				print 'error: at line', p.lineno(0), "type mismatch in comparison"
 				return
 			exprtype = p[1].expr.type
@@ -1089,7 +1071,7 @@ def p_inc_dec(p):
 
 def p_assignment(p):
 	'''Assignment : ExpressionList assign_op ExpressionList'''
-	#TODO restriction on LHS expressions
+	# TODO restriction on LHS expressions
 	p[0] = Node()
 	if len(p[1].exprlist) != len(p[3].exprlist):
 		print "error: at line", p.lineno(0), "Unequal number of arguments"
@@ -1098,13 +1080,13 @@ def p_assignment(p):
 			if not inScope(p[1].exprlist[i].expr.value):
 				print "error: at line", p.lineno(0), "variable not in scope"
 			else:
-				if p[1].exprlist[i].expr.type != p[3].exprlist[i].expr.type :
+				if p[1].exprlist[i].expr.type != p[3].exprlist[i].expr.type:
 					print "error: at line", p.lineno(0), "type mismatch is assighment"
 					return
 				exprtype = p[1].exprlist[i].expr.type
 				p[0].expr.type = exprtype
 				if p[2] == '=':
-					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].expr.value + ' := ' + p[3].exprlist[i].place]
+					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
 				ops = ['+=', '-=', '*=', '/=', '%=']
 				if p[2] in ops:
 					new_temp = newTemp(exprtype)			
@@ -1482,35 +1464,45 @@ def p_empty(p):
 
 # -------------------------------------------------------
 
-
 parser = yacc.yacc()
 
-with open(infile,'r') as f:
-	input_str = f.read()
-t = parser.parse(input_str, tracking=True)
+f = open(infile, 'r')
+input_str = f.read()
+f.close()
 
-# pp.pprint(t.code)
+try:
+	t = parser.parse(input_str, tracking=True)
+except Exception as e:
+	print str(e)
+	if str(e) == "\'NoneType\' object has no attribute \'lineno\'":
+		print '[SYNTAX ERROR] SEMICOL missing at end of MAIN'
 
-def myprint(item):
+def retstring(item):
 	if type(item) == list:
-		out = ""
+		out = ''
 		for i in item:
 			if type(i) == list:
-				out += myprint(i)
+				out += retstring(i)
 			else:
 				out += i
 		return out
 	else:
 		return item
-		
-def printall(code):
-	for item in code:
-		print myprint(item)
-# for item in t.code:
-# 	myprint(item)
-printall(t.code)
 
-print ''
-print "symbol table\n"
+f = open(codefile, 'w')
+buf = ''
+for item in t.code:
+	buf += retstring(item) + '\n'
+f.write(buf)
+f.close()
+
+f = open(tablefile, 'w').close()
+f = open(tablefile, 'a')
 for scope in scope_list[::-1]:
-	pp.pprint(scope.getAllEntries())
+	entries = scope.getAllEntries()
+	f.write('scope: ' + str(entries[1]) + '\n')
+	f.write('parent: ' + str(entries[3]) + '\n')
+	pp.pprint(entries[0], stream=f)
+	pp.pprint(entries[2], stream=f)
+	f.write('\n')
+f.close()

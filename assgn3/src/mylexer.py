@@ -1,24 +1,4 @@
 import ply.lex as lex
-import argparse
-
-# parser=argparse.ArgumentParser()
-# parser.add_argument("--cfg",help="takes the color configuration file")
-# parser.add_argument("input",help="takes the input program")
-# parser.add_argument("--output",help="takes the name of the output HTML file")
-# args=parser.parse_args()
-
-# cfg_file=args.cfg
-# inprgm=args.input
-# outfile=args.output
-# f1=open(inprgm)
-# f2=open(cfg_file)
-# mylist=f2.read()
-# mylist = [x.split(',') for x in mylist.splitlines()]
-
-# token_dic={}
-# for i in range(len(mylist)):
-#     x,y=mylist[i]
-#     token_dic[x]=y
 
 # === RESERVED KEYWORDS === #
 keywords = [
@@ -214,50 +194,3 @@ def t_error(t):
      t.lexer.skip(1)
 
 lex.lex()
-# lexer.input(f1.read())
-
-# Tokenize
-# tokens_lst=[]
-# while True:
-#         tok = lexer.token()
-#         if not tok:
-#                 break      # end of input
-
-#         tokens_lst.append(tok)
-
-# for tok in tokens_lst:
-#         print (tok)
-
-
-# f3 = open(outfile, 'w')
-# head = """
-#         <html>
-#         <title>[CS335] Assignment 1</title>
-#         <body>
-#         <h1>LEXER Output</h1>
-
-# """
-
-# addendum = ""
-# curr_line = 1
-# for tok in tokens_lst:
-#         if curr_line != tok.lineno :
-#                 addendum += "<br>\n"
-#                 curr_line = tok.lineno
-
-#         if tok.type == 'INDENT':
-#                 addendum += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
-#         elif tok.type == 'STRING':
-#                 addendum += "<font color=\"{}\">\"{}\" </font>".format(token_dic[tok.type], tok.value)
-#         else:
-#                 addendum += "<font color=\"{}\">{} </font>".format(token_dic[tok.type], tok.value)
-
-# tail = """
-#         </body>
-#         </html>
-
-# """
-
-# contents = head + addendum + tail
-# f3.write(contents)
-# f3.close()
