@@ -5,7 +5,6 @@ import argparse
 import pprint as pp
 from utils import Node, SymbolTable
 from scope import *
-from mytypes import *
 import json 
 import ast
 
@@ -54,13 +53,39 @@ def insertId(idname, idtype):
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
 
+def insertType(name, ttype):
+	err = ""
+	curr_types = scope_stack[-1].types
+	if name in curr_types:
+		err = "type variable already exists"
+		return err
+	scope_stack[-1].types[name] = ttype
+
 def insertInfo(idname, attr, value):
 	if not inScope(idname):
 		err = "variable does not exists", idname, attr, value
 		print err
 	else:
-		curr_scope = scope_stack[-1]
+		curr_scope = getScope(idname)
 		curr_scope.setArgs(idname, attr, value)
+
+
+def typeInScope(name):
+	for scope in scope_stack[::-1]:
+		types = scope.types
+		if name in types:
+			return True
+	return False
+
+def validTypeConversion(type1, type2):
+	#todo type1 is converted type2
+	if type1 == 'string':
+		return False
+	if type1 == 'float' and type2 == 'int':
+		return False
+	
+
+	return True
 
 temp_var_count = 0
 def newTemp(idtype):
@@ -120,11 +145,18 @@ def p_type(p):
 	else:
 		p[0] = p[1]
 
+
 def p_type_name(p):
-	'''TypeName : TYPEX'''
+	'''TypeName : TYPEX
+				| TTYPE IDENTIFIER'''
 	# p[0] = make_node(p[1])
 	temp = Node()
-	temp.type = p[1]
+	if len(p) == 3:
+		temp.type = p[1] + '_' + p[2]
+		if not typeInScope(temp.type):
+			print 'error at line', p.lineno(0), 'type not in scope'
+	else:
+		temp.type = p[1]
 	p[0] = temp
 
 def p_type_lit(p):
@@ -133,6 +165,8 @@ def p_type_lit(p):
 			   | PointerType
 			   | FunctionType'''
 	p[0] = p[1]
+	
+
      
 def p_type_opt(p):
 	'''TypeOpt : Type
@@ -208,8 +242,8 @@ def p_tag(p):
 
 def p_pointer_type(p):
 	'''PointerType : TIMES BaseType'''
-	p[0] = make_node('pointer')
-	make_edge(p[0], p[1])
+	p[0] = Node()
+	p[0].type = p[2].type + '*'
 
 def p_base_type(p):
 	'''BaseType : Type'''
@@ -226,11 +260,10 @@ def p_function_type(p):
 
 def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
-	p[0] = make_node('func')
-	for i in p[1]:
-		make_edge(p[0], i, 'arg')
-	for i in p[2]:
-		make_edge(p[0], i, 'return')
+	#TODO result 
+	p[0] = [p[1]] # append p[2] if result
+	# for i in p[2]:
+	# 	make_edge(p[0], i, 'return')
 
 def p_result_opt(p):
 	'''ResultOpt : Result
@@ -265,15 +298,18 @@ def p_parameter_list(p):
 					  | IdentifierList Type
 					  | ParameterDeclCommaRep'''
 	if len(p) == 3:
-		temp = make_node('parameter')
-		for i in p[1]:
-			make_edge(temp, i)
-		make_edge(temp, p[2], 'type')
+		temp = {}
+		temp[p[2].type] = []
+		for i in p[1].idlist:
+			temp[p[2].type].append(i)
 		p[0] = [temp]
 	elif type(p[1]) == list:
 		p[0] = p[1]
 	else:
-		p[0] = [p[1]]
+		tempdict = {}
+		tempdict[p[1].type] = []
+		p[0] = [tempdict]
+
 
 def p_parameter_decl_comma_rep(p):
 	'''ParameterDeclCommaRep : ParameterDeclCommaRep COMMA ParameterDecl
@@ -287,13 +323,14 @@ def p_parameter_decl_comma_rep(p):
 def p_parameter_decl(p):
 	'''ParameterDecl : IdentifierList Type
 					 | Type'''
-	p[0] = make_node('parameter')
+	p[0] = {}
 	if len(p) == 3:
-		for i in p[1]:
-			make_edge(p[0], i)
-		make_edge(p[0], p[2], 'type')
+		p[0][p[2].type] = []
+		for i in p[1].idlist:
+			p[0][p[2].type].append(i)
 	else:
-		make_edge(p[0], p[1], 'type')
+		p[0][p[1].type] = []
+
 
 #----------------------------------------------------------------------------------#
 
@@ -303,6 +340,7 @@ def p_parameter_decl(p):
 def p_block(p):
 	'''Block : LBRACE StatementList RBRACE'''
 	p[0] = p[2]
+	p[0].extra['block_scope'] = currentScopelabel()
 	deleteScope()
 
 
@@ -431,12 +469,7 @@ def p_identifier_rep(p):
 def p_type_decl(p):
 	'''TypeDecl : TYPE TypeSpec
 				| TYPE LPAREN TypeSpecRep RPAREN'''
-	p[0] = make_node(p[1])
-	if len(p) == 5:
-		for i in p[3]:
-			make_edge(p[0], i)
-	else:
-		make_edge(p[0], p[2])
+	p[0] = Node()
 
 def p_type_spec_rep(p):
 	'''TypeSpecRep : TypeSpecRep TypeSpec SEMICOL
@@ -454,10 +487,10 @@ def p_type_spec(p):
 
 def p_alias_decl(p):
 	'''AliasDecl : IDENTIFIER EQUAL Type'''
-	p[0] = make_node(p[2])
-	temp = make_node(p[1])
-	make_edge(p[0], temp, 'alias')
-	make_edge(p[0], p[3])
+	err = insertType(p[1], p[3].type)
+	if err:
+		print 'error at line', p.lineno(0), err 
+	p[0] = None
 
 # -------------------------------------------------------
 
@@ -465,11 +498,11 @@ def p_alias_decl(p):
 # -------------------TYPE DEFINITIONS--------------------
 
 def p_type_def(p):
-	'''TypeDef : IDENTIFIER Type'''
-	p[0] = make_node('typedef')
-	temp = make_node(p[1])
-	make_edge(p[0], temp)
-	make_edge(p[0], p[2])
+	'''TypeDef : TTYPE IDENTIFIER Type'''
+	err = insertType(p[1] + '_' + p[2], p[3].type)
+	if err:
+		print 'error at line', p.lineno(0), err
+	p[0] = None
 
 # -------------------------------------------------------
 
@@ -537,7 +570,6 @@ def p_var_spec(p):
 					
 					#TODO always insert info??????????? what is attribute value
 					#TODO which attributes to be added in symbol table!
-		# print 'here', p[0]
 
 def p_expr_list_opt(p):
 	'''ExpressionListOpt : EQUAL ExpressionList
@@ -570,9 +602,21 @@ def p_short_var_decl(p):
 def p_func_decl(p):
 	'''FunctionDecl : FUNC FunctionName Function
 					| FUNC FunctionName Signature'''
-	p[0] = p[3]
-	p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
+	p[0] = p[3][1]
+	err = insertId(p[2], 'func')
+	if err:
+		print 'error at line', p.lineno(0), err
+		return 
+	if type(p[3]) == tuple:
+		func_dict = {}
+		func_dict['symbol_table'] = p[3][1].extra['block_scope']
+		insertInfo(p[2], 'func_dict', func_dict)
+		insertInfo(p[2], 'func_signature', p[3][0])
+		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
+	else:
+		insertInfo(p[2], 'func_signature', p[3])
 	# make_edge(p[3], p[2])
+	# print p[0]
 
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
@@ -580,7 +624,7 @@ def p_func_name(p):
 
 def p_func(p):
 	'''Function : Signature FunctionBody'''
-	p[0] = p[2]
+	p[0] = (p[1], p[2])
 	# make_edge(p[1], p[2])
 
 def p_func_body(p):
@@ -684,8 +728,13 @@ def p_operand_name(p):
 
 def p_conversion(p):
 	'''Conversion : Type LPAREN Expression RPAREN'''
-	p[0] = p[1]
-	make_edge(p[0], p[3])
+	p[0] = Node() 
+	if not validTypeConversion(p[3].expr.type, p[1].type):
+		print 'error at line', p.lineno(0), 'invalid type conversion'
+		return
+	p[0].place = newTemp(p[1].type)
+	p[0].code += p[3].code + [p[0].place + ' := ' + p[3].expr.type + 'TO' + p[1].type + ' ' + p[3].place]
+	p[0].expr.type = p[1].type
 
 # ---------------------------------------------------------
 
@@ -725,7 +774,36 @@ def p_prim_expr(p):
 			p[0].expr.type = field_dic[selector]
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+		if 'is_argument' in p[2].extra:
+			temp_type = p[1].expr.type
+			if temp_type != 'func':
+				print 'error at line', p.lineno(0), "need function type"
+				return
+			func_signature = getIdInfo(p[1].place)['func_signature'][0] #may also contains ret vals appended
+			signature_type_list = []
+			for args in func_signature:
+				key = args.keys()[0]
+				value = args[key]
+				if not value: # checking empty list
+					signature_type_list.append(key)
+				for v in value:
+					signature_type_list.append(key)
 			
+			# TODO CHECK exprlist is rearranged. Change grammar? May also affect idlist
+			exprlist = p[2].exprlist
+			exprlist.insert(0, exprlist[-1])
+			exprlist.pop()
+			exprlist_types = [a.expr.type for a in exprlist]
+			print exprlist_types, signature_type_list
+			if len(signature_type_list) != len(exprlist_types):
+				print 'error at line', p.lineno(0), "unequal number of arguments"
+				return
+			if signature_type_list != exprlist_types:
+				print 'error at line', p.lineno(0), 'type mismatch in argument'
+			arguments = [a.place for a in exprlist]
+			for i in exprlist:
+				p[0].code += i.code
+			p[0].code += ['call ' + p[1].place + ':' + str(arguments)]
 
 def p_selector(p):
 	'''Selector : DOT IDENTIFIER'''
@@ -753,15 +831,15 @@ def p_slice(p):
 
 def p_argument(p):
 	'''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
-	p[0] = make_node('args')
-	for i in p[2]:
-		make_edge(p[0], i)
+	p[0] = p[2]
+	p[0].extra['is_argument'] = True
+
 
 def p_expr_list_type_opt(p):
 	'''ExpressionListTypeOpt : ExpressionList
 							 | epsilon'''
 	if p[1] == 'epsilon':
-		p[0] = []
+		p[0] = Node()
 	else:
 		p[0] = p[1]
 
@@ -915,11 +993,20 @@ def p_unary_expr(p):
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + old_place]
 		if p[1] == '*':
-			# TODO
-			p[0] = p[2]
+			# p[0] = p[2]
+			p[0] = Node()
+			if p[2].expr.type[-1] != '*':
+				print 'error at line', p.lineno(0), "can't dereference: invalid type"
+				return
+			p[0].expr.type = p[2].expr.type[:-1]
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code = p[2].code + [p[0].place + ' := *' + p[2].place]
+
 		if p[1] == '&':
-			# TODO
-			p[0] = p[2]
+			p[0] = Node()
+			p[0].expr.type = p[2].expr.type + '*'
+			p[0].place = newTemp(p[0].expr.type)
+			p[0].code = p[2].code + [p[0].place + ' := &' + p[2].place] 
 		if p[1] == '!':
 			p[0] = Node()
 			p[0].code = p[1].code

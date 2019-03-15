@@ -46,6 +46,7 @@ keywords = [
         'struct',
         'switch',
         'type',
+        'ttype',
         'var',
         ]
 
@@ -169,7 +170,7 @@ def t_CONSTANT(t):
     return t
 
 def t_TYPEX(t):
-    r'(((\*)|\ )*\bint\b|((\*)|\ )*\bfloat\b|((\*)|\ )*\bstring\b)|((\*)|\ )*\bcomplex\b|((\*)|\ )*\bbool\b'
+    r'\bint\b|\bfloat\b|\bstring\b|\bcomplex\b|\bbool\b'
     t.value=t.value.replace(" ","")
     return t
 

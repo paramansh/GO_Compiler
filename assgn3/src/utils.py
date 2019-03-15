@@ -1,3 +1,7 @@
+basic_types = ['int', 'float', 'char', 'string', 'rune']
+def add_type(name, ttype):
+	basic_types.append({name:ttype})
+
 class Node:
 	def __init__(self):
 		self.code = []
@@ -9,7 +13,6 @@ class Node:
 		self.next = ['not initialised next label']
 		self.begin = ['begin not initialised']
 		self.extra = {}
-		self.struct_extra = {}
 		self.forclause = ForClause()
 
 	def __str__(self):
@@ -21,6 +24,7 @@ class Node:
 		for i in self.exprlist:
 			print i.__dict__
 		print "expr:", self.expr
+		print "extra:", self.extra
 		return ""
 
 class Expr:
@@ -50,13 +54,14 @@ class ForClause:
 		if self is None:
 			return ""
 		return str(self.__dict__)
-		# print "value:", self.value 
-		# print "type:", self.type
+
+
 
 class SymbolTable:
 	def __init__(self, parent):
 		self.table = {}
 		self.parent = parent
+		self.types = {}
 		self.label = 0
 
 	#?? symbol table identifying name??
@@ -88,5 +93,8 @@ class SymbolTable:
 			# return err TODO ????????
 	
 	def getAllEntries(self):
-		return self.table, self.label
+		if self.parent:
+			return self.table, self.label, self.types, self.parent.label
+		else:
+			return self.table, self.label, self.types, None
 	
