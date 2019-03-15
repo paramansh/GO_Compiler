@@ -46,6 +46,7 @@ keywords = [
         'struct',
         'switch',
         'type',
+        'ttype',
         'var',
         ]
 

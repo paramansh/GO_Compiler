@@ -3,3 +3,11 @@ type specific operators in <, >, ||, && etc. eg: int<, int&& etc.
 place variable in assignment
 
 a+3+5 ++ equivalent to (a+3+5) ++ ??
+
+pending
+
+function type
+type declaration and definition
+function declaration
+conversion
+slice and arguments in primary expression

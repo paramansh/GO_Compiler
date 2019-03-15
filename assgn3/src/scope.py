@@ -23,6 +23,9 @@ def inCurrentScope(ide):
 	scope = scope_stack[-1]
 	return scope.lookup(ide)
 
+def currentScopelabel():
+	return scope_stack[-1].label
+
 def addScope():
 	if not scope_stack:
 		print "scope stack empty: global symbol table not initialised"

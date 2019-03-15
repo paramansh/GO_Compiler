@@ -1,4 +1,7 @@
 package main;
+type (ttype mytype int; ttype mytype2 float;);
+var x ttype mytype;
+
 //const y int = 2;
 //const (
 //    x = 1.0;
@@ -16,12 +19,12 @@ package main;
 //var z int = 93 + x + y;
 //var x int;
 //var a struct{x int; y float;z [4]int;};
-func main() {
-    var c *int;
-    var a int = *c;
-    var b *int = &a;
-    c = a;
-};
+//func main(int, a,b,c float, d, e int) {
+//    var c *int;
+//    var a int = *c;
+//    var b *int = &a;
+//    c = b;
+//};
 //
 //var a int;
 //func into(){
