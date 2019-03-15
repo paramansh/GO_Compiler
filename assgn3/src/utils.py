@@ -11,6 +11,7 @@ class Node:
 		self.extra = {}
 		self.struct_extra = {}
 		self.forclause = ForClause()
+
 	def __str__(self):
 		print "code:", self.code
 		print "place:", self.place 
@@ -30,6 +31,7 @@ class Expr:
 		# self.is_true = True # for bool expressions
 		self.true_label = ['not initialise true label'] #list so as store pointer
 		self.false_label = ['not initialised false label']
+		
 	def __str__(self):
 		if self is None:
 			return ""
@@ -43,6 +45,7 @@ class ForClause:
 		self.initialise = []
 		self.condition = []
 		self.update = []
+
 	def __str__(self):
 		if self is None:
 			return ""

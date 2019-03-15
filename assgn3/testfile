@@ -1,0 +1,22 @@
+package main;
+
+const a = 1;
+const b = 1.0;
+const c string = "one-point-zero";
+
+var i int = 0;
+var j float = b - 2.0;
+
+func main() {
+    var i, n int;
+
+    for i = 0; i < n; i++ {
+        j := (2.0 * 3.45 - 1.57);
+        b = b * j;
+    };
+
+    if a == i {
+        x := a << 2;
+    };
+
+};
