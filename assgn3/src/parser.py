@@ -66,8 +66,9 @@ def insertInfo(idname, attr, value):
 		err = "variable does not exists", idname, attr, value
 		print err
 	else:
-		curr_scope = scope_stack[-1]
+		curr_scope = getScope(idname)
 		curr_scope.setArgs(idname, attr, value)
+
 
 def typeInScope(name):
 	for scope in scope_stack[::-1]:
@@ -76,6 +77,9 @@ def typeInScope(name):
 			return True
 	return False
 
+def validTypeConversion(type1, type2):
+	#todo
+	return True
 
 temp_var_count = 0
 def newTemp(idtype):
@@ -718,8 +722,13 @@ def p_operand_name(p):
 
 def p_conversion(p):
 	'''Conversion : Type LPAREN Expression RPAREN'''
-	p[0] = p[1]
-	make_edge(p[0], p[3])
+	p[0] = Node()
+	if not validTypeConversion(p[1].type, p[3].expr.type):
+		print 'error at line', p.lineno(0), 'invalid type conversion'
+		return
+	p[0].place = newTemp(p[1].type)
+	p[0].code += p[3].code + [p[0].place + ' := ' + p[3].expr.type + 'TO' + p[1].type + ' ' + p[3].place]
+	p[0].expr.type = p[1].type
 
 # ---------------------------------------------------------
 
@@ -759,7 +768,36 @@ def p_prim_expr(p):
 			p[0].expr.type = field_dic[selector]
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+		if 'is_argument' in p[2].extra:
+			temp_type = p[1].expr.type
+			if temp_type != 'func':
+				print 'error at line', p.lineno(0), "need function type"
+				return
+			func_signature = getIdInfo(p[1].place)['func_signature'][0] #may also contains ret vals appended
+			signature_type_list = []
+			for args in func_signature:
+				key = args.keys()[0]
+				value = args[key]
+				if not value: # checking empty list
+					signature_type_list.append(key)
+				for v in value:
+					signature_type_list.append(key)
 			
+			# TODO CHECK exprlist is rearranged. Change grammar? May also affect idlist
+			exprlist = p[2].exprlist
+			exprlist.insert(0, exprlist[-1])
+			exprlist.pop()
+			exprlist_types = [a.expr.type for a in exprlist]
+			print exprlist_types, signature_type_list
+			if len(signature_type_list) != len(exprlist_types):
+				print 'error at line', p.lineno(0), "unequal number of arguments"
+				return
+			if signature_type_list != exprlist_types:
+				print 'error at line', p.lineno(0), 'type mismatch in argument'
+			arguments = [a.place for a in exprlist]
+			for i in exprlist:
+				p[0].code += i.code
+			p[0].code += ['call ' + p[1].place + ':' + str(arguments)]
 
 def p_selector(p):
 	'''Selector : DOT IDENTIFIER'''
@@ -787,15 +825,15 @@ def p_slice(p):
 
 def p_argument(p):
 	'''Arguments : LPAREN ExpressionListTypeOpt RPAREN'''
-	p[0] = make_node('args')
-	for i in p[2]:
-		make_edge(p[0], i)
+	p[0] = p[2]
+	p[0].extra['is_argument'] = True
+
 
 def p_expr_list_type_opt(p):
 	'''ExpressionListTypeOpt : ExpressionList
 							 | epsilon'''
 	if p[1] == 'epsilon':
-		p[0] = []
+		p[0] = Node()
 	else:
 		p[0] = p[1]
 

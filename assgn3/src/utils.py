@@ -1,6 +1,7 @@
 basic_types = ['int', 'float', 'char', 'string', 'rune']
 def add_type(name, ttype):
 	basic_types.append({name:ttype})
+
 class Node:
 	def __init__(self):
 		self.code = []
