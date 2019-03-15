@@ -30,7 +30,8 @@ func main() {
     type d = float;
     d = float(b);
     var e int;
-    fun(a, float(a), float(a), a);
+    var f string;
+    fun(a, float(f), float(a), a);
 };
 
 

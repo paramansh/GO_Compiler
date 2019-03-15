@@ -78,7 +78,13 @@ def typeInScope(name):
 	return False
 
 def validTypeConversion(type1, type2):
-	#todo
+	#todo type1 is converted type2
+	if type1 == 'string':
+		return False
+	if type1 == 'float' and type2 == 'int':
+		return False
+	
+
 	return True
 
 temp_var_count = 0
@@ -481,7 +487,7 @@ def p_type_spec(p):
 
 def p_alias_decl(p):
 	'''AliasDecl : IDENTIFIER EQUAL Type'''
-	err = insertId(p[1], p[3].type)
+	err = insertType(p[1], p[3].type)
 	if err:
 		print 'error at line', p.lineno(0), err 
 	p[0] = None
@@ -722,8 +728,8 @@ def p_operand_name(p):
 
 def p_conversion(p):
 	'''Conversion : Type LPAREN Expression RPAREN'''
-	p[0] = Node()
-	if not validTypeConversion(p[1].type, p[3].expr.type):
+	p[0] = Node() 
+	if not validTypeConversion(p[3].expr.type, p[1].type):
 		print 'error at line', p.lineno(0), 'invalid type conversion'
 		return
 	p[0].place = newTemp(p[1].type)

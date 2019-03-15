@@ -2,7 +2,7 @@ TODO: type declaration
 type specific operators in <, >, ||, && etc. eg: int<, int&& etc.
 place variable in assignment
 
-a+3+5 ++ equivalent to (a+3+5) ++ ??
+support for const/var x, y, z = 4 (i.e. when number of arguments in rhs is 1)
 
 pending
 
