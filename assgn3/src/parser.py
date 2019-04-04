@@ -354,11 +354,13 @@ def p_statement_rep(p):
 	if len(p) == 4:
 		p[0] = p[1]
 		p[0].code += p[2].code
+		p[2].forclause.next[0] = p[0].forclause.next
+		p[2].forclause.begin[0] = p[0].forclause.begin
 		if p[2].extra:
 			if 'is_continue' in p[2].extra and p[2].extra['is_continue']:
-				p[2].next[0] = p[0].begin
+				p[2].next[0] = p[0].forclause.begin
 			if 'is_break' in p[2].extra and p[2].extra['is_break']:
-				p[2].next[0] = p[0].next
+				p[2].next[0] = p[0].forclause.next
 	else:
 		addScope()
 		p[0] = Node()
@@ -1138,6 +1140,8 @@ def p_if_statement(p):
 	''' IfStmt : IF Expression Block ElseOpt '''
 	# no else statement
 	p[0] = Node()
+	p[3].forclause.next[0] = p[0].forclause.next
+	p[3].forclause.begin[0] = p[0].forclause.begin
 	if p[4] is None:
 		new_label = newLabel()
 		p[2].expr.true_label[0] = new_label
@@ -1263,23 +1267,28 @@ def p_for(p):
 	'''ForStmt : FOR ConditionBlockOpt Block'''
 	p[0] = Node()
 	if p[2] is not None:
-		if p[2].forclause.isClause:
-			p[0].begin = [newLabel()]
+		p[0].begin = [newLabel()]
+		p[3].forclause.next[0] = p[0].next
+		
+		if p[2].forclause.isClause:		
 			cond = p[2].forclause.condition
 			cond.expr.true_label[0] = newLabel()
 			cond.expr.false_label[0] = p[0].next
-			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
-			p[3].next[0] = p[0].next
+			p[3].next[0] = p[0].begin # TODO TODO TODO check confirtm
+
+			update_label = [newLabel()]
+			p[3].forclause.begin[0] = update_label
+			# p[3].next[0] = p[0].next
 			p[3].begin[0] = p[0].begin
 			p[0].code += p[2].forclause.initialise
 			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[3].code + p[2].forclause.update + [['goto: ',p[0].begin]]
+			p[0].code += p[3].code + [[update_label, ":"]] + p[2].forclause.update + [['goto: ',p[0].begin]]
 		else:
-			p[0].begin = [newLabel()]
 			p[2].expr.true_label[0] = newLabel()
 			p[2].expr.false_label[0] = p[0].next
-			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
-			p[3].next[0] = p[0].next 
+			p[3].forclause.begin[0] = p[0].begin
+			p[3].next[0] = p[0].begin # TODO TODO TODO check confirtm
+			# p[3].next[0] = p[0].next 
 			p[3].begin[0] = p[0].begin
 			p[0].code += [[p[0].begin , ":"]] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()
