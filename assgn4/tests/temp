@@ -1,0 +1,15 @@
+package math;
+
+func fun(c int, d float, e int) float {
+    var a float;
+    a = float(c + e) * d;
+    return a;
+};
+
+func main() {
+    c := 1;
+    d := 1.0;
+    e := 1;
+    var a float;
+    a = fun(c, d, e);
+};

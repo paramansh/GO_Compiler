@@ -1,0 +1,12 @@
+label0 function fun:
+label1 function main:
+TEMP_VAR0 := *c
+a := TEMP_VAR0
+TEMP_VAR1 := &a
+b := TEMP_VAR1
+TEMP_VAR2 := intTOfloat a
+param a
+param TEMP_VAR2
+param a
+callfloat, TEMP_VAR3, fun
+x := TEMP_VAR3
