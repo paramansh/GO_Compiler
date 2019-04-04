@@ -170,6 +170,8 @@ def p_array_type(p):
 def p_array_length(p):
 	''' ArrayLength : Expression '''
 	p[0] = p[1]
+	if p[1].expr.type != 'int':
+		print 'error at line', p.lineno(0), "array size is of non-integral type"
 
 def p_element_type(p):
 	''' ElementType : Type '''
@@ -242,7 +244,7 @@ def p_function_type(p):
 def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
 	# TODO result 
-	p[0] = [p[1]] # append p[2] if result
+	p[0] = [p[1], p[2]] # append p[2] if result
 
 def p_result_opt(p):
 	'''ResultOpt : Result
@@ -258,7 +260,7 @@ def p_result(p):
 	if type(p[1]) == list:
 		p[0] = p[1]
 	else:
-		p[0] = [p[1]]
+		p[0] = [p[1].type]
 
 def p_parameters(p):
 	'''Parameters : LPAREN ParameterListOpt RPAREN'''
@@ -333,13 +335,11 @@ def p_statement_rep(p):
 	if len(p) == 4:
 		p[0] = p[1]
 		p[0].code += p[2].code
-		p[2].forclause.next[0] = p[0].forclause.next
-		p[2].forclause.begin[0] = p[0].forclause.begin
 		if p[2].extra:
 			if 'is_continue' in p[2].extra and p[2].extra['is_continue']:
-				p[2].next[0] = p[0].forclause.begin
+				p[2].next[0] = p[0].begin
 			if 'is_break' in p[2].extra and p[2].extra['is_break']:
-				p[2].next[0] = p[0].forclause.next
+				p[2].next[0] = p[0].next
 	else:
 		addScope()
 		p[0] = Node()
@@ -596,6 +596,7 @@ def p_func_decl(p):
 		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	else:
 		insertInfo(p[2], 'func_signature', p[3])
+		print p[3]
 
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
@@ -604,7 +605,6 @@ def p_func_name(p):
 def p_func(p):
 	'''Function : Signature FunctionBody'''
 	p[0] = (p[1], p[2])
-	# make_edge(p[1], p[2])
 
 def p_func_body(p):
 	'''FunctionBody : Block'''
@@ -622,7 +622,7 @@ def p_func_body(p):
 # -------------------------------------------------------
 
 
-# -------------------	---OPERAND----------------------------
+# ----------------------OPERAND----------------------------
 
 def p_operand(p):
 	'''Operand : Literal
@@ -737,15 +737,22 @@ def p_prim_expr(p):
 			if temp_type[0:5] != 'Array':
 				print 'error at line', p.lineno(0), "can't index non-array types"
 
-			length = int(temp_type[6:-1].split(',')[0])
-			if type(p[2].expr.value) == int and p[2].expr.value >= length:
-				print 'error at line', p.lineno(0), "index out of bounds"
+			if p[2].expr.type != 'int':
+				print 'error at line', p.lineno(0), "array index is of non-integral type"
+
+			try:
+				length = int(temp_type[6:-1].split(',')[0])
+				if type(p[2].expr.value) == int and p[2].expr.value >= length:
+					print 'error at line', p.lineno(0), "index out of bounds"
+			except:
+				pass
 				
 			element_type = (temp_type[6:-1].split(',')[1])[1:]
 			p[0].expr.type = element_type
 			p[0].place = newTemp(element_type)
 			p[0].expr.value = p[1].expr.value
 			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
 			temp_type = p[1].expr.type
@@ -759,35 +766,50 @@ def p_prim_expr(p):
 			p[0].expr.type = field_dic[selector]
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+
 		if 'is_argument' in p[2].extra:
 			temp_type = p[1].expr.type
 			if temp_type != 'func':
 				print 'error at line', p.lineno(0), "need function type"
 				return
-			func_signature = getIdInfo(p[1].place)['func_signature'][0] #may also contains ret vals appended
-			signature_type_list = []
-			for args in func_signature:
+			func_params = getIdInfo(p[1].place)['func_signature'][0]
+			func_result = getIdInfo(p[1].place)['func_signature'][1]
+			params_type_list = []
+			for args in func_params:
 				key = args.keys()[0]
 				value = args[key]
 				if not value: # checking empty list
-					signature_type_list.append(key)
+					params_type_list.append(key)
 				for v in value:
-					signature_type_list.append(key)
-			
-			# TODO CHECK exprlist is rearranged. Change grammar? May also affect idlist
+					params_type_list.append(key)
+
 			exprlist = p[2].exprlist
 			exprlist.insert(0, exprlist[-1])
 			exprlist.pop()
 			exprlist_types = [a.expr.type for a in exprlist]
-			if len(signature_type_list) != len(exprlist_types):
+			if len(params_type_list) != len(exprlist_types):
 				print 'error at line', p.lineno(0), "unequal number of arguments"
 				return
-			if signature_type_list != exprlist_types:
+			if params_type_list != exprlist_types:
 				print 'error at line', p.lineno(0), 'type mismatch in argument'
 			arguments = [a.place for a in exprlist]
 			for i in exprlist:
 				p[0].code += i.code
-			p[0].code += ['call ' + p[1].place + ':' + str(arguments)]
+			for arg in arguments:
+				p[0].code += ['param ' + arg]
+
+			if not func_result:
+				p[0].code += ['callvoid ' + p[1].place + ', ' + str(arguments)]
+				p[0].expr.type = 'void'
+			else: ### TODO multiple return values
+				for arg in func_result:
+					result = arg
+					break
+				new_place = newTemp(result.keys()[0])
+				p[0].expr.type = result.keys()[0]
+				p[0].place = new_place
+				p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
+
 
 def p_selector(p):
 	'''Selector : DOT IDENTIFIER'''
@@ -1122,8 +1144,6 @@ def p_if_statement(p):
 	''' IfStmt : IF Expression Block ElseOpt '''
 	# no else statement
 	p[0] = Node()
-	p[3].forclause.next[0] = p[0].forclause.next
-	p[3].forclause.begin[0] = p[0].forclause.begin
 	if p[4] is None:
 		new_label = newLabel()
 		p[2].expr.true_label[0] = new_label
@@ -1249,28 +1269,23 @@ def p_for(p):
 	'''ForStmt : FOR ConditionBlockOpt Block'''
 	p[0] = Node()
 	if p[2] is not None:
-		p[0].begin = [newLabel()]
-		p[3].forclause.next[0] = p[0].next
-		
-		if p[2].forclause.isClause:		
+		if p[2].forclause.isClause:
+			p[0].begin = [newLabel()]
 			cond = p[2].forclause.condition
 			cond.expr.true_label[0] = newLabel()
 			cond.expr.false_label[0] = p[0].next
-			p[3].next[0] = p[0].begin # TODO TODO TODO check confirtm
-
-			update_label = [newLabel()]
-			p[3].forclause.begin[0] = update_label
-			# p[3].next[0] = p[0].next
+			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
+			p[3].next[0] = p[0].next
 			p[3].begin[0] = p[0].begin
 			p[0].code += p[2].forclause.initialise
 			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[3].code + [[update_label, ":"]] + p[2].forclause.update + [['goto: ',p[0].begin]]
+			p[0].code += p[3].code + p[2].forclause.update + [['goto: ',p[0].begin]]
 		else:
+			p[0].begin = [newLabel()]
 			p[2].expr.true_label[0] = newLabel()
 			p[2].expr.false_label[0] = p[0].next
-			p[3].forclause.begin[0] = p[0].begin
-			p[3].next[0] = p[0].begin # TODO TODO TODO check confirtm
-			# p[3].next[0] = p[0].next 
+			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
+			p[3].next[0] = p[0].next 
 			p[3].begin[0] = p[0].begin
 			p[0].code += [[p[0].begin , ":"]] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()

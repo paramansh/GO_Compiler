@@ -1,9 +1,0 @@
-package math;
-
-import "fmt";
-import m "lib/math";
-
-const arr [3]bool = true;
-
-var i int;
-var U, V, W float;

@@ -49,8 +49,7 @@ class ForClause:
 		self.initialise = []
 		self.condition = []
 		self.update = []
-		self.begin = ['for begin not initialised']
-		self.next = ['for next not initialised']
+
 	def __str__(self):
 		if self is None:
 			return ""

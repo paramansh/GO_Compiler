@@ -1,0 +1,13 @@
+package main;
+
+const (x, y int = 3, 5; pi = 3.14;);
+
+type intptr = *int;
+var p ttype intptr;
+var ptr *int;
+var a [3]int;
+
+func main() {
+	var x int = a[1];
+	ptr = &x;
+};
