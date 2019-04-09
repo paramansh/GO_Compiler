@@ -1,31 +1,43 @@
+scope: 3
+parent: 2
+{'TEMP_VAR2': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR3': {'constant': False, 'type': 'int'},
+ 'x': {'constant': False, 'type': 'int'}}
+{}
+
 scope: 2
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'type': 'int*'},
- 'TEMP_VAR2': {'constant': False, 'type': 'float'},
- 'TEMP_VAR3': {'constant': False, 'type': 'float'},
- 'a': {'constant': False, 'type': 'int', 'value': 'TEMP_VAR0'},
- 'b': {'constant': False, 'type': 'int*', 'value': 'TEMP_VAR1'},
- 'c': {'constant': False, 'type': 'int*'},
- 'f': {'constant': False, 'type': 'string'},
- 'x': {'constant': False, 'type': 'float'}}
+{'a': {'constant': False, 'type': 'float'},
+ 'c': {'constant': False, 'type': 'int'},
+ 'd': {'constant': False, 'type': 'float'},
+ 'e': {'constant': False, 'type': 'int'},
+ 'x': {'constant': False, 'type': 'int'}}
 {}
 
 scope: 1
 parent: 0
-{'a': {'constant': False, 'type': 'int'}}
+{'TEMP_VAR0': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False, 'type': 'int'},
+ 'a2': {'constant': False, 'type': 'int'},
+ 'b': {'constant': False, 'type': 'int'},
+ 'c': {'constant': False, 'type': 'int'},
+ 'c1': {'constant': False, 'type': 'int'},
+ 'd1': {'constant': False, 'type': 'float'},
+ 'e1': {'constant': False, 'type': 'int'},
+ 'f': {'constant': False, 'type': 'int'}}
 {}
 
 scope: 0
 parent: None
 {'fun': {'func_dict': {'symbol_table': 1},
-         'func_signature': [[{'int': ['c']},
-                             {'float': ['d']},
-                             {'int': ['e']}],
-                            [{'float': ['b']}]],
+         'func_signature': [[{'int': ['a2', 'c1']},
+                             {'float': ['d1']},
+                             {'int': ['e1']}],
+                            [{'int': ['f', 'a']}, {'int': ['b']}]],
          'type': 'func'},
  'main': {'func_dict': {'symbol_table': 2},
-          'func_signature': [[], []],
+          'func_signature': [[], [{'int': ['x']}]],
           'type': 'func'}}
 {}
 

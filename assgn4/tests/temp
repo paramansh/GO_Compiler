@@ -1,15 +1,18 @@
 package math;
 
-func fun(c int, d float, e int) float {
-    var a float;
-    a = float(c + e) * d;
-    return a;
+func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
+    var c int;
+    c = c1 + a2;
+    return c, b-c, a;
 };
 
-func main() {
+func main() (x int) {
     c := 1;
     d := 1.0;
     e := 1;
     var a float;
-    a = fun(c, d, e);
+    //a = fun(c, d, e);
+    for x := 0; e < c; e++ {
+        x += 1;
+    };
 };
