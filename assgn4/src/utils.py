@@ -49,6 +49,8 @@ class ForClause:
 		self.initialise = []
 		self.condition = []
 		self.update = []
+		self.begin = ['for begin not initialised']
+		self.next = ['for next not initialised']
 
 	def __str__(self):
 		if self is None:
@@ -65,6 +67,8 @@ class SymbolTable:
 		self.label = 0
 		self.is_func_table=False
 		self.is_for_table=False
+
+
 
 	#?? symbol table identifying name??
 	# checks if name exists in the symbol table

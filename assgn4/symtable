@@ -1,3 +1,19 @@
+scope: 6
+parent: 3
+{}
+{}
+
+scope: 5
+parent: 4
+{'TEMP_VAR4': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False, 'type': 'int'}}
+{}
+
+scope: 4
+parent: 3
+{}
+{}
+
 scope: 3
 parent: 2
 {'TEMP_VAR2': {'constant': False, 'type': 'int'},
@@ -8,10 +24,7 @@ parent: 2
 scope: 2
 parent: 0
 {'a': {'constant': False, 'type': 'float'},
- 'c': {'constant': False, 'type': 'int'},
- 'd': {'constant': False, 'type': 'float'},
- 'e': {'constant': False, 'type': 'int'},
- 'x': {'constant': False, 'type': 'int'}}
+ 'c': {'constant': False, 'type': 'int'}}
 {}
 
 scope: 1
@@ -37,7 +50,7 @@ parent: None
                             [{'int': ['f', 'a']}, {'int': ['b']}]],
          'type': 'func'},
  'main': {'func_dict': {'symbol_table': 2},
-          'func_signature': [[], [{'int': ['x']}]],
+          'func_signature': [[], []],
           'type': 'func'}}
 {}
 

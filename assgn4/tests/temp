@@ -6,13 +6,24 @@ func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
     return c, b-c, a;
 };
 
-func main() (x int) {
+func main() {
     c := 1;
-    d := 1.0;
-    e := 1;
     var a float;
     //a = fun(c, d, e);
-    for x := 0; e < c; e++ {
-        x += 1;
+    for x := 0; x < c; x++ {
+        x += 4;
+        if (x < 6) {
+            for a:=5; a < c; a++ {
+                break;
+                continue;
+            };
+
+            break;
+        }
+        else {
+            continue;
+        };
+        //break;
+        //continue;
     };
 };
