@@ -1,3 +1,22 @@
+scope: 8
+parent: 7
+{'TEMP_VAR6': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR7': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False, 'offset': 0, 'type': 'int'}}
+{}
+
+scope: 7
+parent: 6
+{}
+{}
+
+scope: 6
+parent: 5
+{'TEMP_VAR4': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR5': {'constant': False, 'type': 'int'},
+ 'x': {'constant': False, 'offset': 0, 'type': 'int'}}
+{}
+
 scope: 5
 parent: 0
 {'TEMP_VAR2': {'constant': False, 'type': 'Array(3, int)'},
@@ -5,11 +24,13 @@ parent: 0
  'a': {'constant': False,
        'offset': 0,
        'type': "Struct{'b':'Array(10, int)','c':'int'}"},
- 'aa': {'constant': False, 'offset': 60, 'type': 'Array(10, Array(3, int))'},
- 'b': {'constant': False, 'offset': 56, 'type': 'int'},
- 'c': {'constant': False, 'offset': 44, 'type': 'int'},
- 'd': {'constant': False, 'offset': 48, 'type': 'float'},
- 'x': {'constant': False, 'offset': 180, 'type': 'int'}}
+ 'a11': {'constant': False, 'offset': 48, 'type': 'int'},
+ 'aa': {'constant': False, 'offset': 68, 'type': 'Array(10, Array(3, int))'},
+ 'b': {'constant': False, 'offset': 64, 'type': 'int'},
+ 'c': {'constant': False, 'offset': 52, 'type': 'int'},
+ 'c111': {'constant': False, 'offset': 44, 'type': 'int'},
+ 'd': {'constant': False, 'offset': 56, 'type': 'float'},
+ 'x': {'constant': False, 'offset': 188, 'type': 'int'}}
 {}
 
 scope: 4

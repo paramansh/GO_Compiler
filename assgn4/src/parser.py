@@ -69,12 +69,7 @@ def insertId(idname, idtype):
 		# TODO struct types etc??
 		insertInfo(idname, 'offset', curr_scope.offset)
 		curr_scope.offset += type_size(idtype)
-		#if idtype == 'int':
-		#	curr_scope.offset += 4
-		#elif idtype == 'float':
-		#	curr_scope.offset += 8
-		#elif idtype[0:6] == 'Struct' || idtype[0:6] == 'Array':
-		#	type_size(idtype)
+
 			
 
 def insertType(name, ttype):
@@ -774,12 +769,12 @@ def p_operand_name(p):
 	p[0] = Node()
 	if not inScope(p[1]):
 		print "error at line", p.lineno(0), 'Variable not Declared'
-		 
+	scope_label = getScope(p[1]).label	 
 	# we are preceeding forward assumng the variable had already been declared!
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	temp = getIdInfo(p[1])
-	p[0].place = str(p[0].expr.value)
+	p[0].place = str(p[0].expr.value) + '(' + str(scope_label) + ')'
 	if temp is not None:
 		p[0].expr.type = temp['type']
 
@@ -1637,6 +1632,6 @@ for scope in scope_list[::-1]:
 	f.write('parent: ' + str(entries[3]) + '\n')
 	pp.pprint(entries[0], stream=f)
 	pp.pprint(entries[2], stream=f)
-	pp.pprint(entries[0])
+	# pp.pprint(entries[0])
 	f.write('\n')
 f.close()
