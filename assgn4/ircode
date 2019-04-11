@@ -1,3 +1,4 @@
+a(0) := 1
 label6 function fun:
 TEMP_VAR0 := c1(1) int+ a2(1)
 c(1) := TEMP_VAR0
@@ -21,37 +22,31 @@ ret2: a(1)
 ret3: c(1)
 ret
 label17 function main:
-a11 := c111(5)
-c := 1
-d := 0.2
-TEMP_VAR2 := aa(5)[1]
-TEMP_VAR3 := TEMP_VAR2[1]
-x := TEMP_VAR3
-x := 0
-label13:
-if x(6)<c(5) goto label14
-goto label16
-label14:
-TEMP_VAR5 := x(6) int+ 4
-x := TEMP_VAR5
-if x(6)<6 goto label11
-goto label12
-label11:
-a := 5
-label7:
-if a(8)<c(5) goto label8
-goto label10
-label8:
-TEMP_VAR7 := a(8) int+ 1
-a := TEMP_VAR7
+TEMP_VAR2 := a(5)[1][0] int+i 3
+c(5) := TEMP_VAR2
 label9:
-TEMP_VAR6 := a(8) int+i 1
-a(8) := TEMP_VAR6
-goto: label7
+if c(5)<6 goto label10
+goto label11
 label10:
-label12:
+a(6) := 4
+if a(6)<7 goto label7
+goto label8
+label7:
+b(7) := 3
+c(7) := 3.0
+label8:
+goto: label9
+label11:
+c2(5) := 4
+label14:
+if c2(5)<6 goto label15
+goto label16
 label15:
-TEMP_VAR4 := x(6) int+i 1
-x(6) := TEMP_VAR4
-goto: label13
+a2(8) := 4
+if a2(8)<7 goto label12
+goto label13
+label12:
+b2(9) := 3
+label13:
+goto: label14
 label16:

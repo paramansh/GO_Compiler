@@ -458,7 +458,8 @@ def p_const_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
-					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[2].exprlist[i].code + '(' + str(scope_label) + ')'  + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 			else:
 				for i in range(len(p[2].exprlist)):
 					err = insertId(p[1].idlist[i], p[2].exprlist[i].expr.type)
@@ -466,8 +467,8 @@ def p_const_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
-
-					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[2].exprlist[i].code + '(' + str(scope_label) + ')' + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 
 def p_type_expr_list(p):
 	'''TypeExprListOpt : TypeOpt EQUAL ExpressionList
@@ -579,7 +580,10 @@ def p_var_spec(p):
 					print 'error: at line', p.lineno(0), err
 				insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
 				insertInfo(p[1].idlist[i], 'constant', False)
-				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+				#p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+				# need to add scope label lable to identifier
+				scope_label = scope_stack[-1].label
+				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + '(' + str(scope_label) + ')' + ' := ' + p[3].exprlist[i].place]
 	else:
 		p[0] = Node()
 		if not p[3]:
@@ -601,7 +605,8 @@ def p_var_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', False)
-					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + '(' + str(scope_label) + ')' + ' := ' + p[3].exprlist[i].place]
 					
 					#TODO always insert info??????????? what is attribute value
 					#TODO which attributes to be added in symbol table!
@@ -626,8 +631,9 @@ def p_short_var_decl(p):
 	if err:
 		print 'error: at line', p.lineno(0), err
 		return
-	insertInfo(p[1], 'constant', False) 
-	p[0].code += p[3].code + [p[1] + ' := ' + p[3].place]
+	insertInfo(p[1], 'constant', False)
+	scope_label = scope_stack[-1].label
+	p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
 
 # -------------------------------------------------------
 
@@ -828,9 +834,12 @@ def p_prim_expr(p):
 				
 			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
 			p[0].expr.type = element_type
-			p[0].place = newTemp(element_type)
+			# p[0].place = newTemp(element_type)
+			p[0].place = p[1].place + '[' + p[2].place + ']'
 			p[0].expr.value = p[1].expr.value
-			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+			
+			# p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+			p[0].code = p[1].code + p[2].code
 
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
@@ -1617,6 +1626,40 @@ def retstring(item):
 	else:
 		return item
 
+# for scope in scope_list[::-1]:
+# 	entries = scope.getAllEntries()
+# 	print 'offset***', scope.offset, scope.label
+# 	pp.pprint(entries[0])
+
+entries = global_symbol_table.getAllEntries()[0]
+function_symtable = []
+for entry in entries:
+	
+	if 'func_dict' in entries[entry]:
+		# print entries[entry]['func_dict']['symbol_table']
+		function_symtable.append(entries[entry]['func_dict']['symbol_table'])
+		# pp.pprint(entries[entry])
+		# print 
+		# print
+def computeOffsets(off_sum, parent):
+	# print 'parent', parent.label, parent.offset
+	for scope in parent.children:
+		print 'here', off_sum
+		print 'parent', parent.label, parent.offset, 'child', scope.label, scope.offset
+		# child_offset = scope.offset
+		# parent_offset = parent.offset
+		for entries in scope.table:
+			scope.table[entries]['offset'] += off_sum
+		# scope.offset += parent.offset
+		off_sum += scope.offset
+		off_sum = computeOffsets(off_sum, scope)
+	return off_sum
+		# parent.offset += child_offset 
+
+print function_symtable
+for table in function_symtable:
+	computeOffsets(scope_list[table].offset, scope_list[table])
+
 f = open(codefile, 'w')
 buf = ''
 for item in t.code:
@@ -1632,6 +1675,8 @@ for scope in scope_list[::-1]:
 	f.write('parent: ' + str(entries[3]) + '\n')
 	pp.pprint(entries[0], stream=f)
 	pp.pprint(entries[2], stream=f)
+	# pp.pprint(scope.offset)
 	# pp.pprint(entries[0])
 	f.write('\n')
+
 f.close()
