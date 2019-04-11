@@ -34,6 +34,26 @@ def getIdInfo(ide):
 		else:
 			return None
 
+def type_size(t):
+			
+	if t == 'int':
+		return 4
+	elif t == 'float':
+		return 8
+	elif t[0:6] == 'Struct':
+		res = 0
+		field_dic = ast.literal_eval(t[6:])
+		for variables in field_dic:
+			res += type_size(field_dic[variables])
+			# print res
+		return res
+	elif t[0:5] == 'Array':
+		length = int(t[6:-1].split(',')[0])
+		element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+		return length*type_size(element_type)
+	# print 'err : type operation not supported', t
+	return 1
+
 def insertId(idname, idtype):
 	err = ""
 	if len(idname) >= 8 and idname[:8] == 'TEMP_VAR':
@@ -43,8 +63,19 @@ def insertId(idname, idtype):
 		err = "Variable already exists in current scope"
 		return err
 	else:
+		
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
+		# TODO struct types etc??
+		insertInfo(idname, 'offset', curr_scope.offset)
+		curr_scope.offset += type_size(idtype)
+		#if idtype == 'int':
+		#	curr_scope.offset += 4
+		#elif idtype == 'float':
+		#	curr_scope.offset += 8
+		#elif idtype[0:6] == 'Struct' || idtype[0:6] == 'Array':
+		#	type_size(idtype)
+			
 
 def insertType(name, ttype):
 	err = ""
@@ -77,6 +108,7 @@ def validTypeConversion(type1, type2):
 	return True
 
 temp_var_count = 0
+function_expr_types = [] # used to store return types
 
 def newTemp(idtype):
 	curr_scope = scope_stack[-1]
@@ -245,6 +277,24 @@ def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
 	# TODO result 
 	p[0] = [p[1], p[2]] # append p[2] if result
+	addScope()
+	scope_stack[-1].is_func_table=True
+	# print p[1]
+	for var_dict in p[1]:
+		for var_type in var_dict:
+			variables = var_dict[var_type]
+			for v in variables:
+				insertId(v, var_type)
+				insertInfo(v, 'constant', False)
+				# print v, 
+	for var_dict in p[2]:
+		if type(var_dict) == dict:
+			for var_type in var_dict:
+				variables = var_dict[var_type]
+				for v in variables:
+					insertId(v, var_type)
+					insertInfo(v, 'constant', False)
+
 
 def p_result_opt(p):
 	'''ResultOpt : Result
@@ -319,12 +369,19 @@ def p_parameter_decl(p):
 #-----------------------Blocks---------------------------
 
 def p_block(p):
-	'''Block : LBRACE StatementList RBRACE'''
-	p[0] = p[2]
+	'''Block : CreateScope LBRACE StatementList RBRACE'''
+	p[0] = p[3]
 	p[0].extra['block_scope'] = currentScopelabel()
 	deleteScope()
 
 
+def p_create_scope(p):
+	'''CreateScope : epsilon '''
+	if not (scope_stack[-1].is_func_table or scope_stack[-1].is_for_table):
+		# print 'hte'
+		addScope()
+	scope_stack[-1].is_func_table = False
+	scope_stack[-1].is_for_table = False
 def p_statement_list(p):
 	'''StatementList : StatementRep'''
 	p[0] = p[1]
@@ -335,13 +392,15 @@ def p_statement_rep(p):
 	if len(p) == 4:
 		p[0] = p[1]
 		p[0].code += p[2].code
+		p[2].forclause.next[0] = p[0].forclause.next
+		p[2].forclause.begin[0] = p[0].forclause.begin
 		if p[2].extra:
 			if 'is_continue' in p[2].extra and p[2].extra['is_continue']:
-				p[2].next[0] = p[0].begin
+				p[2].next[0] = p[0].forclause.begin
 			if 'is_break' in p[2].extra and p[2].extra['is_break']:
-				p[2].next[0] = p[0].next
+				p[2].next[0] = p[0].forclause.next
 	else:
-		addScope()
+		# addScope()
 		p[0] = Node()
 
 # -------------------------------------------------------
@@ -583,12 +642,31 @@ def p_short_var_decl(p):
 def p_func_decl(p):
 	'''FunctionDecl : FUNC FunctionName Function
 					| FUNC FunctionName Signature'''
-	p[0] = p[3][1]
+					
+	p[0] = p[3][1]	
 	err = insertId(p[2], 'func')
+
 	if err:
 		print 'error at line', p.lineno(0), err
 		return 
+	
 	if type(p[3]) == tuple:
+		return_types = p[3][0][1]
+		correct_types = []
+		for ret_dict in return_types:
+			for ret_type in ret_dict:
+				correct_types += [ret_type] * len(ret_dict[ret_type])
+		# print correct_types
+		# print function_expr_types
+		
+		if function_expr_types:
+			if correct_types != function_expr_types[0]:
+				print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
+			function_expr_types.pop()
+		else:
+			# TODO 
+			if correct_types:
+				print 'error at line', p.lineno(0), 'expected return value for function', p[2]
 		func_dict = {}
 		func_dict['symbol_table'] = p[3][1].extra['block_scope']
 		insertInfo(p[2], 'func_dict', func_dict)
@@ -596,7 +674,10 @@ def p_func_decl(p):
 		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	else:
 		insertInfo(p[2], 'func_signature', p[3])
+		# TODO
 		print p[3]
+
+
 
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
@@ -605,10 +686,12 @@ def p_func_name(p):
 def p_func(p):
 	'''Function : Signature FunctionBody'''
 	p[0] = (p[1], p[2])
+	
 
 def p_func_body(p):
 	'''FunctionBody : Block'''
 	p[0] = p[1]
+	
 
 # -------------------------------------------------------
 
@@ -732,6 +815,7 @@ def p_prim_expr(p):
 		p[0] = p[1]
 	else:
 		p[0] = Node()
+
 		if 'is_index' in p[2].extra:
 			temp_type = p[1].expr.type
 			if temp_type[0:5] != 'Array':
@@ -747,7 +831,7 @@ def p_prim_expr(p):
 			except:
 				pass
 				
-			element_type = (temp_type[6:-1].split(',')[1])[1:]
+			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
 			p[0].expr.type = element_type
 			p[0].place = newTemp(element_type)
 			p[0].expr.value = p[1].expr.value
@@ -1144,6 +1228,9 @@ def p_if_statement(p):
 	''' IfStmt : IF Expression Block ElseOpt '''
 	# no else statement
 	p[0] = Node()
+	p[3].forclause.next[0] = p[0].forclause.next
+	p[3].forclause.begin[0] = p[0].forclause.begin
+
 	if p[4] is None:
 		new_label = newLabel()
 		p[2].expr.true_label[0] = new_label
@@ -1152,6 +1239,8 @@ def p_if_statement(p):
 		p[0].code += p[2].code + [new_label + ":"] + p[3].code
 	
 	else:
+		p[4].forclause.next[0] = p[0].forclause.next
+		p[4].forclause.begin[0] = p[0].forclause.begin
 		p[2].expr.true_label[0] = newLabel()
 		p[2].expr.false_label[0] = newLabel()
 		p[3].next[0] = p[0].next
@@ -1173,6 +1262,8 @@ def p_else_opt(p):
 				| epsilon '''
 	if len(p) == 3:
 		p[0] = p[2]
+		p[2].forclause.next[0] = p[0].forclause.next
+		p[2].forclause.begin[0] = p[0].forclause.begin
 	else:
 		p[0] = None
 
@@ -1266,29 +1357,37 @@ def p_else_opt(p):
 # --------- FOR STATEMENTS---------------
 
 def p_for(p):
-	'''ForStmt : FOR ConditionBlockOpt Block'''
+	'''ForStmt : CreateForScope FOR ConditionBlockOpt Block'''
 	p[0] = Node()
-	if p[2] is not None:
-		if p[2].forclause.isClause:
-			p[0].begin = [newLabel()]
-			cond = p[2].forclause.condition
+	if p[3] is not None:
+		p[0].begin = [newLabel()]
+		p[4].forclause.next[0] = p[0].next
+		if p[3].forclause.isClause:			
+			cond = p[3].forclause.condition
 			cond.expr.true_label[0] = newLabel()
 			cond.expr.false_label[0] = p[0].next
-			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
-			p[3].next[0] = p[0].next
-			p[3].begin[0] = p[0].begin
-			p[0].code += p[2].forclause.initialise
+			p[4].next[0] = p[0].begin # TODO TODO TODO check confirtm
+			# p[4].next[0] = p[0].next
+			p[4].begin[0] = p[0].begin
+			update_label = [newLabel()]
+			p[4].forclause.begin[0] = update_label
+			p[0].code += p[3].forclause.initialise
 			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[3].code + p[2].forclause.update + [['goto: ',p[0].begin]]
+			p[0].code += p[4].code + [[update_label, ":"]] + p[3].forclause.update + [['goto: ',p[0].begin]]
 		else:
-			p[0].begin = [newLabel()]
-			p[2].expr.true_label[0] = newLabel()
-			p[2].expr.false_label[0] = p[0].next
-			# p[3].next[0] = p[0].begin TODO TODO TODO check confirtm
-			p[3].next[0] = p[0].next 
-			p[3].begin[0] = p[0].begin
-			p[0].code += [[p[0].begin , ":"]] + p[2].code + [p[2].expr.true_label[0] + ":"] + p[3].code + [['goto: ',p[0].begin]]
+			p[3].expr.true_label[0] = newLabel()
+			p[3].expr.false_label[0] = p[0].next
+			p[4].next[0] = p[0].begin # TODO TODO TODO check confirtm
+			p[4].forclause.begin[0] = p[0].begin
+			# p[4].next[0] = p[0].next 
+			p[4].begin[0] = p[0].begin
+			p[0].code += [[p[0].begin , ":"]] + p[3].code + [p[3].expr.true_label[0] + ":"] + p[4].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()
+
+def p_for_create_scope(p):
+	''' CreateForScope : epsilon '''
+	addScope()
+	scope_stack[-1].is_for_table = True
 
 def p_conditionblockopt(p):
 	'''ConditionBlockOpt : epsilon
@@ -1344,9 +1443,19 @@ def p_expressionidentifier(p):
 
 def p_return(p):
 	'''ReturnStmt : RETURN ExpressionListPureOpt'''
-	p[0] = make_node(p[1])
-	for i in p[2]:
-		make_edge(p[0], i)
+	expr_types = []
+	p[0] = Node()
+	for expr in p[2].exprlist:
+		p[0].code += expr.code
+		expr_types.append(expr.expr.type)
+	for index, expr in enumerate(p[2].exprlist):
+		p[0].code += ['ret' + str(index+1) + ": " + expr.place]
+
+	p[0].code += ['ret']
+	p[0].extra['is_return'] = True
+	
+	function_expr_types.append(expr_types)
+	
 
 def p_expressionlist_pure_opt(p):
 	'''ExpressionListPureOpt : ExpressionList
@@ -1528,5 +1637,6 @@ for scope in scope_list[::-1]:
 	f.write('parent: ' + str(entries[3]) + '\n')
 	pp.pprint(entries[0], stream=f)
 	pp.pprint(entries[2], stream=f)
+	pp.pprint(entries[0])
 	f.write('\n')
 f.close()

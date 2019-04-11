@@ -1,31 +1,58 @@
-scope: 2
+scope: 5
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'type': 'int*'},
- 'TEMP_VAR2': {'constant': False, 'type': 'float'},
- 'TEMP_VAR3': {'constant': False, 'type': 'float'},
- 'a': {'constant': False, 'type': 'int', 'value': 'TEMP_VAR0'},
- 'b': {'constant': False, 'type': 'int*', 'value': 'TEMP_VAR1'},
- 'c': {'constant': False, 'type': 'int*'},
- 'f': {'constant': False, 'type': 'string'},
- 'x': {'constant': False, 'type': 'float'}}
+{'TEMP_VAR2': {'constant': False, 'type': 'Array(3, int)'},
+ 'TEMP_VAR3': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False,
+       'offset': 0,
+       'type': "Struct{'b':'Array(10, int)','c':'int'}"},
+ 'aa': {'constant': False, 'offset': 60, 'type': 'Array(10, Array(3, int))'},
+ 'b': {'constant': False, 'offset': 56, 'type': 'int'},
+ 'c': {'constant': False, 'offset': 44, 'type': 'int'},
+ 'd': {'constant': False, 'offset': 48, 'type': 'float'},
+ 'x': {'constant': False, 'offset': 180, 'type': 'int'}}
+{}
+
+scope: 4
+parent: 2
+{}
+{}
+
+scope: 3
+parent: 2
+{}
+{}
+
+scope: 2
+parent: 1
+{}
 {}
 
 scope: 1
 parent: 0
-{'a': {'constant': False, 'type': 'int'}}
+{'TEMP_VAR0': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False, 'offset': 24, 'type': 'int'},
+ 'a2': {'constant': False, 'offset': 0, 'type': 'int'},
+ 'b': {'constant': False, 'offset': 28, 'type': 'int'},
+ 'c': {'constant': False, 'offset': 32, 'type': 'int'},
+ 'c1': {'constant': False, 'offset': 4, 'type': 'int'},
+ 'd1': {'constant': False, 'offset': 8, 'type': 'float'},
+ 'e1': {'constant': False, 'offset': 16, 'type': 'int'},
+ 'f': {'constant': False, 'offset': 20, 'type': 'int'}}
 {}
 
 scope: 0
 parent: None
 {'fun': {'func_dict': {'symbol_table': 1},
-         'func_signature': [[{'int': ['c']},
-                             {'float': ['d']},
-                             {'int': ['e']}],
-                            [{'float': ['b']}]],
+         'func_signature': [[{'int': ['a2', 'c1']},
+                             {'float': ['d1']},
+                             {'int': ['e1']}],
+                            [{'int': ['f', 'a']}, {'int': ['b']}]],
+         'offset': 0,
          'type': 'func'},
- 'main': {'func_dict': {'symbol_table': 2},
+ 'main': {'func_dict': {'symbol_table': 5},
           'func_signature': [[], []],
+          'offset': 1,
           'type': 'func'}}
 {}
 

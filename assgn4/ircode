@@ -1,12 +1,28 @@
-label0 function fun:
-label1 function main:
-TEMP_VAR0 := *c
-a := TEMP_VAR0
-TEMP_VAR1 := &a
-b := TEMP_VAR1
-TEMP_VAR2 := intTOfloat a
-param a
-param TEMP_VAR2
-param a
-callfloat, TEMP_VAR3, fun
+label6 function fun:
+TEMP_VAR0 := c1 int+ a2
+c := TEMP_VAR0
+label3:
+if c<7 goto label4
+goto label5
+label4:
+if a2<c goto label0
+goto label1
+label0:
+goto label3
+goto label2
+label1:
+goto label5
+label2:
+goto: label3
+label5:
+TEMP_VAR1 := b int- c
+ret1: TEMP_VAR1
+ret2: a
+ret3: c
+ret
+label7 function main:
+c := 1
+d := 0.2
+TEMP_VAR2 := aa[1]
+TEMP_VAR3 := TEMP_VAR2[1]
 x := TEMP_VAR3
