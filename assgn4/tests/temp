@@ -3,27 +3,41 @@ package math;
 func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
     var c int;
     c = c1 + a2;
+    for c < 7 {
+        if (a2 < c) {
+            continue;
+        }
+        else {
+            break;
+        };
+    };  
     return c, b-c, a;
 };
 
 func main() {
+    var a struct {b [10]int; c int;};
+    //var a [10][3] struct {b [10]int; c int;};
+   // e := a[3][1].b;
     c := 1;
-    var a float;
+    d := 0.2;
+    var b int;
+    var aa [10][3] int;
+    x := aa[1][1];
     //a = fun(c, d, e);
-    for x := 0; x < c; x++ {
-        x += 4;
-        if (x < 6) {
-            for a:=5; a < c; a++ {
-                break;
-                continue;
-            };
-
-            break;
-        }
-        else {
-            continue;
-        };
-        //break;
-        //continue;
-    };
+    //for x := 0; x < c; x++ {
+    //    x += 4;
+    //    if (x < 6) {
+    //        for a:=5; a < c; a++ {
+    //            break;
+    //            continue;
+    //        };
+//
+    //        break;
+    //    }
+    //    else {
+    //        continue;
+    //    };
+    //    //break;
+    //    //continue;
+    //};
 };

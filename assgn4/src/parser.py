@@ -34,6 +34,26 @@ def getIdInfo(ide):
 		else:
 			return None
 
+def type_size(t):
+			
+	if t == 'int':
+		return 4
+	elif t == 'float':
+		return 8
+	elif t[0:6] == 'Struct':
+		res = 0
+		field_dic = ast.literal_eval(t[6:])
+		for variables in field_dic:
+			res += type_size(field_dic[variables])
+			# print res
+		return res
+	elif t[0:5] == 'Array':
+		length = int(t[6:-1].split(',')[0])
+		element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+		return length*type_size(element_type)
+	# print 'err : type operation not supported', t
+	return 1
+
 def insertId(idname, idtype):
 	err = ""
 	if len(idname) >= 8 and idname[:8] == 'TEMP_VAR':
@@ -43,8 +63,19 @@ def insertId(idname, idtype):
 		err = "Variable already exists in current scope"
 		return err
 	else:
+		
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
+		# TODO struct types etc??
+		insertInfo(idname, 'offset', curr_scope.offset)
+		curr_scope.offset += type_size(idtype)
+		#if idtype == 'int':
+		#	curr_scope.offset += 4
+		#elif idtype == 'float':
+		#	curr_scope.offset += 8
+		#elif idtype[0:6] == 'Struct' || idtype[0:6] == 'Array':
+		#	type_size(idtype)
+			
 
 def insertType(name, ttype):
 	err = ""
@@ -784,6 +815,7 @@ def p_prim_expr(p):
 		p[0] = p[1]
 	else:
 		p[0] = Node()
+
 		if 'is_index' in p[2].extra:
 			temp_type = p[1].expr.type
 			if temp_type[0:5] != 'Array':
@@ -799,7 +831,7 @@ def p_prim_expr(p):
 			except:
 				pass
 				
-			element_type = (temp_type[6:-1].split(',')[1])[1:]
+			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
 			p[0].expr.type = element_type
 			p[0].place = newTemp(element_type)
 			p[0].expr.value = p[1].expr.value
@@ -1605,5 +1637,6 @@ for scope in scope_list[::-1]:
 	f.write('parent: ' + str(entries[3]) + '\n')
 	pp.pprint(entries[0], stream=f)
 	pp.pprint(entries[2], stream=f)
+	pp.pprint(entries[0])
 	f.write('\n')
 f.close()
