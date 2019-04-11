@@ -35,6 +35,7 @@ def addScope():
 		global scope_label
 		scope_label += 1
 		new_scope.label = scope_label
+		curr_scope.children.append(new_scope)
 		scope_stack.append(new_scope)
 		scope_list.append(new_scope)
 

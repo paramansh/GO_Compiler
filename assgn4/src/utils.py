@@ -63,6 +63,7 @@ class SymbolTable:
 	def __init__(self, parent):
 		self.table = {}
 		self.parent = parent
+		self.children = []
 		self.types = {}
 		self.label = 0
 		self.is_func_table=False
