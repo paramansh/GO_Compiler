@@ -2,6 +2,10 @@ package math;
 
 var a int =  1;
 
+func fib(a int) {
+    a = 1;
+};
+
 func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
     var c int;
     c = c1 + a2;
@@ -17,6 +21,9 @@ func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
 };
 
 func main() {
+    var n int;
+    var xx[n] int;
+    yy := xx[1];
     var a[10][20] int;
     // a[0][1] = 1;
     c := 3 + a[1][0];
