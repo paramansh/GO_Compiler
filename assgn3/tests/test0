@@ -7,14 +7,17 @@ var i int = 0;
 var j float = b - 2.0;
 
 func main() {
-    var i, n int;
+    var i, j, k, n int;
+    var c, d = 2, 3;
 
-    for i = 0; i < n; i++ {
+    for y := 0; y < n; y++ { ### TODO ###
         j := (2.0 * 3.45 - 1.57);
         b = b * j;
     };
 
-    if a == i {
+    if a < i || c < j && d < k {
         x := a + 2;
     };
+
+    var x = a < c;
 };

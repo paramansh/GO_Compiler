@@ -8,6 +8,6 @@ var ptr *int;
 var a [3]int;
 
 func main() {
-	var x int = a[2];
+	var x int = a[1];
 	ptr = &x;
 };

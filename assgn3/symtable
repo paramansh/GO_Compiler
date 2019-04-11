@@ -1,17 +1,16 @@
 scope: 2
 parent: 0
 {'TEMP_VAR0': {'constant': False, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'type': 'int*'},
- 'TEMP_VAR2': {'constant': False, 'type': 'float'},
  'a': {'constant': False, 'type': 'int', 'value': 'TEMP_VAR0'},
- 'b': {'constant': False, 'type': 'int*', 'value': 'TEMP_VAR1'},
- 'c': {'constant': False, 'type': 'int*'},
- 'f': {'constant': False, 'type': 'string'}}
+ 'c': {'constant': False, 'type': 'int'},
+ 'd': {'constant': False, 'type': 'float'},
+ 'e': {'constant': False, 'type': 'int'},
+ 'x': {'constant': False, 'type': 'Array(10, int)'}}
 {}
 
 scope: 1
 parent: 0
-{'a': {'constant': False, 'type': 'int'}}
+{}
 {}
 
 scope: 0
@@ -19,10 +18,11 @@ parent: None
 {'fun': {'func_dict': {'symbol_table': 1},
          'func_signature': [[{'int': ['c']},
                              {'float': ['d']},
-                             {'int': ['e']}]],
+                             {'int': ['e']}],
+                            ['float']],
          'type': 'func'},
  'main': {'func_dict': {'symbol_table': 2},
-          'func_signature': [[]],
+          'func_signature': [[], []],
           'type': 'func'}}
 {}
 
