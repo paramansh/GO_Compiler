@@ -1,0 +1,13 @@
+TODO: type declaration
+type specific operators in <, >, ||, && etc. eg: int<, int&& etc.
+place variable in assignment
+
+support for const/var x, y, z = 4 (i.e. when number of arguments in rhs is 1)
+
+pending
+
+function type
+type declaration and definition
+function declaration
+conversion
+slice and arguments in primary expression

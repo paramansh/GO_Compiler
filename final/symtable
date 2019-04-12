@@ -1,0 +1,28 @@
+scope: 2
+parent: 1
+{'TEMP_VAR0': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'type': 'int'},
+ 'i': {'constant': False, 'offset': 0, 'type': 'int'}}
+{}
+
+scope: 1
+parent: 0
+{'n': {'constant': False, 'offset': 12, 'type': 'int'},
+ 't0': {'constant': False, 'offset': 8, 'type': 'int', 'value': 0},
+ 't1': {'constant': False, 'offset': 0, 'type': 'int', 'value': 0},
+ 't2': {'constant': False, 'offset': 4, 'type': 'int', 'value': 0}}
+{}
+
+scope: 0
+parent: None
+{'alpha': {'constant': False, 'offset': 0, 'type': 'float', 'value': 0.0},
+ 'main': {'func_dict': {'symbol_table': 1},
+          'func_signature': [[], []],
+          'offset': 21,
+          'type': 'func'},
+ 'name': {'constant': True, 'offset': 20, 'type': 'string', 'value': 'siraj'},
+ 'x': {'constant': False, 'offset': 16, 'type': 'int', 'value': '3'},
+ 'y': {'constant': False, 'offset': 8, 'type': 'int', 'value': '4'},
+ 'z': {'constant': False, 'offset': 12, 'type': 'int', 'value': '5'}}
+{}
+

@@ -1,28 +1,35 @@
+scope: 3
+parent: 0
+{'TEMP_VAR2': {'constant': False, 'type': 'float'},
+ 'TEMP_VAR3': {'constant': False, 'type': 'float'},
+ 'TEMP_VAR4': {'constant': False, 'type': 'float'},
+ 'area': {'constant': False, 'type': 'float', 'value': 'TEMP_VAR4'},
+ 'radius': {'constant': False, 'type': 'float', 'value': 'TEMP_VAR2'}}
+{}
+
 scope: 2
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'type': 'int'},
- 'a': {'constant': False, 'type': 'int', 'value': 'TEMP_VAR0'},
- 'c': {'constant': False, 'type': 'int'},
- 'd': {'constant': False, 'type': 'float'},
- 'e': {'constant': False, 'type': 'int'},
- 'x': {'constant': False, 'type': 'Array(10, int)'}}
+{'TEMP_VAR1': {'constant': False, 'type': 'int'}}
 {}
 
 scope: 1
 parent: 0
-{}
+{'TEMP_VAR0': {'constant': False, 'type': 'int'}}
 {}
 
 scope: 0
 parent: None
-{'fun': {'func_dict': {'symbol_table': 1},
-         'func_signature': [[{'int': ['c']},
-                             {'float': ['d']},
-                             {'int': ['e']}],
-                            ['float']],
-         'type': 'func'},
- 'main': {'func_dict': {'symbol_table': 2},
+{'area': {'func_dict': {'symbol_table': 3},
           'func_signature': [[], []],
-          'type': 'func'}}
+          'type': 'func'},
+ 'decrement': {'func_dict': {'symbol_table': 1},
+               'func_signature': [[], []],
+               'type': 'func'},
+ 'pi': {'constant': False, 'type': 'float', 'value': '3.14'},
+ 'shortdec': {'func_dict': {'symbol_table': 2},
+              'func_signature': [[], []],
+              'type': 'func'},
+ 'x': {'constant': True, 'type': 'int', 'value': '4'},
+ 'y': {'constant': True, 'type': 'float', 'value': '6.0'}}
 {}
 

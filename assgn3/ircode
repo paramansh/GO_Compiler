@@ -1,0 +1,15 @@
+y := 6.0
+x := 4
+pi := 3.14
+label0 function decrement:
+TEMP_VAR0 := x int-i 1
+x := TEMP_VAR0
+label1 function shortdec:
+TEMP_VAR1 := x int-i 1
+x := TEMP_VAR1
+label2 function area:
+TEMP_VAR2 := intTOfloat x
+radius := TEMP_VAR2
+TEMP_VAR3 := pi float* radius
+TEMP_VAR4 := TEMP_VAR3 float* radius
+area := TEMP_VAR4
