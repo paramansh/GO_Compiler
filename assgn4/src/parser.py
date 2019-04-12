@@ -25,9 +25,12 @@ def make_edge(node1, node2, label=''):
 	None
 
 def getIdInfo(ide):
+	# print ide
 	if not inScope(ide):
+		# print ide
 		return None 
 	else:
+		# print 'here', ide
 		id_scope = getScope(ide)
 		if id_scope is not None:
 			return id_scope.getEntry(ide)
@@ -48,9 +51,16 @@ def type_size(t):
 			# print res
 		return res
 	elif t[0:5] == 'Array':
-		length = int(t[6:-1].split(',')[0])
-		element_type = ','.join(t[6:-1].split(',')[1:])[1:]
-		return length*type_size(element_type)
+		try:
+			length = int(t[6:-1].split(',')[0])
+
+			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+			return length*type_size(element_type)
+		except:
+			length = t[6:-1].split(',')[0]
+
+			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+			return 4
 	# print 'err : type operation not supported', t
 	return 1
 
@@ -271,10 +281,11 @@ def p_function_type(p):
 def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
 	# TODO result 
+	
 	p[0] = [p[1], p[2]] # append p[2] if result
 	addScope()
+	insertInfo(current_func_name, 'func_signature', p[0])
 	scope_stack[-1].is_func_table=True
-	# print p[1]
 	for var_dict in p[1]:
 		for var_type in var_dict:
 			variables = var_dict[var_type]
@@ -458,7 +469,8 @@ def p_const_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
-					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[2].exprlist[i].code + '(' + str(scope_label) + ')'  + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 			else:
 				for i in range(len(p[2].exprlist)):
 					err = insertId(p[1].idlist[i], p[2].exprlist[i].expr.type)
@@ -466,8 +478,8 @@ def p_const_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
-
-					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[2].exprlist[i].code + '(' + str(scope_label) + ')' + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 
 def p_type_expr_list(p):
 	'''TypeExprListOpt : TypeOpt EQUAL ExpressionList
@@ -579,11 +591,20 @@ def p_var_spec(p):
 					print 'error: at line', p.lineno(0), err
 				insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
 				insertInfo(p[1].idlist[i], 'constant', False)
-				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+				#p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+				# need to add scope label lable to identifier
+				scope_label = scope_stack[-1].label
+				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + '(' + str(scope_label) + ')' + ' := ' + p[3].exprlist[i].place]
 	else:
 		p[0] = Node()
 		if not p[3]:
 			for i in p[1].idlist:
+				if p[2].type[0:5] == 'Array':
+					try:
+						int(p[2].type[6:-1].split(',')[0])
+					except:
+						element_type = ','.join(p[2].type[6:-1].split(',')[1:])[1:]
+						p[0].code += ['Allocate ' + i + ' ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
 				err = insertId(i, p[2].type)
 				insertInfo(i, 'constant', False)
 				if err:
@@ -601,7 +622,8 @@ def p_var_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', False)
-					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + '(' + str(scope_label) + ')' + ' := ' + p[3].exprlist[i].place]
 					
 					#TODO always insert info??????????? what is attribute value
 					#TODO which attributes to be added in symbol table!
@@ -626,46 +648,44 @@ def p_short_var_decl(p):
 	if err:
 		print 'error: at line', p.lineno(0), err
 		return
-	insertInfo(p[1], 'constant', False) 
-	p[0].code += p[3].code + [p[1] + ' := ' + p[3].place]
+	insertInfo(p[1], 'constant', False)
+	scope_label = scope_stack[-1].label
+	p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
 
 # -------------------------------------------------------
 
 
 # ----------------FUNCTION DECLARATIONS------------------
 
+current_func_name = None
+
 def p_func_decl(p):
 	'''FunctionDecl : FUNC FunctionName Function
 					| FUNC FunctionName Signature'''
 					
-	p[0] = p[3][1]	
-	err = insertId(p[2], 'func')
-
-	if err:
-		print 'error at line', p.lineno(0), err
-		return 
-	
+	p[0] = p[3][1]
 	if type(p[3]) == tuple:
-		return_types = p[3][0][1]
-		correct_types = []
-		for ret_dict in return_types:
-			for ret_type in ret_dict:
-				correct_types += [ret_type] * len(ret_dict[ret_type])
+		
+		# return_types = p[3][0][1]
+		# correct_types = []
+		# for ret_dict in return_types:
+		# 	for ret_type in ret_dict:
+		# 		correct_types += [ret_type] * len(ret_dict[ret_type])
 		# print correct_types
 		# print function_expr_types
 		
-		if function_expr_types:
-			if correct_types != function_expr_types[0]:
-				print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
-			function_expr_types.pop()
-		else:
-			# TODO 
-			if correct_types:
-				print 'error at line', p.lineno(0), 'expected return value for function', p[2]
+		# if function_expr_types:
+		# 	if correct_types != function_expr_types[0]:
+		# 		print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
+		# 	function_expr_types.pop()
+		# else:
+		# 	# TODO 
+		# 	if correct_types:
+		# 		print 'error at line', p.lineno(0), 'expected return value for function', p[2]
 		func_dict = {}
 		func_dict['symbol_table'] = p[3][1].extra['block_scope']
 		insertInfo(p[2], 'func_dict', func_dict)
-		insertInfo(p[2], 'func_signature', p[3][0])
+		# insertInfo(p[2], 'func_signature', p[3][0]) #CHANGED!!
 		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	else:
 		insertInfo(p[2], 'func_signature', p[3])
@@ -677,11 +697,16 @@ def p_func_decl(p):
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
 	p[0] = p[1]
+	err = insertId(p[1], 'func')
+	global current_func_name
+	current_func_name = p[1]
+	if err:
+		print 'error at line', p.lineno(0), err
+		return 
 
 def p_func(p):
 	'''Function : Signature FunctionBody'''
 	p[0] = (p[1], p[2])
-	
 
 def p_func_body(p):
 	'''FunctionBody : Block'''
@@ -828,9 +853,12 @@ def p_prim_expr(p):
 				
 			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
 			p[0].expr.type = element_type
-			p[0].place = newTemp(element_type)
+			# p[0].place = newTemp(element_type)
+			p[0].place = p[1].place + '[' + p[2].place + ']'
 			p[0].expr.value = p[1].expr.value
-			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+			
+			# p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+			p[0].code = p[1].code + p[2].code
 
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
@@ -851,9 +879,12 @@ def p_prim_expr(p):
 			if temp_type != 'func':
 				print 'error at line', p.lineno(0), "need function type"
 				return
+			
+			p[1].place = p[1].place.split('(')[0]
 			func_params = getIdInfo(p[1].place)['func_signature'][0]
 			func_result = getIdInfo(p[1].place)['func_signature'][1]
 			params_type_list = []
+			
 			for args in func_params:
 				key = args.keys()[0]
 				value = args[key]
@@ -861,7 +892,6 @@ def p_prim_expr(p):
 					params_type_list.append(key)
 				for v in value:
 					params_type_list.append(key)
-
 			exprlist = p[2].exprlist
 			exprlist.insert(0, exprlist[-1])
 			exprlist.pop()
@@ -876,7 +906,6 @@ def p_prim_expr(p):
 				p[0].code += i.code
 			for arg in arguments:
 				p[0].code += ['param ' + arg]
-
 			if not func_result:
 				p[0].code += ['callvoid ' + p[1].place + ', ' + str(arguments)]
 				p[0].expr.type = 'void'
@@ -884,10 +913,16 @@ def p_prim_expr(p):
 				for arg in func_result:
 					result = arg
 					break
-				new_place = newTemp(result.keys()[0])
-				p[0].expr.type = result.keys()[0]
-				p[0].place = new_place
-				p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
+				if type(result) == dict:
+					new_place = newTemp(result.keys()[0])
+					p[0].expr.type = result.keys()[0]
+					p[0].place = new_place
+					p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
+				else:
+					new_place = newTemp(result)
+					p[0].expr.type = result
+					p[0].place = new_place
+					p[0].code += ['call' + result + ', ' + new_place + ', ' + p[1].place]
 
 
 def p_selector(p):
@@ -1448,7 +1483,6 @@ def p_return(p):
 
 	p[0].code += ['ret']
 	p[0].extra['is_return'] = True
-	
 	function_expr_types.append(expr_types)
 	
 
@@ -1617,6 +1651,41 @@ def retstring(item):
 	else:
 		return item
 
+# for scope in scope_list[::-1]:
+# 	entries = scope.getAllEntries()
+# 	print 'offset***', scope.offset, scope.label
+# 	pp.pprint(entries[0])
+
+entries = global_symbol_table.getAllEntries()[0]
+function_symtable = []
+for entry in entries:
+	
+	if 'func_dict' in entries[entry]:
+		# print entries[entry]['func_dict']['symbol_table']
+		function_symtable.append(entries[entry]['func_dict']['symbol_table'])
+		# pp.pprint(entries[entry])
+		# print 
+		# print
+def computeOffsets(off_sum, parent):
+	# print 'parent', parent.label, parent.offset
+	for scope in parent.children:
+		# print 'here', off_sum
+		# print 'parent', parent.label, parent.offset, 'child', scope.label, scope.offset
+		# child_offset = scope.offset
+		# parent_offset = parent.offset
+		for entries in scope.table:
+			if 'offset' in scope.table[entries]:
+				scope.table[entries]['offset'] += off_sum
+		# scope.offset += parent.offset
+		off_sum += scope.offset
+		off_sum = computeOffsets(off_sum, scope)
+	return off_sum
+		# parent.offset += child_offset 
+
+# print function_symtable
+for table in function_symtable:
+	computeOffsets(scope_list[table].offset, scope_list[table])
+
 f = open(codefile, 'w')
 buf = ''
 for item in t.code:
@@ -1632,6 +1701,8 @@ for scope in scope_list[::-1]:
 	f.write('parent: ' + str(entries[3]) + '\n')
 	pp.pprint(entries[0], stream=f)
 	pp.pprint(entries[2], stream=f)
+	# pp.pprint(scope.offset)
 	# pp.pprint(entries[0])
 	f.write('\n')
+
 f.close()

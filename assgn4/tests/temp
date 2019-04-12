@@ -1,5 +1,11 @@
 package math;
 
+var a int =  1;
+
+func fib(a int) {
+    a = 1;
+};
+
 func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
     var c int;
     c = c1 + a2;
@@ -15,25 +21,45 @@ func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
 };
 
 func main() {
-    var a struct {b [10]int; c int;};
-    //var a [10][3] struct {b [10]int; c int;};
-   // e := a[3][1].b;
-   var c111 int;
-   a11 := c111;
-    c := 1;
-    d := 0.2;
-    var b int;
-    var aa [10][3] int;
-    x := aa[1][1];
-    //a = fun(c, d, e);
-    for x := 0; x < c; x++ {
-        x += 4;
-        if (x < 6) {
-            for a:=5; a < c; a++ {
-                a += 1;
-            };
+    var n int;
+    var xx[n] int;
+    yy := xx[1];
+    var a[10][20] int;
+    // a[0][1] = 1;
+    c := 3 + a[1][0];
+    for c < 6 {
+        a := 4;
+        if a < 7 {
+            b := 3;
+            c := 3.0;
         };
     };
+    c2 := 4;
+    for c2 < 6 {
+        a2 := 4;
+        if a2 < 7 {
+            b2 := 3;
+        };
+    };
+   // var a struct {b [10]int; c int;};
+   // //var a [10][3] struct {b [10]int; c int;};
+   //// e := a[3][1].b;
+   //var c111 int;
+   //a11 := c111;
+   // c := 1;
+   // d := 0.2;
+   // var b int;
+   // var aa [10][3] int;
+   // x := aa[1][1];
+   // //a = fun(c, d, e);
+   // for x := 0; x < c; x++ {
+   //     x += 4;
+   //     if (x < 6) {
+   //         for a:=5; a < c; a++ {
+   //             a += 1;
+   //         };
+   //     };
+   // };
     //        break;
     //    }
     //    else {
