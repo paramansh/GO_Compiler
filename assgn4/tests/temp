@@ -1,10 +1,12 @@
 package math;
 
-var a int =  1;
+//var a int =  1;
 
 func fib(a int) {
     a = 1;
 };
+
+const a int = 1;
 
 func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
     var c int;
