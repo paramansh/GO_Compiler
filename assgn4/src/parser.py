@@ -470,7 +470,7 @@ def p_const_spec(p):
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
 					scope_label = scope_stack[-1].label
-					p[0].code += p[2].exprlist[i].code + '(' + str(scope_label) + ')'  + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					p[0].code += p[2].exprlist[i].code + ['(' + str(scope_label) + ')' ] + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 			else:
 				for i in range(len(p[2].exprlist)):
 					err = insertId(p[1].idlist[i], p[2].exprlist[i].expr.type)
@@ -479,7 +479,7 @@ def p_const_spec(p):
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
 					scope_label = scope_stack[-1].label
-					p[0].code += p[2].exprlist[i].code + '(' + str(scope_label) + ')' + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					p[0].code += p[2].exprlist[i].code + ['(' + str(scope_label) + ')'] + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 
 def p_type_expr_list(p):
 	'''TypeExprListOpt : TypeOpt EQUAL ExpressionList

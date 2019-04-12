@@ -1,43 +1,41 @@
-scope: 4
-parent: 3
+scope: 5
+parent: 0
 {'TEMP_VAR3': {'constant': False, 'type': 'int'},
- 'TEMP_VAR4': {'constant': False, 'type': 'int'},
- 'a': {'constant': False, 'offset': 1512, 'type': 'int'}}
+ 'a': {'constant': False, 'offset': 0, 'type': 'int', 'value': '9'},
+ 'x': {'constant': False, 'offset': 4, 'type': 'int'}}
+{}
+
+scope: 4
+parent: 1
+{'TEMP_VAR0': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR2': {'constant': False, 'type': 'int'}}
 {}
 
 scope: 3
-parent: 2
+parent: 1
 {}
 {}
 
 scope: 2
 parent: 1
-{'TEMP_VAR1': {'constant': False, 'type': 'int'},
- 'TEMP_VAR2': {'constant': False, 'type': 'int'},
- 'x': {'constant': False, 'offset': 1508, 'type': 'int'}}
+{}
 {}
 
 scope: 1
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'type': 'Array(10, int)'},
- 'a': {'constant': False,
-       'offset': 0,
-       'type': "Array(10, Array(3, Struct{'b':'Array(10, int)','c':'int'}))"},
- 'a11': {'constant': False, 'offset': 1364, 'type': 'int'},
- 'aa': {'constant': False, 'offset': 1384, 'type': 'Array(10, Array(3, int))'},
- 'b': {'constant': False, 'offset': 1380, 'type': 'int'},
- 'c': {'constant': False, 'offset': 1368, 'type': 'int'},
- 'c111': {'constant': False, 'offset': 1360, 'type': 'int'},
- 'd': {'constant': False, 'offset': 1372, 'type': 'float'},
- 'e': {'constant': False, 'offset': 1320, 'type': 'Array(10, int)'},
- 'x': {'constant': False, 'offset': 1504, 'type': 'int'}}
+{'x': {'constant': False, 'offset': 0, 'type': 'int'}}
 {}
 
 scope: 0
 parent: None
-{'main': {'func_dict': {'symbol_table': 1},
+{'factorial': {'func_dict': {'symbol_table': 1},
+               'func_signature': [[{'int': ['x']}], ['int']],
+               'offset': 0,
+               'type': 'func'},
+ 'main': {'func_dict': {'symbol_table': 5},
           'func_signature': [[], []],
-          'offset': 0,
+          'offset': 1,
           'type': 'func'}}
 {}
 
