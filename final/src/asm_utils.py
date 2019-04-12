@@ -20,7 +20,7 @@ def init_globals(scope, fp):
     gen_instr('movl %esp, %ebp', fp)
 
 def gen_label(label, fp):
-    fp.write('\t' + label + '\n')
+    fp.write('\n' + label + ':\n\n')
 
 def gen_instr(instr, fp):
     fp.write('\t' + instr + '\n')

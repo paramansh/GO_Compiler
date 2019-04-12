@@ -1,15 +1,5 @@
 .data
 
-z:
-	.int	5
-name:
-	.string	siraj
-alpha:
-	.float	0.0
-y:
-	.int	4
-x:
-	.int	3
 outFormatInt:
 	.asciz	"%d\n"
 outFormatStr:
@@ -31,7 +21,9 @@ __main__:
 
 	pushl %ebp
 	movl %esp, %ebp
-	exit
+
+exit:
+
 	movl $0, %ebx
 	movl $1, %eax
 	int $0x80

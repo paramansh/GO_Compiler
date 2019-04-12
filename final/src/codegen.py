@@ -27,6 +27,6 @@ for scope in scope_list[::-1]:
 	pp.pprint(entries[0])
 	pp.pprint(entries[2])
 
-f = open('asmcode.s', 'w')
+f = open('asmcode.S', 'w')
 init_globals(scope_list[0], f)
 closefile(f)
