@@ -4,8 +4,8 @@ import argparse
 import pprint as pp
 from utils import Node, SymbolTable
 from scope import *
-import json 
 import ast
+import cPickle as pickle
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input",help = "Specify the input file to parse.")
@@ -34,6 +34,29 @@ def getIdInfo(ide):
 		else:
 			return None
 
+def type_size(t):
+			
+	if t == 'int':
+		return 4
+	elif t == 'float':
+		return 8
+	elif t[0:6] == 'Struct':
+		res = 0
+		field_dic = ast.literal_eval(t[6:])
+		for variables in field_dic:
+			res += type_size(field_dic[variables])
+		return res
+	elif t[0:5] == 'Array':
+		try:
+			length = int(t[6:-1].split(',')[0])
+			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+			return length*type_size(element_type)
+		except:
+			length = t[6:-1].split(',')[0]
+			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+			return 4
+	return 1
+
 def insertId(idname, idtype):
 	err = ""
 	if len(idname) >= 8 and idname[:8] == 'TEMP_VAR':
@@ -43,8 +66,12 @@ def insertId(idname, idtype):
 		err = "Variable already exists in current scope"
 		return err
 	else:
+		
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
+		# TODO struct types etc??
+		insertInfo(idname, 'offset', curr_scope.offset)
+		curr_scope.offset += type_size(idtype)
 
 def insertType(name, ttype):
 	err = ""
@@ -203,9 +230,6 @@ def p_field_decl(p):
 	p[0] = ""
 	for i in p[1].idlist:
 		p[0] += "'" + i + "'" + ':' + "'" + p[2].type + "'"
-	# make_edge(p[0], p[2], 'type')
-	# if p[3] != -1:
-	# 	make_edge(p[0], p[3], 'tag')
 
 def p_tag_opt(p):
   	''' TagOpt : Tag
@@ -244,18 +268,16 @@ def p_function_type(p):
 
 def p_signature(p):
 	'''Signature : Parameters ResultOpt'''
-	# TODO result 
-	p[0] = [p[1], p[2]] # append p[2] if result
+	p[0] = [p[1], p[2]]
 	addScope()
+	insertInfo(current_func_name, 'func_signature', p[0])
 	scope_stack[-1].is_func_table=True
-	# print p[1]
 	for var_dict in p[1]:
 		for var_type in var_dict:
 			variables = var_dict[var_type]
 			for v in variables:
 				insertId(v, var_type)
 				insertInfo(v, 'constant', False)
-				# print v, 
 	for var_dict in p[2]:
 		if type(var_dict) == dict:
 			for var_type in var_dict:
@@ -263,7 +285,6 @@ def p_signature(p):
 				for v in variables:
 					insertId(v, var_type)
 					insertInfo(v, 'constant', False)
-
 
 def p_result_opt(p):
 	'''ResultOpt : Result
@@ -310,7 +331,6 @@ def p_parameter_list(p):
 		tempdict[p[1].type] = []
 		p[0] = [tempdict]
 
-
 def p_parameter_decl_comma_rep(p):
 	'''ParameterDeclCommaRep : ParameterDeclCommaRep COMMA ParameterDecl
 							 | ParameterDecl COMMA ParameterDecl'''
@@ -331,7 +351,6 @@ def p_parameter_decl(p):
 	else:
 		p[0][p[1].type] = []
 
-
 #----------------------------------------------------------------------------------#
 
 
@@ -347,7 +366,6 @@ def p_block(p):
 def p_create_scope(p):
 	'''CreateScope : epsilon '''
 	if not (scope_stack[-1].is_func_table or scope_stack[-1].is_for_table):
-		# print 'hte'
 		addScope()
 	scope_stack[-1].is_func_table = False
 	scope_stack[-1].is_for_table = False
@@ -369,7 +387,6 @@ def p_statement_rep(p):
 			if 'is_break' in p[2].extra and p[2].extra['is_break']:
 				p[2].next[0] = p[0].forclause.next
 	else:
-		# addScope()
 		p[0] = Node()
 
 # -------------------------------------------------------
@@ -412,7 +429,7 @@ def p_const_spec_rep(p):
 	else:
 		p[0] = Node()
 
-#TODO check constant modification
+### TODO check constant modification
 def p_const_spec(p):
 	'''ConstSpec : IdentifierList TypeExprListOpt'''
 	p[0] = Node()
@@ -432,7 +449,8 @@ def p_const_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
-					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[2].exprlist[i].code + ['(' + str(scope_label) + ')' ] + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 			else:
 				for i in range(len(p[2].exprlist)):
 					err = insertId(p[1].idlist[i], p[2].exprlist[i].expr.type)
@@ -440,8 +458,8 @@ def p_const_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[2].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', True)
-
-					p[0].code += p[2].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[2].exprlist[i].code + ['(' + str(scope_label) + ')'] + [p[1].idlist[i] + ' := ' + p[2].exprlist[i].place]
 
 def p_type_expr_list(p):
 	'''TypeExprListOpt : TypeOpt EQUAL ExpressionList
@@ -468,7 +486,6 @@ def p_identifier_rep(p):
 		p[0].idlist.append(p[3])
 	else:
 		p[0] = Node()
-
 
 # -------------------------------------------------------
 
@@ -526,8 +543,6 @@ def p_var_decl(p):
 		p[0] = p[2]
 	else:
 		p[0] = p[3]
-		# for i in p[3]:
-		# 	make_edge(p[0], i)
 
 def p_var_spec_rep(p):
 	'''VarSpecRep : VarSpecRep VarSpec SEMICOL
@@ -553,13 +568,30 @@ def p_var_spec(p):
 					print 'error: at line', p.lineno(0), err
 				insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
 				insertInfo(p[1].idlist[i], 'constant', False)
-				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+				# need to add scope label lable to identifier
+				scope_label = scope_stack[-1].label
+				p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + '(' + str(scope_label) + ')' + ' := ' + p[3].exprlist[i].place]
 	else:
 		p[0] = Node()
 		if not p[3]:
 			for i in p[1].idlist:
+				if p[2].type[0:5] == 'Array':
+					try:
+						int(p[2].type[6:-1].split(',')[0])
+					except:
+						element_type = ','.join(p[2].type[6:-1].split(',')[1:])[1:]
+						p[0].code += ['Allocate ' + i + ' ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
+				
 				err = insertId(i, p[2].type)
+				if p[2].type == 'int':
+					insertInfo(i, 'value', 0)
+				elif p[2].type == 'float':
+					insertInfo(i, 'value', 0.0)
+				elif p[2].type == 'string':
+					insertInfo(i, 'value', '')
+				### TODO bool type
 				insertInfo(i, 'constant', False)
+
 				if err:
 					print 'error: at line', p.lineno(0), err
 		else:
@@ -575,9 +607,10 @@ def p_var_spec(p):
 						print 'error: at line', p.lineno(0), err
 					insertInfo(p[1].idlist[i], 'value', p[3].exprlist[i].place)
 					insertInfo(p[1].idlist[i], 'constant', False)
-					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + ' := ' + p[3].exprlist[i].place]
+					scope_label = scope_stack[-1].label
+					p[0].code += p[3].exprlist[i].code + [p[1].idlist[i] + '(' + str(scope_label) + ')' + ' := ' + p[3].exprlist[i].place]
 					
-					#TODO always insert info??????????? what is attribute value
+					#TODO always insert info? what is attribute value?
 					#TODO which attributes to be added in symbol table!
 
 def p_expr_list_opt(p):
@@ -600,46 +633,45 @@ def p_short_var_decl(p):
 	if err:
 		print 'error: at line', p.lineno(0), err
 		return
-	insertInfo(p[1], 'constant', False) 
-	p[0].code += p[3].code + [p[1] + ' := ' + p[3].place]
+	insertInfo(p[1], 'constant', False)
+	scope_label = scope_stack[-1].label
+	p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
 
 # -------------------------------------------------------
 
 
 # ----------------FUNCTION DECLARATIONS------------------
 
+current_func_name = None
+
 def p_func_decl(p):
 	'''FunctionDecl : FUNC FunctionName Function
 					| FUNC FunctionName Signature'''
 					
-	p[0] = p[3][1]	
-	err = insertId(p[2], 'func')
-
-	if err:
-		print 'error at line', p.lineno(0), err
-		return 
-	
+	p[0] = p[3][1]
 	if type(p[3]) == tuple:
-		return_types = p[3][0][1]
-		correct_types = []
-		for ret_dict in return_types:
-			for ret_type in ret_dict:
-				correct_types += [ret_type] * len(ret_dict[ret_type])
+		
+		# return_types = p[3][0][1]
+		# correct_types = []
+		# for ret_dict in return_types:
+		# 	for ret_type in ret_dict:
+		# 		correct_types += [ret_type] * len(ret_dict[ret_type])
 		# print correct_types
 		# print function_expr_types
 		
-		if function_expr_types:
-			if correct_types != function_expr_types[0]:
-				print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
-			function_expr_types.pop()
-		else:
-			# TODO 
-			if correct_types:
-				print 'error at line', p.lineno(0), 'expected return value for function', p[2]
+		# if function_expr_types:
+		# 	if correct_types != function_expr_types[0]:
+		# 		print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
+		# 	function_expr_types.pop()
+		# else:
+		# 	# TODO 
+		# 	if correct_types:
+		# 		print 'error at line', p.lineno(0), 'expected return value for function', p[2]
+
 		func_dict = {}
 		func_dict['symbol_table'] = p[3][1].extra['block_scope']
 		insertInfo(p[2], 'func_dict', func_dict)
-		insertInfo(p[2], 'func_signature', p[3][0])
+		# insertInfo(p[2], 'func_signature', p[3][0]) # CHANGED!!
 		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	else:
 		insertInfo(p[2], 'func_signature', p[3])
@@ -651,11 +683,16 @@ def p_func_decl(p):
 def p_func_name(p):
 	'''FunctionName : IDENTIFIER'''
 	p[0] = p[1]
+	err = insertId(p[1], 'func')
+	global current_func_name
+	current_func_name = p[1]
+	if err:
+		print 'error at line', p.lineno(0), err
+		return 
 
 def p_func(p):
 	'''Function : Signature FunctionBody'''
 	p[0] = (p[1], p[2])
-	
 
 def p_func_body(p):
 	'''FunctionBody : Block'''
@@ -743,12 +780,12 @@ def p_operand_name(p):
 	p[0] = Node()
 	if not inScope(p[1]):
 		print "error at line", p.lineno(0), 'Variable not Declared'
-		 
-	# we are preceeding forward assumng the variable had already been declared!
+	scope_label = getScope(p[1]).label	 
+	# we are proceeding forward assumng the variable had already been declared!
 	p[0] = Node()
 	p[0].expr.value = p[1]
 	temp = getIdInfo(p[1])
-	p[0].place = str(p[0].expr.value)
+	p[0].place = str(p[0].expr.value) + '(' + str(scope_label) + ')'
 	if temp is not None:
 		p[0].expr.type = temp['type']
 
@@ -799,11 +836,14 @@ def p_prim_expr(p):
 			except:
 				pass
 				
-			element_type = (temp_type[6:-1].split(',')[1])[1:]
+			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
 			p[0].expr.type = element_type
-			p[0].place = newTemp(element_type)
+			# p[0].place = newTemp(element_type)
+			p[0].place = p[1].place + '[' + p[2].place + ']'
 			p[0].expr.value = p[1].expr.value
-			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+			
+			# p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
+			p[0].code = p[1].code + p[2].code
 
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
@@ -824,9 +864,12 @@ def p_prim_expr(p):
 			if temp_type != 'func':
 				print 'error at line', p.lineno(0), "need function type"
 				return
+			
+			p[1].place = p[1].place.split('(')[0]
 			func_params = getIdInfo(p[1].place)['func_signature'][0]
 			func_result = getIdInfo(p[1].place)['func_signature'][1]
 			params_type_list = []
+			
 			for args in func_params:
 				key = args.keys()[0]
 				value = args[key]
@@ -834,7 +877,6 @@ def p_prim_expr(p):
 					params_type_list.append(key)
 				for v in value:
 					params_type_list.append(key)
-
 			exprlist = p[2].exprlist
 			exprlist.insert(0, exprlist[-1])
 			exprlist.pop()
@@ -849,7 +891,6 @@ def p_prim_expr(p):
 				p[0].code += i.code
 			for arg in arguments:
 				p[0].code += ['param ' + arg]
-
 			if not func_result:
 				p[0].code += ['callvoid ' + p[1].place + ', ' + str(arguments)]
 				p[0].expr.type = 'void'
@@ -857,10 +898,16 @@ def p_prim_expr(p):
 				for arg in func_result:
 					result = arg
 					break
-				new_place = newTemp(result.keys()[0])
-				p[0].expr.type = result.keys()[0]
-				p[0].place = new_place
-				p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
+				if type(result) == dict:
+					new_place = newTemp(result.keys()[0])
+					p[0].expr.type = result.keys()[0]
+					p[0].place = new_place
+					p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
+				else:
+					new_place = newTemp(result)
+					p[0].expr.type = result
+					p[0].place = new_place
+					p[0].code += ['call' + result + ', ' + new_place + ', ' + p[1].place]
 
 
 def p_selector(p):
@@ -1051,7 +1098,6 @@ def p_unary_expr(p):
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + old_place]
 		if p[1] == '*':
-			# p[0] = p[2]
 			p[0] = Node()
 			if p[2].expr.type[-1] != '*':
 				print 'error at line', p.lineno(0), "can't dereference: invalid type"
@@ -1097,14 +1143,9 @@ def p_statement(p):
 				 | ForStmt '''
 				#  SwitchStmt'''
 	p[0] = p[1] 
-	# new_label = newLabel()
-	# p[0].next[0] = new_label
 	
-	# p[0].code += [new_label + ':']
 	if p[0].next[0][0] == 'l': 
-		p[0].code += [p[0].next[0] + ':'] #otherwisw not labelx
-	# if p[0].begin[0] == 'l': 
-	# 	p[0].code += [p[0].next[0] + ':']
+		p[0].code += [p[0].next[0] + ':'] # otherwise not labelx
 
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
@@ -1334,8 +1375,7 @@ def p_for(p):
 			cond = p[3].forclause.condition
 			cond.expr.true_label[0] = newLabel()
 			cond.expr.false_label[0] = p[0].next
-			p[4].next[0] = p[0].begin # TODO TODO TODO check confirtm
-			# p[4].next[0] = p[0].next
+			p[4].next[0] = p[0].begin # TODO TODO TODO check confirm
 			p[4].begin[0] = p[0].begin
 			update_label = [newLabel()]
 			p[4].forclause.begin[0] = update_label
@@ -1345,9 +1385,8 @@ def p_for(p):
 		else:
 			p[3].expr.true_label[0] = newLabel()
 			p[3].expr.false_label[0] = p[0].next
-			p[4].next[0] = p[0].begin # TODO TODO TODO check confirtm
-			p[4].forclause.begin[0] = p[0].begin
-			# p[4].next[0] = p[0].next 
+			p[4].next[0] = p[0].begin # TODO TODO TODO check confirm
+			p[4].forclause.begin[0] = p[0].begin 
 			p[4].begin[0] = p[0].begin
 			p[0].code += [[p[0].begin , ":"]] + p[3].code + [p[3].expr.true_label[0] + ":"] + p[4].code + [['goto: ',p[0].begin]]
 	p[0].next[0] = newLabel()
@@ -1421,7 +1460,6 @@ def p_return(p):
 
 	p[0].code += ['ret']
 	p[0].extra['is_return'] = True
-	
 	function_expr_types.append(expr_types)
 	
 
@@ -1438,8 +1476,6 @@ def p_break(p):
 	p[0] = Node()
 	p[0].code = [['goto ', p[0].next]]
 	p[0].extra['is_break'] = True
-	# if p[2] != -1:
-	# 	make_edge(p[0], p[2])
 
 def p_continue(p):
 	'''ContinueStmt : CONTINUE LabelOpt'''
@@ -1447,8 +1483,6 @@ def p_continue(p):
 	
 	p[0].code = [['goto ', p[0].next]]
 	p[0].extra['is_continue'] = True
-	# if p[2] != -1:
-	# 	make_edge(p[0], p[2]) #TODO label
 
 def p_labelopt(p):
 	'''LabelOpt : Label
@@ -1471,12 +1505,6 @@ def p_goto(p):
 
 def p_source_file(p):
 	'''Source : PackageClause SEMICOL ImportDeclRep TopLevelDeclRep'''
-	# p[0] = make_node('Source')
-	# make_edge(p[0], p[1])
-	# for i in p[3]:
-	# 	make_edge(p[0], i)
-	# for i in p[4]:
-	# 	make_edge(p[0], i)
 	p[0] = p[4]
 
 def p_import_decl_rep(p):
@@ -1590,6 +1618,37 @@ def retstring(item):
 	else:
 		return item
 
+# for scope in scope_list[::-1]:
+# 	entries = scope.getAllEntries()
+# 	print 'offset***', scope.offset, scope.label
+# 	pp.pprint(entries[0])
+
+entries = global_symbol_table.getAllEntries()[0]
+function_symtable = []
+for entry in entries:
+	if 'func_dict' in entries[entry]:
+		function_symtable.append(entries[entry]['func_dict']['symbol_table'])
+
+
+def computeOffsets(off_sum, parent):
+	for scope in parent.children:
+		# print off_sum
+		# print 'parent', parent.label, parent.offset, 'child', scope.label, scope.offset
+		# child_offset = scope.offset
+		# parent_offset = parent.offset
+		for entries in scope.table:
+			if 'offset' in scope.table[entries]:
+				scope.table[entries]['offset'] += off_sum
+		# scope.offset += parent.offset
+		off_sum += scope.offset
+		off_sum = computeOffsets(off_sum, scope)
+	return off_sum
+		# parent.offset += child_offset 
+
+# print function_symtable
+for table in function_symtable:
+	computeOffsets(scope_list[table].offset, scope_list[table])
+
 f = open(codefile, 'w')
 buf = ''
 for item in t.code:
@@ -1606,4 +1665,8 @@ for scope in scope_list[::-1]:
 	pp.pprint(entries[0], stream=f)
 	pp.pprint(entries[2], stream=f)
 	f.write('\n')
+f.close()
+
+f = open('symtab_pickle', 'w')
+pickle.dump(scope_list, f)
 f.close()

@@ -2,6 +2,8 @@ package math;
 
 const (f0; f1 func(a, b int, z float) (bool) = f0;);
 
+var a [10][20]int;
+
 func Split(s string, pos int) (string, string) {
 	return s[0:pos], s[pos:];
 };

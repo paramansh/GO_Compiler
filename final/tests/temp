@@ -1,6 +1,6 @@
 package math;
 
-func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
+func fun(c1, a2 int, d1 float, e1 int) (a int) {
     var c int;
     c = c1 + a2;
     for c < 7 {
@@ -11,27 +11,44 @@ func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
             break;
         };
     };  
-    return c, b-c, a;
+    return c;
 };
 
 func main() {
+    var a struct {b [10]int; c int;};
+    //var a [10][3] struct {b [10]int; c int;};
+   // e := a[3][1].b;
     c := 1;
-    var a float;
+    d := 0.2;
+    var b int;
+    var aa [10][3] int;
+    x := aa[1][1];
     //a = fun(c, d, e);
-    for x := 0; x < c; x++ {
-        x += 4;
-        if (x < 6) {
-            for a:=5; a < c; a++ {
-                break;
-                continue;
-            };
+    //for x := 0; x < c; x++ {
+    //    x += 4;
+    //    if (x < 6) {
+    //        for a:=5; a < c; a++ {
+    //            break;
+    //            continue;
+    //        };
+//
+    //        break;
+    //    }
+    //    else {
+    //        continue;
+    //    };
+    //    //break;
+    //    //continue;
+    //};
 
-            break;
-        }
-        else {
-            continue;
-        };
-        //break;
-        //continue;
-    };
+    var z int;
+    z = fun(1, 2, 1.0, 3);
+
+    var p int = 3;
+    var q int = 4;
+    z = p * 4;
+    z = p / 4;
+    z = p * q;
+    z = p / q;
+    z = p % q;
 };

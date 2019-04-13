@@ -1,56 +1,23 @@
-label6 function fun:
-TEMP_VAR0 := c1 int+ a2
-c := TEMP_VAR0
-label3:
-if c<7 goto label4
-goto label5
-label4:
-if a2<c goto label0
+label3 function fib:
+if x(1)<=1 goto label0
 goto label1
 label0:
-goto label3
+ret1: 1
+ret
 goto label2
 label1:
-goto label5
-label2:
-goto: label3
-label5:
-TEMP_VAR1 := b int- c
-ret1: TEMP_VAR1
-ret2: a
-ret3: c
+TEMP_VAR0 := x(1) int-i 1
+param TEMP_VAR0
+callint, TEMP_VAR1, fib
+TEMP_VAR2 := x(1) int-i 2
+param TEMP_VAR2
+callint, TEMP_VAR3, fib
+TEMP_VAR4 := TEMP_VAR1 int+ TEMP_VAR3
+ret1: TEMP_VAR4
 ret
-label18 function main:
-c := 1
-x := 0
-label14:
-if x<c goto label15
-goto label17
-label15:
-TEMP_VAR3 := x int+ 4
-x := TEMP_VAR3
-if x<6 goto label11
-goto label12
-label11:
-a := 5
-label7:
-if a<c goto label8
-goto label10
-label8:
-goto label10
-goto label9
-label9:
-TEMP_VAR4 := a int+i 1
-a := TEMP_VAR4
-goto: label7
-label10:
-goto label17
-goto label13
-label12:
-goto label16
-label13:
-label16:
-TEMP_VAR2 := x int+i 1
-x := TEMP_VAR2
-goto: label14
-label17:
+label2:
+label4 function main:
+a(4) := 9
+param a(4)
+callint, TEMP_VAR5, fib
+x(4) := TEMP_VAR5

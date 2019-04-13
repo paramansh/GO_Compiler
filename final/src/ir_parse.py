@@ -8,7 +8,7 @@ def getType(instr):
         return 'label'
     elif temp[0:4] == 'call':
         return 'call'
-    return "simpls stmt"
+    return "simple stmt"
 
 class instruction:
     def __init__(self, instr):
