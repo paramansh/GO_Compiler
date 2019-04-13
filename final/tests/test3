@@ -1,0 +1,14 @@
+package math;
+
+func fun(c int, d float, e int) (b float) {
+    var a int;
+};
+
+func main() {
+    var c *int;
+    var a int = *c;
+    var b *int = &a;
+    var f string;
+    var x float;
+    x = fun(a, float(a), a);
+};

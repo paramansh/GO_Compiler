@@ -1,27 +1,34 @@
+scope: 3
+parent: 1
+{'TEMP_VAR3': {'constant': False, 'type': 'int'},
+ 'x': {'constant': False, 'type': 'int'}}
+{}
+
 scope: 2
-parent: 0
-{'TEMP_VAR0': {'constant': False, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'type': 'int*'},
- 'TEMP_VAR2': {'constant': False, 'type': 'float'},
- 'a': {'constant': False, 'type': 'int', 'value': 'TEMP_VAR0'},
- 'b': {'constant': False, 'type': 'int*', 'value': 'TEMP_VAR1'},
- 'c': {'constant': False, 'type': 'int*'},
- 'f': {'constant': False, 'type': 'string'}}
+parent: 1
+{'TEMP_VAR2': {'constant': False, 'type': 'float'},
+ 'j': {'constant': False, 'type': 'float'}}
 {}
 
 scope: 1
 parent: 0
-{'a': {'constant': False, 'type': 'int'}}
+{'TEMP_VAR1': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR4': {'constant': False, 'type': 'float'},
+ 'aa': {'constant': False, 'type': "Struct{'a':'int','b':'float'}"},
+ 'i': {'constant': False, 'type': 'int'},
+ 'n': {'constant': False, 'type': 'int'},
+ 'y': {'constant': False, 'type': 'float'}}
 {}
 
 scope: 0
 parent: None
-{'fun': {'func_dict': {'symbol_table': 1},
-         'func_signature': [[{'int': ['c']},
-                             {'float': ['d']},
-                             {'int': ['e']}]],
-         'type': 'func'},
- 'main': {'func_dict': {'symbol_table': 2},
+{'TEMP_VAR0': {'constant': False, 'type': 'float'},
+ 'a': {'constant': True, 'type': 'int', 'value': '1'},
+ 'b': {'constant': True, 'type': 'float', 'value': '1.0'},
+ 'c': {'constant': True, 'type': 'string', 'value': 'one-point-zero'},
+ 'i': {'constant': False, 'type': 'int', 'value': '0'},
+ 'j': {'constant': False, 'type': 'float', 'value': 'TEMP_VAR0'},
+ 'main': {'func_dict': {'symbol_table': 1},
           'func_signature': [[]],
           'type': 'func'}}
 {}

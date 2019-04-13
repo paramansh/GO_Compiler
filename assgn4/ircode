@@ -1,26 +1,33 @@
-label5 function factorial:
-if x(1)<0 goto label0
-goto label1
-label0:
-ret1: 0
-ret
+label0 function fib:
+a(1) := 1
+(0)
+a := 1
+label7 function fun:
+TEMP_VAR0(2) := c1(2) int+ a2(2)
+c(2) := TEMP_VAR0(2)
+label4:
+if c(2)<7 goto label5
+goto label6
+label5:
+if a2(2)<c(2) goto label1
+goto label2
 label1:
-if x(1)<=1 goto label2
+goto label4
 goto label3
 label2:
-ret1: 1
-ret
-goto label4
+goto label6
 label3:
-TEMP_VAR0 := x(1) int-i 1
-param TEMP_VAR0
-callint, TEMP_VAR1, factorial
-TEMP_VAR2 := x(1) int* TEMP_VAR1
-ret1: TEMP_VAR2
+goto: label4
+label6:
+TEMP_VAR1(2) := b(2) int- c(2)
+ret1: TEMP_VAR1(2)
+ret2: a(2)
+ret3: c(2)
 ret
-label4:
-label6 function main:
-a(5) := 9
-param a(5)
-callint, TEMP_VAR3, factorial
-x(5) := TEMP_VAR3
+label8 function main:
+n(6) := 0
+TEMP_VAR2(6) := n(6) int* n(6)
+TEMP_VAR3(6) := n(6) int*i 2
+TEMP_VAR4(6) := TEMP_VAR2(6) int+ TEMP_VAR3(6)
+TEMP_VAR5(6) := TEMP_VAR4(6) int+i 1
+b(6) := TEMP_VAR5(6)

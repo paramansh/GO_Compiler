@@ -1,8 +1,28 @@
-label0 function fun:
-label1 function main:
-TEMP_VAR0 := *c
-a := TEMP_VAR0
-TEMP_VAR1 := &a
-b := TEMP_VAR1
-TEMP_VAR2 := intTOfloat a
-call fun:['a', 'TEMP_VAR2', 'a']
+b := 1.0
+a := 1
+c := one-point-zero
+i := 0
+TEMP_VAR0 := b float-i 2.0
+j := TEMP_VAR0
+label6 function main:
+i := 0
+label0:
+if i<n goto label1
+goto label3
+label1:
+j := 5.33
+TEMP_VAR2 := b float* j
+b := TEMP_VAR2
+label2:
+TEMP_VAR1 := i int+i 1
+i := TEMP_VAR1
+goto: label0
+label3:
+if a==i goto label4
+goto label5
+label4:
+TEMP_VAR3 := a int+i 2
+x := TEMP_VAR3
+label5:
+TEMP_VAR4 := intTOfloat 4
+y := TEMP_VAR4

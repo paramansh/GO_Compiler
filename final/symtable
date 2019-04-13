@@ -1,0 +1,71 @@
+scope: 9
+parent: 6
+{}
+{}
+
+scope: 8
+parent: 7
+{'TEMP_VAR4': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False, 'type': 'int'}}
+{}
+
+scope: 7
+parent: 6
+{}
+{}
+
+scope: 6
+parent: 5
+{'TEMP_VAR2': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR3': {'constant': False, 'type': 'int'},
+ 'x': {'constant': False, 'type': 'int'}}
+{}
+
+scope: 5
+parent: 0
+{'a': {'constant': False, 'type': 'float'},
+ 'c': {'constant': False, 'type': 'int'}}
+{}
+
+scope: 4
+parent: 2
+{}
+{}
+
+scope: 3
+parent: 2
+{}
+{}
+
+scope: 2
+parent: 1
+{}
+{}
+
+scope: 1
+parent: 0
+{'TEMP_VAR0': {'constant': False, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'type': 'int'},
+ 'a': {'constant': False, 'type': 'int'},
+ 'a2': {'constant': False, 'type': 'int'},
+ 'b': {'constant': False, 'type': 'int'},
+ 'c': {'constant': False, 'type': 'int'},
+ 'c1': {'constant': False, 'type': 'int'},
+ 'd1': {'constant': False, 'type': 'float'},
+ 'e1': {'constant': False, 'type': 'int'},
+ 'f': {'constant': False, 'type': 'int'}}
+{}
+
+scope: 0
+parent: None
+{'fun': {'func_dict': {'symbol_table': 1},
+         'func_signature': [[{'int': ['a2', 'c1']},
+                             {'float': ['d1']},
+                             {'int': ['e1']}],
+                            [{'int': ['f', 'a']}, {'int': ['b']}]],
+         'type': 'func'},
+ 'main': {'func_dict': {'symbol_table': 5},
+          'func_signature': [[], []],
+          'type': 'func'}}
+{}
+

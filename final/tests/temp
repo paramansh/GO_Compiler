@@ -1,0 +1,37 @@
+package math;
+
+func fun(c1, a2 int, d1 float, e1 int) (a, f int, b int) {
+    var c int;
+    c = c1 + a2;
+    for c < 7 {
+        if (a2 < c) {
+            continue;
+        }
+        else {
+            break;
+        };
+    };  
+    return c, b-c, a;
+};
+
+func main() {
+    c := 1;
+    var a float;
+    //a = fun(c, d, e);
+    for x := 0; x < c; x++ {
+        x += 4;
+        if (x < 6) {
+            for a:=5; a < c; a++ {
+                break;
+                continue;
+            };
+
+            break;
+        }
+        else {
+            continue;
+        };
+        //break;
+        //continue;
+    };
+};
