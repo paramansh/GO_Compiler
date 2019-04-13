@@ -1,12 +1,14 @@
 package main;
 
 func main() {
-    m := 3;
-    n := 4;
-    if m == n {
-        m = 10;
+    //m := 13;
+    m := -1;
+    a := 2;
+    b := 3;
+
+    if a == b || b >= 3 && a < 0  {
+        m = 105;
     };
 
-    n = 5;
-    m = -n;
+    print %d m;
 };

@@ -20,6 +20,7 @@ keywords = [
         'interface',
         'map',
         'package',
+        'print',
         'range',
         'return',
         'select',
@@ -86,7 +87,9 @@ tokens = [
         'PLUSEQ',
         'TIMESEQ',
         'CONSTANT',
-        'TYPEX'
+        'TYPEX',
+        'PD',
+        'PS'
         ] + [k.upper() for k in keywords]
 
 # === REGEX DEFINITIONS === #
@@ -139,6 +142,8 @@ t_COMMA   = r'\,'
 t_DOT     = r'\.'
 t_SEMICOL = r'\;'
 t_COLON   = r'\:'
+t_PD      = r'%d'
+t_PS      = r'%s'
 
 # === REGEX DEFINITIONS WITH ACTIONS === #
 def t_INTERFACE(t):

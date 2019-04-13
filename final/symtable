@@ -1,13 +1,16 @@
 scope: 2
 parent: 1
-{}
+{'TEMP_VAR0': {'constant': False, 'offset': 20, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'offset': 24, 'type': 'int'},
+ 'i': {'constant': False, 'offset': 16, 'type': 'int'}}
 {}
 
 scope: 1
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'offset': 8, 'type': 'int'},
- 'm': {'constant': False, 'offset': 0, 'type': 'int'},
- 'n': {'constant': False, 'offset': 4, 'type': 'int'}}
+{'n': {'constant': False, 'offset': 12, 'type': 'int'},
+ 't0': {'constant': False, 'offset': 8, 'type': 'int', 'value': 0},
+ 't1': {'constant': False, 'offset': 0, 'type': 'int', 'value': 0},
+ 't2': {'constant': False, 'offset': 4, 'type': 'int', 'value': 0}}
 {}
 
 scope: 0

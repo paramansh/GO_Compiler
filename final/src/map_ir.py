@@ -3,8 +3,8 @@ from asm_utils import *
 opcode = {
 	'int+' : 'addl',
 	'int-' : 'subl',
-	'int*' : 'imul',
-	'int/' : 'idiv',
+	'int*' : 'imul'
+	# 'int/' : 'idiv',
 }
 
 jumps = {
@@ -45,11 +45,13 @@ def is_immediate(var):
 		return True
 
 def map_instr(instr, scope_list, fp):
+	# print instr.instr
 	if type(instr.type) == tuple and instr.type[0] == 'if':
 		jump = get_jump(instr.type[1])
 		
 		if is_immediate(instr.src1) and is_immediate(instr.src2):
-			gen_instr('cmp $' + str(instr.src1) + ', $' + str(instr.src2), fp)
+			gen_instr('movl $' + str(instr.src2) + ', %edx', fp)
+			gen_instr('cmp $' + str(instr.src1) + ', %edx', fp)
 		elif is_immediate(instr.src1):
 			src2_offset = get_offset(instr.src2, scope_list)
 			gen_instr('movl -' + str(src2_offset) + '(%ebp), %edx', fp)
@@ -57,7 +59,8 @@ def map_instr(instr, scope_list, fp):
 		elif is_immediate(instr.src2):
 			src1_offset = get_offset(instr.src1, scope_list)
 			gen_instr('movl -' + str(src1_offset) + '(%ebp), %ecx', fp)
-			gen_instr('cmp %ecx, $' + str(instr.src2), fp)
+			gen_instr('movl $' + str(instr.src2) + ', %edx', fp)
+			gen_instr('cmp %ecx, %edx', fp)
 		else:
 			src1_offset = get_offset(instr.src1, scope_list)
 			src2_offset = get_offset(instr.src2, scope_list)
@@ -116,6 +119,17 @@ def map_instr(instr, scope_list, fp):
 
 	elif instr.type == 'goto':
 		gen_instr('jmp ' + instr.dest, fp)
+
+	elif instr.type == 'print':
+		if instr.dest == 'int':
+			src1_offset = get_offset(instr.src1, scope_list)
+			gen_instr('pushl -' + str(src1_offset) + '(%ebp)', fp)
+			gen_instr('pushl $outFormatInt', fp)
+			gen_instr('call printf', fp)
+			gen_instr('pop %ebx', fp)
+			gen_instr('pop %ebx', fp)
+		else:
+			print 'unsupported types for print'
 
 	elif instr.type == 'label':
 		if not instr.dest:

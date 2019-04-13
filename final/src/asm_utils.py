@@ -20,7 +20,7 @@ def init_globals(scope_list, fp):
     gen_instr('movl %esp, %ebp', fp)
 
     main_scope = scope_list[table['main']['func_dict']['symbol_table']]
-    gen_instr('subl $' + str(main_scope.offset) + ', %esp', fp)
+    gen_instr('subl $' + str(main_scope.offset + 8) + ', %esp', fp)
 
 def gen_label(label, fp):
     fp.write('\n' + label + ':\n\n')

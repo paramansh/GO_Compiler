@@ -1098,12 +1098,20 @@ def p_unary_expr(p):
 		if p[1] == '+':
 			p[0] = p[2]
 		if p[1] == '-':
-			p[0] = p[2]
-			old_place = p[2].place
+			if p[2].expr.type not in ['float', 'int']:
+				print 'error at line', p.lineno(0), 'unary minus not supported'
+				return
 			if p[2].expr.is_constant:
+				p[0] = p[2]
 				p[0].expr.value = -p[2].expr.value
-			p[0].place = newTemp(p[0].expr.type)
-			p[0].code += p[2].code + [p[0].place + ' := 0 int-i ' + old_place]
+				p[0].place = str(p[0].expr.value)
+			else:
+				p[0] = p[2]
+				old_place = p[2].place
+				if p[2].expr.is_constant:
+					p[0].expr.value = -p[2].expr.value
+				p[0].place = newTemp(p[0].expr.type)
+				p[0].code += p[2].code + [p[0].place + ' := 0 int-i ' + old_place]
 		if p[1] == '*':
 			p[0] = Node()
 			if p[2].expr.type[-1] != '*':
@@ -1147,12 +1155,22 @@ def p_statement(p):
 				 | GotoStmt
 				 | Block
 				 | IfStmt
+				 | PrintStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
 	p[0] = p[1] 
 	
 	if p[0].next[0][0] == 'l': 
 		p[0].code += [p[0].next[0] + ':'] # otherwise not labelx
+
+def p_print_stmt(p):
+	'''PrintStmt : PRINT PD Expression
+				 | PRINT PS Expression'''
+	p[0] = p[3]
+	if p[2] == '%s':
+		p[0].code += ['printstr ' + p[3].place]
+	elif p[2] == '%d':
+		p[0].code += ['printint ' + p[3].place]
 
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
@@ -1394,14 +1412,14 @@ def p_for(p):
 			p[4].forclause.begin[0] = update_label
 			p[0].code += p[3].forclause.initialise
 			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[4].code + [[update_label, ":"]] + p[3].forclause.update + [['goto: ',p[0].begin]]
+			p[0].code += p[4].code + [[update_label, ":"]] + p[3].forclause.update + [['goto ',p[0].begin]]
 		else:
 			p[3].expr.true_label[0] = newLabel()
 			p[3].expr.false_label[0] = p[0].next
 			p[4].next[0] = p[0].begin # TODO TODO TODO check confirm
 			p[4].forclause.begin[0] = p[0].begin 
 			p[4].begin[0] = p[0].begin
-			p[0].code += [[p[0].begin , ":"]] + p[3].code + [p[3].expr.true_label[0] + ":"] + p[4].code + [['goto: ',p[0].begin]]
+			p[0].code += [[p[0].begin , ":"]] + p[3].code + [p[3].expr.true_label[0] + ":"] + p[4].code + [['goto ',p[0].begin]]
 	p[0].next[0] = newLabel()
 
 def p_for_create_scope(p):
@@ -1655,6 +1673,7 @@ def computeOffsets(off_sum, parent):
 		# scope.offset += parent.offset
 		off_sum += scope.offset
 		off_sum = computeOffsets(off_sum, scope)
+	parent.offset = off_sum
 	return off_sum
 		# parent.offset += child_offset 
 
@@ -1672,6 +1691,7 @@ f.close()
 f = open(tablefile, 'w').close()
 f = open(tablefile, 'a')
 for scope in scope_list[::-1]:
+	# print scope.label, scope.offset
 	entries = scope.getAllEntries()
 	f.write('scope: ' + str(entries[1]) + '\n')
 	f.write('parent: ' + str(entries[3]) + '\n')

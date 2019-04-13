@@ -33,6 +33,12 @@ class instruction:
             self.dest = args[1]
             self.src1 = None
             self.src2 = None
+        
+        elif len(args) == 2 and args[0][0:5] == 'print': # print___ src
+            self.type = 'print'
+            self.dest = args[0][5:]
+            self.src1 = args[1]
+            self.src2 = None
 
         elif len(args) == 1 and args[0][0:5] == 'label': # label:
             self.type = 'label'
