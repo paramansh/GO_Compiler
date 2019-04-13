@@ -1,14 +1,36 @@
 package main;
 
-func main() {
-    //m := 13;
-    m := -1;
-    a := 2;
-    b := 3;
+func fib(n int) int {
+    if n == 0 {
+        return 1;
+    };
+    if n == 1 {
+        return 1;
+    };
+    return fib(n-1) + fib(n-2);
+};
 
-    if a == b || b >= 3 && a < 0  {
-        m = 105;
+func fact(n int) int {
+    if n == 1 {
+        return 1;
+    };
+    return n * fact(n-1);
+};
+ 
+
+func main() {
+    m := 6;
+    n := 2;
+    var x int;
+
+    if m > n {
+        // print %d m;
+        x = fib(m);
+    }
+    else {
+        // print %d n;
+        x = fact(n);
     };
 
-    print %d m;
+    print %d x;
 };

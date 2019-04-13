@@ -1,1 +1,9 @@
-$ python src/parser.py --input=testfile --code=ircode --table=symtable
+REQUIREMENTS:
+1. sudo apt install gcc-multilib
+
+RUN:
+$ ./exec <testcase>
+
+INSTRUCTIONS:
+1. In function main, don't write return statement.
+2. In all other functions - void or otherwise - return statement is necessary.

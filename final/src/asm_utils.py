@@ -15,12 +15,7 @@ def init_globals(scope_list, fp):
     fp.write('\n.text\n\n.global main\n\nmain:\n\n')
     gen_instr('call __main__', fp)
     gen_instr('jmp exit', fp)
-    fp.write('\n\n__main__:\n\n')
-    gen_instr('pushl %ebp', fp)
-    gen_instr('movl %esp, %ebp', fp)
 
-    main_scope = scope_list[table['main']['func_dict']['symbol_table']]
-    gen_instr('subl $' + str(main_scope.offset + 8) + ', %esp', fp)
 
 def gen_label(label, fp):
     fp.write('\n' + label + ':\n\n')

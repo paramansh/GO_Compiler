@@ -22,8 +22,20 @@ class instruction:
             self.src1 = None
             self.src2 = None
         
-        elif len(args) == 3: # dest := src1 OR dest const:= src1
-            self.type = ('assign', args[1])
+        elif len(args) == 3 and args[0][0:8] == 'callvoid': # print___ src
+            self.type = 'callvoid'
+            self.dest = args[1]
+            self.src1 = args[2]
+            self.src2 = None
+
+        elif len(args) == 3 and args[0][0:7] == 'callint': # print___ src
+            self.type = 'callint'
+            self.dest = args[1] # return value
+            self.src1 = args[2] # function name
+            self.src2 = None
+        
+        elif len(args) == 3: # dest := src1
+            self.type = 'assign'
             self.dest = args[0]
             self.src1 = args[2]
             self.src2 = None
@@ -40,8 +52,26 @@ class instruction:
             self.src1 = args[1]
             self.src2 = None
 
+        elif len(args) == 2 and args[0][0:5] == 'param': # print___ src
+            self.type = 'parameter'
+            self.dest = args[1]
+            self.src1 = None
+            self.src2 = None
+
+        elif len(args) == 2 and args[0][0:3] == 'ret':
+            self.type = 'retval'
+            self.dest = None
+            self.src1 = args[1]
+            self.src2 = None
+
         elif len(args) == 1 and args[0][0:5] == 'label': # label:
             self.type = 'label'
+            self.dest = None
+            self.src1 = None
+            self.src2 = None
+        
+        elif len(args) == 1 and args[0] == 'ret':
+            self.type = 'retvoid'
             self.dest = None
             self.src1 = None
             self.src2 = None

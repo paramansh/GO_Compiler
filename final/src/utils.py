@@ -69,6 +69,7 @@ class SymbolTable:
 		self.is_func_table=False
 		self.is_for_table=False
 		self.offset = 0
+		self.func_offset = -4
 
 	#?? symbol table identifying name??
 	# checks if name exists in the symbol table
