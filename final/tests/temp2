@@ -1,19 +1,12 @@
 package main;
 
-var alpha float;
-var x, y, z int = 3, 4, 5;
-const name string = "siraj";
-
 func main() {
-    var t0, t1, t2 int;
+    m := 3;
     n := 4;
-
-    t0 = 0;
-    t1 = 1;
-
-    for i := 0; i < n; i++ {
-        t2 = t1 + t0;
-        t1 = t2;
-        t0 = t1;
+    if m == n {
+        m = 10;
     };
+
+    n = 5;
+    m = -n;
 };

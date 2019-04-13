@@ -112,6 +112,9 @@ def newTemp(idtype):
 	new_temp = 'TEMP_VAR' + str(temp_var_count)
 	curr_scope.insert(new_temp, idtype)
 	insertInfo(new_temp, 'constant', False)
+	insertInfo(new_temp, 'offset', curr_scope.offset)
+	curr_scope.offset += type_size(idtype)
+	new_temp +=  '(' + str(curr_scope.label) + ')'
 	temp_var_count += 1
 	return new_temp
 	# need to remove this from variable lists??
@@ -635,7 +638,10 @@ def p_short_var_decl(p):
 		return
 	insertInfo(p[1], 'constant', False)
 	scope_label = scope_stack[-1].label
-	p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
+	if p[3].expr.is_constant:
+		p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' const:= ' + p[3].place]
+	else:
+		p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
 
 # -------------------------------------------------------
 
@@ -1053,7 +1059,7 @@ def p_expression(p):
 			if p[1].expr.type != p[3].expr.type:
 				print 'error: at line', p.lineno(0), "type mismatch in comparison"
 				return 
-			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + p[2] + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
+			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + ' ' + p[2] + ' ' + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
 
 		if p[2] == '||':
 			p[1].expr.true_label[0] = p[0].expr.true_label
@@ -1097,7 +1103,7 @@ def p_unary_expr(p):
 			if p[2].expr.is_constant:
 				p[0].expr.value = -p[2].expr.value
 			p[0].place = newTemp(p[0].expr.type)
-			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + old_place]
+			p[0].code += p[2].code + [p[0].place + ' := 0 int-i ' + old_place]
 		if p[1] == '*':
 			p[0] = Node()
 			if p[2].expr.type[-1] != '*':
@@ -1204,12 +1210,18 @@ def p_assignment(p):
 				exprtype = p[1].exprlist[i].expr.type
 				p[0].expr.type = exprtype
 				if p[2] == '=':
-					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
+					if p[3].exprlist[i].expr.is_constant:
+						p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' const:= ' + p[3].exprlist[i].place]
+					else:
+						p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
 				ops = ['+=', '-=', '*=', '/=', '%=']
 				if p[2] in ops:
-					new_temp = newTemp(exprtype)			
-					p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
-					p[0].code += [p[1].exprlist[i].expr.value + ' := ' + new_temp]
+					new_temp = newTemp(exprtype)
+					if p[3].exprlist[i].expr.is_constant:
+						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + 'i ' +  p[3].exprlist[i].place]				
+					else:
+						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
+					p[0].code += [p[1].exprlist[i].place + ' := ' + new_temp]
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
