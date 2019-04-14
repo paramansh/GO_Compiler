@@ -15,32 +15,14 @@ func sort(a []int, n int) {
 };
 
 func main() {
-    m := 2;
     var a [5]int;
     for i := 0; i < 5; i++ {
-        m = 5-i;
-        print %d m;
+        a[i] = 5-i;
+        print %d a[i];
     };
-    //a[0] = 4;
-    //a[1] = 2;
-    //a[2] = 3;
-    //a[3] = 6;
-    //a[4] = 1;
 
-    //sum := 0;
-    //for i := 0; i < 5; i++ {
-    //    sum += a[i];
-    //};
-    //var b []int;
-    //for i := 0; i < 5; i++ {
-    //    print %d a[i];
-    //};
-    //sort(a, 5);
-    //for i := 0; i < 5; i++ {
-    //    print %d a[i];
-    //};
-    ////print %d sum;
-    //n := 4;
-    //n = a[m];
-    //print %d n;
+    sort(a, 5);
+    for i := 0; i < 5; i++ {
+        print %d a[i];
+    };
 };

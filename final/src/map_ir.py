@@ -3,8 +3,9 @@ from asm_utils import *
 opcode = {
 	'int+' : 'addl',
 	'int-' : 'subl',
-	'int*' : 'imul'
-	# 'int/' : 'idiv',
+	'int*' : 'imul',
+	'int/' : 'idiv',
+	'int%' : 'idiv'
 }
 
 jumps = {
@@ -33,8 +34,7 @@ def separate(var):
 	scope = var.split('(')[1].split(')')[0]
 	return name, int(scope)
 
-def type_size(t):
-			
+def type_size(t):		
 	if t == 'int':
 		return 4
 	elif t == 'float':
@@ -101,22 +101,44 @@ def map_instr(instr, scope_list, fp):
 		
 	elif type(instr.type) == tuple and instr.type[0] == 'binop':
 		arg = instr.type[1]
-		if arg[-1] == 'i': # dest := 0 - src1
-			if instr.src1 == '0':
-				if arg[:-1] != 'int-':
-					print 'error: negation expected'
-				else:
+		if arg[-1] == 'i': # one of the two is an immediate operand
+			opcode = get_opcode(arg[:-1])
+			if not opcode:
+				print 'operation not supported'
+			elif opcode == 'idiv':
+				if is_immediate(instr.src1): # dest := imm / src2 OR dest := imm % src2
 					src2_offset = get_offset(instr.src2, scope_list)
 					dest_offset = get_offset(instr.dest, scope_list)
-					gen_instr('movl ' + str(src2_offset) + '(%ebp), %ecx', fp)
-					gen_instr('neg %ecx', fp)
-					gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
+					gen_instr('movl $' + instr.src1 + ', %eax', fp)
+					gen_instr('cdq', fp)
+					gen_instr('movl ' + str(src2_offset) + '(%ebp), %ebx', fp)
+					gen_instr('idiv %ebx', fp)
+					if arg[-2] == '/':
+						gen_instr('movl %eax, ' + str(dest_offset) + '(%ebp)', fp)
+					if arg[-2] == '%':
+						gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
 				
-			else: # dest := src1 + imm
-				opcode = get_opcode(arg[:-1])
-				if not opcode:
-					print 'operation not supported'
-				else:
+				elif is_immediate(instr.src2): # dest := src1 / imm OR dest := src1 % imm
+					src1_offset = get_offset(instr.src1, scope_list)
+					dest_offset = get_offset(instr.dest, scope_list)
+					gen_instr('movl ' + str(src1_offset) + '(%ebp), %eax', fp)
+					gen_instr('cdq', fp)
+					gen_instr('movl $' + instr.src2 + ', %ebx', fp)
+					gen_instr('idiv %ebx', fp)
+					if arg[-2] == '/':
+						gen_instr('movl %eax, ' + str(dest_offset) + '(%ebp)', fp)
+					if arg[-2] == '%':
+						gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
+			else:
+				if is_immediate(instr.src1): # dest := imm op src2
+					src2_offset = get_offset(instr.src2, scope_list)
+					dest_offset = get_offset(instr.dest, scope_list)
+					gen_instr('movl $' + instr.src1 + ', %edx', fp)
+					gen_instr('movl ' + str(src2_offset) + '(%ebp), %ecx', fp)
+					gen_instr(opcode + ' %ecx, %edx', fp)
+					gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)	
+				
+				elif is_immediate(instr.src2): # dest := src1 op imm
 					src1_offset = get_offset(instr.src1, scope_list)
 					dest_offset = get_offset(instr.dest, scope_list)
 					gen_instr('movl ' + str(src1_offset) + '(%ebp), %edx', fp)
@@ -127,6 +149,18 @@ def map_instr(instr, scope_list, fp):
 			opcode = get_opcode(arg)
 			if not opcode:
 				print 'operation not supported'
+			elif opcode == 'idiv':
+				src1_offset = get_offset(instr.src1, scope_list)
+				src2_offset = get_offset(instr.src2, scope_list)
+				dest_offset = get_offset(instr.dest, scope_list)
+				gen_instr('movl ' + str(src1_offset) + '(%ebp), %eax', fp)
+				gen_instr('cdq', fp)
+				gen_instr('movl ' + str(src2_offset) + '(%ebp), %ebx', fp)
+				gen_instr('idiv %ebx', fp)
+				if arg[-1] == '/':
+					gen_instr('movl %eax, ' + str(dest_offset) + '(%ebp)', fp)
+				if arg[-1] == '%':
+					gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
 			else:
 				src1_offset = get_offset(instr.src1, scope_list)
 				src2_offset = get_offset(instr.src2, scope_list)
@@ -220,8 +254,12 @@ def map_instr(instr, scope_list, fp):
 
 	elif instr.type == 'print':
 		if instr.dest == 'int':
-			src1_offset = get_offset(instr.src1, scope_list)
-			gen_instr('pushl ' + str(src1_offset) + '(%ebp)', fp)
+			if is_immediate(instr.src1):
+				gen_instr('movl $' + instr.src1 + ', %edx', fp)
+				gen_instr('pushl %edx', fp)
+			else:
+				src1_offset = get_offset(instr.src1, scope_list)
+				gen_instr('pushl ' + str(src1_offset) + '(%ebp)', fp)
 			gen_instr('pushl $outFormatInt', fp)
 			gen_instr('call printf', fp)
 			gen_instr('pop %ebx', fp)

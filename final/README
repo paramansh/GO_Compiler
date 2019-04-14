@@ -7,3 +7,4 @@ $ ./exec <testcase>
 INSTRUCTIONS:
 1. In function main, don't write return statement.
 2. In all other functions - void or otherwise - return statement is necessary.
+3. Print of immediate operands is not supported.

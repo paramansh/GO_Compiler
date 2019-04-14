@@ -52,7 +52,7 @@ class instruction:
             self.src1 = None
             self.src2 = None
         
-        elif len(args) == 2 and args[0][0:5] == 'print': # print___ src
+        elif len(args) == 2 and args[0][0:5] == 'print': # print_dest_ src
             self.type = 'print'
             self.dest = args[0][5:]
             self.src1 = args[1]

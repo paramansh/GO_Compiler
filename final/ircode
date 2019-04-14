@@ -39,19 +39,35 @@ i(1) := TEMP_VAR1(2)
 goto label6
 label9:
 ret
-label15 function main:
-m(5) := 2
+label19 function main:
 Allocate a(5) 5 int
 i(6) := 0
 label11:
 if i(6) < 5 goto label12
 goto label14
 label12:
-TEMP_VAR15(6) := 5 int-i i(6)
-m(5) := TEMP_VAR15(6)
-printint m(5)
+TEMP_VAR15(6) := a(5)[i(6)]4
+TEMP_VAR16(6) := 5 int-i i(6)
+a(5)[i(6)]4 := TEMP_VAR16(6)
+TEMP_VAR17(6) := a(5)[i(6)]4
+printint TEMP_VAR17(6)
 label13:
 TEMP_VAR14(6) := i(6) int+i 1
 i(6) := TEMP_VAR14(6)
 goto label11
 label14:
+param 5
+param a(5)
+callvoid sort 8
+i(7) := 0
+label15:
+if i(7) < 5 goto label16
+goto label18
+label16:
+TEMP_VAR19(7) := a(5)[i(7)]4
+printint TEMP_VAR19(7)
+label17:
+TEMP_VAR18(7) := i(7) int+i 1
+i(7) := TEMP_VAR18(7)
+goto label15
+label18:

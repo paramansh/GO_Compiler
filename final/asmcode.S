@@ -149,15 +149,14 @@ __main__:
 
 	pushl %ebp
 	movl %esp, %ebp
+	subl $36, %esp
 	subl $20, %esp
-	movl $2, -4(%ebp)
-	subl $20, %esp
-	movl %esp, -8(%ebp)
-	movl $0, -12(%ebp)
+	movl %esp, -4(%ebp)
+	movl $0, -8(%ebp)
 
 label11:
 
-	movl -12(%ebp), %ecx
+	movl -8(%ebp), %ecx
 	movl $5, %edx
 	cmp %ecx, %edx
 	jg label12
@@ -165,3 +164,83 @@ label11:
 
 label12:
 
+	movl -8(%ebp), %ebx
+	imul $4, %ebx
+	addl -4(%ebp), %ebx
+	movl (%ebx), %ecx
+	movl %ecx, -16(%ebp)
+	movl $5, %edx
+	movl -8(%ebp), %ecx
+	subl %ecx, %edx
+	movl %edx, -20(%ebp)
+	movl -8(%ebp), %ebx
+	imul $4, %ebx
+	addl -4(%ebp), %ebx
+	movl -20(%ebp), %ecx
+	movl %ecx, (%ebx)
+	movl -8(%ebp), %ebx
+	imul $4, %ebx
+	addl -4(%ebp), %ebx
+	movl (%ebx), %ecx
+	movl %ecx, -24(%ebp)
+	pushl -24(%ebp)
+	pushl $outFormatInt
+	call printf
+	pop %ebx
+	pop %ebx
+
+label13:
+
+	movl -8(%ebp), %edx
+	addl $1, %edx
+	movl %edx, -12(%ebp)
+	movl -12(%ebp), %edx
+	movl %edx, -8(%ebp)
+	jmp label11
+
+label14:
+
+	pushl $5
+	pushl -4(%ebp)
+	call sort
+	addl $8, %esp
+	movl $0, -28(%ebp)
+
+label15:
+
+	movl -28(%ebp), %ecx
+	movl $5, %edx
+	cmp %ecx, %edx
+	jg label16
+	jmp label18
+
+label16:
+
+	movl -28(%ebp), %ebx
+	imul $4, %ebx
+	addl -4(%ebp), %ebx
+	movl (%ebx), %ecx
+	movl %ecx, -36(%ebp)
+	pushl -36(%ebp)
+	pushl $outFormatInt
+	call printf
+	pop %ebx
+	pop %ebx
+
+label17:
+
+	movl -28(%ebp), %edx
+	addl $1, %edx
+	movl %edx, -32(%ebp)
+	movl -32(%ebp), %edx
+	movl %edx, -28(%ebp)
+	jmp label15
+
+label18:
+
+
+exit:
+
+	movl $0, %ebx
+	movl $1, %eax
+	int $0x80
