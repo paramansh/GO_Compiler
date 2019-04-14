@@ -1,56 +1,16 @@
-label5 function A:
-if m(1) == 0 goto label0
-goto label1
-label0:
-TEMP_VAR0(2) := n(1) int+i 1
-ret1: TEMP_VAR0(2)
+label0 function fun:
+TEMP_VAR0(1) := a(1) int+ b(1)
+TEMP_VAR1(1) := TEMP_VAR0(1) int+ c(1)
+TEMP_VAR2(1) := TEMP_VAR1(1) int+ d(1)
+ret1: TEMP_VAR2(1)
 ret
-label1:
-if m(1) > 0 goto label2
-goto label4
-label2:
-if n(1) == 0 goto label3
-goto label4
-label3:
-TEMP_VAR1(3) := m(1) int-i 1
-param 1
-param TEMP_VAR1(3)
-callint, TEMP_VAR2(3), A
-ret1: TEMP_VAR2(3)
-ret
-label4:
-TEMP_VAR3(1) := m(1) int-i 1
-TEMP_VAR4(1) := n(1) int-i 1
-param TEMP_VAR4(1)
-param m(1)
-callint, TEMP_VAR5(1), A
-param TEMP_VAR5(1)
-param TEMP_VAR3(1)
-callint, TEMP_VAR6(1), A
-ret1: TEMP_VAR6(1)
-ret
-label14 function main:
-i(5) := 0
-label10:
-if i(5) < 4 goto label11
-goto label13
-label11:
-j(6) := 0
-label6:
-if j(6) < 5 goto label7
-goto label9
-label7:
-param j(6)
-param i(5)
-callint, TEMP_VAR9(6), A
-printint TEMP_VAR9(6)
-label8:
-TEMP_VAR8(6) := j(6) int+i 1
-j(6) := TEMP_VAR8(6)
-goto label6
-label9:
-label12:
-TEMP_VAR7(5) := i(5) int+i 1
-i(5) := TEMP_VAR7(5)
-goto label10
-label13:
+label1 function main:
+m(2) := 2
+Allocate a(2) 3 int
+TEMP_VAR3(2) := a(2)[2]4
+a(2)[2]4 := 37
+printint m(2)
+n(2) := 4
+TEMP_VAR4(2) := a(2)[m(2)]4
+n(2) := TEMP_VAR4(2)
+printint n(2)

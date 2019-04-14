@@ -47,14 +47,15 @@ def type_size(t):
 			res += type_size(field_dic[variables])
 		return res
 	elif t[0:5] == 'Array':
-		try:
-			length = int(t[6:-1].split(',')[0])
-			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
-			return length*type_size(element_type)
-		except:
-			length = t[6:-1].split(',')[0]
-			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
-			return 4
+		return 4
+		# try:
+		# 	length = int(t[6:-1].split(',')[0])
+		# 	element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+		# 	return length*type_size(element_type)
+		# except:
+		# 	length = t[6:-1].split(',')[0]
+		# 	element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+		# 	return 4
 	return 1
 
 def insertId(idname, idtype, func_var=False):
@@ -597,11 +598,12 @@ def p_var_spec(p):
 		if not p[3]:
 			for i in p[1].idlist:
 				if p[2].type[0:5] == 'Array':
-					try:
-						int(p[2].type[6:-1].split(',')[0])
-					except:
-						element_type = ','.join(p[2].type[6:-1].split(',')[1:])[1:]
-						p[0].code += ['Allocate ' + i + ' ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
+					# try:
+					# 	int(p[2].type[6:-1].split(',')[0])
+					# except:
+					element_type = ','.join(p[2].type[6:-1].split(',')[1:])[1:]
+					scope_label = scope_stack[-1].label
+					p[0].code += ['Allocate ' + i + '(' + str(scope_label) + ') ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
 				
 				err = insertId(i, p[2].type)
 				if p[2].type == 'int':
@@ -862,12 +864,12 @@ def p_prim_expr(p):
 				
 			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
 			p[0].expr.type = element_type
-			# p[0].place = newTemp(element_type)
-			p[0].place = p[1].place + '[' + p[2].place + ']'
+			p[0].place = newTemp(element_type)
+			# p[0].place = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
 			p[0].expr.value = p[1].expr.value
-			
-			# p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']']
-			p[0].code = p[1].code + p[2].code
+			p[0].expr.is_array = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
+			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']' + str(type_size(element_type))]
+			# p[0].code = p[1].code + p[2].code
 
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
@@ -1248,11 +1250,16 @@ def p_assignment(p):
 					return
 				exprtype = p[1].exprlist[i].expr.type
 				p[0].expr.type = exprtype
+
+				if p[1].exprlist[i].expr.is_array:
+					temp_place = p[1].exprlist[i].expr.is_array
+				else:
+					temp_place = p[1].exprlist[i].place
+
 				if p[2] == '=':
-					if p[3].exprlist[i].expr.is_constant: ### CHANGE IN const:=
-						p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
-					else:
-						p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
+					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [temp_place + ' := ' + p[3].exprlist[i].place]
+					# p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
+
 				ops = ['+=', '-=', '*=', '/=', '%=']
 				if p[2] in ops:
 					new_temp = newTemp(exprtype)
@@ -1260,7 +1267,7 @@ def p_assignment(p):
 						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + 'i ' +  p[3].exprlist[i].place]				
 					else:
 						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
-					p[0].code += [p[1].exprlist[i].place + ' := ' + new_temp]
+					p[0].code += [temp_place + ' := ' + new_temp]
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''

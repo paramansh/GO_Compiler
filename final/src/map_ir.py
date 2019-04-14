@@ -33,6 +33,31 @@ def separate(var):
 	scope = var.split('(')[1].split(')')[0]
 	return name, int(scope)
 
+def type_size(t):
+			
+	if t == 'int':
+		return 4
+	elif t == 'float':
+		return 8
+	elif t[0:6] == 'Struct':
+		res = 0
+		field_dic = ast.literal_eval(t[6:])
+		for variables in field_dic:
+			res += type_size(field_dic[variables])
+		return res
+	elif t[0:5] == 'Array':
+		return 4
+		try:
+			length = int(t[6:-1].split(',')[0])
+			element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+			return length*type_size(element_type)
+		except:
+			print 'currently not supported'
+			# length = t[6:-1].split(',')[0]
+			# element_type = ','.join(t[6:-1].split(',')[1:])[1:]
+			return 4
+	return 1
+
 def get_offset(var, scope_list):
 	name, scope = separate(var)
 	table = scope_list[scope].table
@@ -116,14 +141,72 @@ def map_instr(instr, scope_list, fp):
 					gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
 
 	elif instr.type == 'assign':
+		dest_offset = get_offset(instr.dest, scope_list) # returns correctly even if [] present 
+		if '[' in instr.dest:
+			index = (instr.dest).split('[')[1].split(']')[0]
+			elem_size = int((instr.dest).split('[')[1].split(']')[1])
+			if is_immediate(index):
+				array_offset = int(index) * elem_size
+				# print var, index, elem_size, array_offset
+				# address of array's first element
+				gen_instr('movl ' + dest_offset + '(%ebp), %edx', fp)
+				if is_immediate(instr.src1):
+					gen_instr('movl $' + str(instr.src1) + ', ' + str(array_offset) + '(%edx)', fp)
+				else:
+					src_offset = get_offset(instr.src1, scope_list)
+					gen_instr('movl ' + str(src_offset) + '(%ebp), %ecx', fp)
+					gen_instr('movl %ecx, ' + str(array_offset) + '(%edx)', fp)
+			else:
+				index_offset = get_offset(index, scope_list)
+				gen_instr('movl ' + str(index_offset) + '(%ebp), %ebx', fp)
+				gen_instr('imul $' + str(elem_size) + ', %ebx', fp) 
+				gen_instr('addl ' + dest_offset + '(%ebp), %ebx', fp) # now ebx contains address of the element which contain a[i]	
+				src_offset = get_offset(instr.src1, scope_list)
+				gen_instr('movl ' + str(src_offset) + '(%ebp), %ecx', fp)
+				gen_instr('movl %ecx, (%ebx)', fp)
+				
+		elif '[' in instr.src1:
+			src_offset = get_offset(instr.src1, scope_list) # returns correctly even if [] present 
+			index = (instr.src1).split('[')[1].split(']')[0]
+			elem_size = int((instr.src1).split('[')[1].split(']')[1])
+			if is_immediate(index):
+				array_offset = int(index) * elem_size
+				# print index, elem_size, array_offset
+				# address of array's first element
+				gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
+				dest_offset = get_offset(instr.dest, scope_list)
+				gen_instr('movl ' + str(array_offset) + '(%edx), %ecx', fp)
+				gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
+			else:
+				index_offset = get_offset(index, scope_list)
+				# print 'here', index_offset
+				gen_instr('movl ' + str(index_offset) + '(%ebp), %ebx', fp)
+				gen_instr('imul $' + str(elem_size) + ', %ebx', fp) 
+				gen_instr('addl ' + src_offset + '(%ebp), %ebx', fp)
+
+				dest_offset = get_offset(instr.dest, scope_list)
+				gen_instr('movl (%ebx), %ecx', fp)
+				gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
+		
+		# a[2] = a[1] should never be in 3ac because a[1] is always assigned tempvar	
+		elif '[' in instr.src1 and '[' in instr.dest:
+			print 'error: wrong ircode'
+		else:
+			if is_immediate(instr.src1):
+				gen_instr('movl $' + str(instr.src1) + ', ' + str(dest_offset) + '(%ebp)', fp)
+			else:
+				src_offset = get_offset(instr.src1, scope_list)
+				gen_instr('movl ' + str(src_offset) + '(%ebp), %edx', fp)
+				gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
+
+	elif instr.type == 'allocate':
 		dest_offset = get_offset(instr.dest, scope_list)
 
-		if is_immediate(instr.src1):
-			gen_instr('movl $' + str(instr.src1) + ', ' + str(dest_offset) + '(%ebp)', fp)
-		else:
-			src_offset = get_offset(instr.src1, scope_list)
-			gen_instr('movl ' + str(src_offset) + '(%ebp), %edx', fp)
-			gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
+		# allocate space in stack
+		space = instr.src1 * type_size(instr.src2)
+		gen_instr('subl $' + str(space) + ', %esp', fp)
+		# set starting address of array to be the current esp value
+		gen_instr('movl %esp, ' + dest_offset + '(%ebp)', fp)
 
 	elif instr.type == 'goto':
 		gen_instr('jmp ' + instr.dest, fp)
@@ -141,7 +224,7 @@ def map_instr(instr, scope_list, fp):
 
 	elif instr.type == 'callvoid':
 		gen_instr('call ' + instr.dest, fp)
-		gen_instr('addl $' + instr.src1 + ', %esp', fp)
+		gen_instr('addl $' + instr.src1 + ', %esp', fp) # pop values from stack
 
 	elif instr.type == 'callint':
 		gen_instr('call ' + instr.src1, fp)
@@ -168,7 +251,7 @@ def map_instr(instr, scope_list, fp):
 	elif instr.type == 'label':
 		if not instr.dest:
 			gen_label(instr.instr.split(':')[0], fp)
-		else:
+		else: # function call case
 			if instr.dest == 'main':
 				gen_label('__main__', fp)
 			else:

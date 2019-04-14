@@ -31,6 +31,7 @@ class Expr:
 	def __init__(self):
 		self.value = "None"
 		self.type = "None"
+		self.is_array = False
 		self.is_constant = False # whether is expression an constant eg: 4
 		# self.is_true = True # for bool expressions
 		self.true_label = ['not initialise true label'] #list so as store pointer

@@ -16,13 +16,19 @@ class instruction:
             self.src1 = args[2]
             self.src2 = args[4]
         
+        elif len(args) == 4 and args[0] == 'Allocate':
+            self.type = 'allocate'
+            self.dest = args[1]
+            self.src1 = int(args[2])
+            self.src2 = args[3]
+        
         elif len(args) == 3 and args[0][0:5] == 'label': # label function dest:
             self.type = 'label'
             self.dest = args[2].split(':')[0]
             self.src1 = None
             self.src2 = None
         
-        elif len(args) == 3 and args[0][0:8] == 'callvoid': # print___ src
+        elif len(args) == 3 and args[0][0:8] == 'callvoid': # 
             self.type = 'callvoid'
             self.dest = args[1]
             self.src1 = args[2]
