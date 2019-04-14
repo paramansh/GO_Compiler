@@ -118,6 +118,24 @@ def getCurrentFunc():
 	# 	print vars
 	# print scope.label
 
+def typeMatch(list1, list2):
+	for index, i in enumerate(list1):
+		t1 = list1[index]
+		t2 = list2[index]
+		if t1[0:5] == 'Array':
+			if t2[0:5] == 'Array':
+				element_type1 = ','.join(t1[6:-1].split(',')[1:])[1:]
+				element_type2 = ','.join(t2[6:-1].split(',')[1:])[1:]
+				if element_type1 != element_type2:
+					return False
+			else:
+				return False
+		else:
+			if t1 != t2:
+				return False
+	return True
+
+
 temp_var_count = 0
 function_expr_types = [] # used to store return types
 
@@ -209,9 +227,13 @@ def p_type_opt(p):
 #-------------------------------ArrayType------------------------------#
 
 def p_array_type(p):
-	'''ArrayType : LBRACK ArrayLength RBRACK ElementType'''
+	'''ArrayType : LBRACK ArrayLength RBRACK ElementType
+				 | LBRACK RBRACK ElementType'''
 	p[0] = Node()
-	p[0].type = 'Array(' + str(p[2].place) + ', ' + p[4].type + ')'
+	if len(p) == 5:
+		p[0].type = 'Array(' + str(p[2].place) + ', ' + p[4].type + ')'
+	else:
+		p[0].type = 'Array(NULL, ' + p[3].type + ')'
 
 def p_array_length(p):
 	''' ArrayLength : Expression '''
@@ -910,7 +932,7 @@ def p_prim_expr(p):
 			if len(params_type_list) != len(exprlist_types):
 				print 'error at line', p.lineno(0), "unequal number of arguments"
 				return
-			if params_type_list != exprlist_types:
+			if not typeMatch(params_type_list, exprlist_types):
 				print 'error at line', p.lineno(0), 'type mismatch in argument'
 			arguments = [a.place for a in exprlist]
 			for i in exprlist:
@@ -1065,7 +1087,7 @@ def p_expression(p):
 					p[0].place = str(p[0].expr.value)
 				elif p[1].expr.is_constant:
 					p[0].place = newTemp(exprtype)
-					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[3].place +' ' + exprtype + p[2]+ 'i ' + p[1].place]  #second operand is the immediate operand
+					p[0].code = p[1].code + p[3].code + [p[0].place + ' := ' + p[1].place +' ' + exprtype + p[2]+ 'i ' + p[3].place]  #second operand is the immediate operand
 					p[0].expr.type = exprtype
 				elif p[3].expr.is_constant:
 					p[0].place = newTemp(exprtype)

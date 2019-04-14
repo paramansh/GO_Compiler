@@ -19,7 +19,7 @@ class instruction:
         elif len(args) == 4 and args[0] == 'Allocate':
             self.type = 'allocate'
             self.dest = args[1]
-            self.src1 = int(args[2])
+            self.src1 = args[2]
             self.src2 = args[3]
         
         elif len(args) == 3 and args[0][0:5] == 'label': # label function dest:

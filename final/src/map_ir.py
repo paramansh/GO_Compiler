@@ -161,9 +161,12 @@ def map_instr(instr, scope_list, fp):
 				gen_instr('movl ' + str(index_offset) + '(%ebp), %ebx', fp)
 				gen_instr('imul $' + str(elem_size) + ', %ebx', fp) 
 				gen_instr('addl ' + dest_offset + '(%ebp), %ebx', fp) # now ebx contains address of the element which contain a[i]	
-				src_offset = get_offset(instr.src1, scope_list)
-				gen_instr('movl ' + str(src_offset) + '(%ebp), %ecx', fp)
-				gen_instr('movl %ecx, (%ebx)', fp)
+				if is_immediate(instr.src1):
+					gen_instr('movl $' + instr.src1 + ', (%ebx)', fp)
+				else:
+					src_offset = get_offset(instr.src1, scope_list)
+					gen_instr('movl ' + str(src_offset) + '(%ebp), %ecx', fp)
+					gen_instr('movl %ecx, (%ebx)', fp)
 				
 		elif '[' in instr.src1:
 			src_offset = get_offset(instr.src1, scope_list) # returns correctly even if [] present 
@@ -203,10 +206,14 @@ def map_instr(instr, scope_list, fp):
 		dest_offset = get_offset(instr.dest, scope_list)
 
 		# allocate space in stack
-		space = instr.src1 * type_size(instr.src2)
-		gen_instr('subl $' + str(space) + ', %esp', fp)
-		# set starting address of array to be the current esp value
-		gen_instr('movl %esp, ' + dest_offset + '(%ebp)', fp)
+		if instr.src1 == 'NULL':
+			None
+		else:
+			if is_immediate(instr.src1):
+				space = int(instr.src1) * type_size(instr.src2)
+				gen_instr('subl $' + str(space) + ', %esp', fp)
+				# set starting address of array to be the current esp value
+				gen_instr('movl %esp, ' + dest_offset + '(%ebp)', fp)
 
 	elif instr.type == 'goto':
 		gen_instr('jmp ' + instr.dest, fp)
