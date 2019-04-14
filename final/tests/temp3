@@ -1,0 +1,21 @@
+package main;
+
+
+
+func fun(a, b, c, d int) int {
+//
+//    print %d b;
+    //print %d c;
+    //print %d d;
+    //x := a+b+c+d;
+    //print %d x;
+    return a+b+c+d; 
+};
+
+func main() {
+    m := 3;
+    
+    m = fun(1,2,3,4);
+    print %d m;
+    n := 4;
+};

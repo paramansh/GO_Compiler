@@ -1,0 +1,21 @@
+package main;
+
+func A(m, n int) int {
+    if m == 0 {
+        return n + 1;
+    };
+
+    if m > 0 && n == 0 {
+        return A(m-1, 1);
+    };
+
+    return A(m-1, A(m, n-1));
+};
+
+func main() {
+    for i:=0; i<4; i++ {
+        for j:=0; j<5; j++ {
+            print %d A(i, j);
+        };
+    };
+};

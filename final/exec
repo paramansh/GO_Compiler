@@ -1,0 +1,7 @@
+python src/parser.py --input=tests/$1 --code=ircode --table=symtable
+
+python src/codegen.py
+
+gcc -m32 -o output asmcode.S
+
+./output

@@ -1,10 +1,10 @@
 import pprint as pp
 import cPickle as pickle
 
-def init_globals(scope, fp):
+def init_globals(scope_list, fp):
     fp.write('.data\n\n')
 
-    table = scope.table
+    table = scope_list[0].table
     for entry in table:
         if table[entry]['type'] != 'func':
             fp.write(entry + ':\n\t.' + table[entry]['type'] + '\t' + str(table[entry]['value']) + '\n')
@@ -15,9 +15,7 @@ def init_globals(scope, fp):
     fp.write('\n.text\n\n.global main\n\nmain:\n\n')
     gen_instr('call __main__', fp)
     gen_instr('jmp exit', fp)
-    fp.write('\n\n__main__:\n\n')
-    gen_instr('pushl %ebp', fp)
-    gen_instr('movl %esp, %ebp', fp)
+
 
 def gen_label(label, fp):
     fp.write('\n' + label + ':\n\n')

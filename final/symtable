@@ -1,35 +1,48 @@
+scope: 6
+parent: 5
+{'TEMP_VAR8': {'constant': False, 'offset': 12, 'type': 'int'},
+ 'TEMP_VAR9': {'constant': False, 'offset': 16, 'type': 'int'},
+ 'j': {'constant': False, 'offset': 8, 'type': 'int'}}
+{}
+
+scope: 5
+parent: 4
+{'TEMP_VAR7': {'constant': False, 'offset': 4, 'type': 'int'},
+ 'i': {'constant': False, 'offset': 0, 'type': 'int'}}
+{}
+
 scope: 4
 parent: 0
-{'TEMP_VAR5': {'constant': False, 'type': 'int'},
- 'a': {'constant': False, 'offset': 0, 'type': 'int', 'value': '9'},
- 'x': {'constant': False, 'offset': 4, 'type': 'int', 'value': 0}}
+{}
 {}
 
 scope: 3
 parent: 1
-{'TEMP_VAR0': {'constant': False, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'type': 'int'},
- 'TEMP_VAR2': {'constant': False, 'type': 'int'},
- 'TEMP_VAR3': {'constant': False, 'type': 'int'},
- 'TEMP_VAR4': {'constant': False, 'type': 'int'}}
+{'TEMP_VAR1': {'constant': False, 'offset': 20, 'type': 'int'},
+ 'TEMP_VAR2': {'constant': False, 'offset': 24, 'type': 'int'}}
 {}
 
 scope: 2
 parent: 1
-{}
+{'TEMP_VAR0': {'constant': False, 'offset': 16, 'type': 'int'}}
 {}
 
 scope: 1
 parent: 0
-{'x': {'constant': False, 'offset': 0, 'type': 'int'}}
+{'TEMP_VAR3': {'constant': False, 'offset': 0, 'type': 'int'},
+ 'TEMP_VAR4': {'constant': False, 'offset': 4, 'type': 'int'},
+ 'TEMP_VAR5': {'constant': False, 'offset': 8, 'type': 'int'},
+ 'TEMP_VAR6': {'constant': False, 'offset': 12, 'type': 'int'},
+ 'm': {'constant': False, 'offset': -8, 'type': 'int'},
+ 'n': {'constant': False, 'offset': -12, 'type': 'int'}}
 {}
 
 scope: 0
 parent: None
-{'fib': {'func_dict': {'symbol_table': 1},
-         'func_signature': [[{'int': ['x']}], ['int']],
-         'offset': 0,
-         'type': 'func'},
+{'A': {'func_dict': {'symbol_table': 1},
+       'func_signature': [[{'int': ['m', 'n']}], ['int']],
+       'offset': 0,
+       'type': 'func'},
  'main': {'func_dict': {'symbol_table': 4},
           'func_signature': [[], []],
           'offset': 1,

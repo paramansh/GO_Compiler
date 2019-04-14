@@ -57,7 +57,7 @@ def type_size(t):
 			return 4
 	return 1
 
-def insertId(idname, idtype):
+def insertId(idname, idtype, func_var=False):
 	err = ""
 	if len(idname) >= 8 and idname[:8] == 'TEMP_VAR':
 		err = "Can't use temp_var as variable name: Reserved"
@@ -70,8 +70,12 @@ def insertId(idname, idtype):
 		curr_scope = scope_stack[-1]
 		curr_scope.insert(idname, idtype)
 		# TODO struct types etc??
-		insertInfo(idname, 'offset', curr_scope.offset)
-		curr_scope.offset += type_size(idtype)
+		if not func_var:
+			insertInfo(idname, 'offset', curr_scope.offset)
+			curr_scope.offset += type_size(idtype)
+		else:
+			curr_scope.func_offset -= type_size(idtype)
+			insertInfo(idname, 'offset', curr_scope.func_offset)
 
 def insertType(name, ttype):
 	err = ""
@@ -103,6 +107,16 @@ def validTypeConversion(type1, type2):
 		return False
 	return True
 
+def getCurrentFunc():
+	curr_scope = scope_stack[-1]
+	scope = curr_scope
+	while scope.parent.label != 0:
+		scope = scope.parent
+	# print scope_list[0].getAllEntries()
+	# for vars in scope_list[0]:
+	# 	print vars
+	# print scope.label
+
 temp_var_count = 0
 function_expr_types = [] # used to store return types
 
@@ -112,6 +126,9 @@ def newTemp(idtype):
 	new_temp = 'TEMP_VAR' + str(temp_var_count)
 	curr_scope.insert(new_temp, idtype)
 	insertInfo(new_temp, 'constant', False)
+	insertInfo(new_temp, 'offset', curr_scope.offset)
+	curr_scope.offset += type_size(idtype)
+	new_temp +=  '(' + str(curr_scope.label) + ')'
 	temp_var_count += 1
 	return new_temp
 	# need to remove this from variable lists??
@@ -275,10 +292,14 @@ def p_signature(p):
 	for var_dict in p[1]:
 		for var_type in var_dict:
 			variables = var_dict[var_type]
+			if variables:
+				variables.insert(0, variables[-1])
+				variables.pop()
 			for v in variables:
-				insertId(v, var_type)
+				insertId(v, var_type, func_var=True)
 				insertInfo(v, 'constant', False)
 	for var_dict in p[2]:
+		# TODO shuffle parameters
 		if type(var_dict) == dict:
 			for var_type in var_dict:
 				variables = var_dict[var_type]
@@ -635,7 +656,10 @@ def p_short_var_decl(p):
 		return
 	insertInfo(p[1], 'constant', False)
 	scope_label = scope_stack[-1].label
-	p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
+	if p[3].expr.is_constant:
+		p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place] ### CHANGE IN const:=
+	else:
+		p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place]
 
 # -------------------------------------------------------
 
@@ -869,7 +893,6 @@ def p_prim_expr(p):
 			func_params = getIdInfo(p[1].place)['func_signature'][0]
 			func_result = getIdInfo(p[1].place)['func_signature'][1]
 			params_type_list = []
-			
 			for args in func_params:
 				key = args.keys()[0]
 				value = args[key]
@@ -878,8 +901,9 @@ def p_prim_expr(p):
 				for v in value:
 					params_type_list.append(key)
 			exprlist = p[2].exprlist
-			exprlist.insert(0, exprlist[-1])
-			exprlist.pop()
+			if exprlist:
+				exprlist.insert(0, exprlist[-1])
+				exprlist.pop()
 			exprlist_types = [a.expr.type for a in exprlist]
 			if len(params_type_list) != len(exprlist_types):
 				print 'error at line', p.lineno(0), "unequal number of arguments"
@@ -889,10 +913,14 @@ def p_prim_expr(p):
 			arguments = [a.place for a in exprlist]
 			for i in exprlist:
 				p[0].code += i.code
-			for arg in arguments:
+			for arg in arguments[::-1]: # reverse order to push in stack
 				p[0].code += ['param ' + arg]
+			# total size calculation
+			total_size = 0
+			for i in exprlist_types:
+				total_size += type_size(i)
 			if not func_result:
-				p[0].code += ['callvoid ' + p[1].place + ', ' + str(arguments)]
+				p[0].code += ['callvoid ' + p[1].place + " " + str(total_size)]
 				p[0].expr.type = 'void'
 			else: ### TODO multiple return values
 				for arg in func_result:
@@ -1052,7 +1080,7 @@ def p_expression(p):
 			if p[1].expr.type != p[3].expr.type:
 				print 'error: at line', p.lineno(0), "type mismatch in comparison"
 				return 
-			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + p[2] + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
+			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + ' ' + p[2] + ' ' + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
 
 		if p[2] == '||':
 			p[1].expr.true_label[0] = p[0].expr.true_label
@@ -1091,12 +1119,20 @@ def p_unary_expr(p):
 		if p[1] == '+':
 			p[0] = p[2]
 		if p[1] == '-':
-			p[0] = p[2]
-			old_place = p[2].place
+			if p[2].expr.type not in ['float', 'int']:
+				print 'error at line', p.lineno(0), 'unary minus not supported'
+				return
 			if p[2].expr.is_constant:
+				p[0] = p[2]
 				p[0].expr.value = -p[2].expr.value
-			p[0].place = newTemp(p[0].expr.type)
-			p[0].code += p[2].code + [p[0].place + ' := 0 - ' + old_place]
+				p[0].place = str(p[0].expr.value)
+			else:
+				p[0] = p[2]
+				old_place = p[2].place
+				if p[2].expr.is_constant:
+					p[0].expr.value = -p[2].expr.value
+				p[0].place = newTemp(p[0].expr.type)
+				p[0].code += p[2].code + [p[0].place + ' := 0 int-i ' + old_place]
 		if p[1] == '*':
 			p[0] = Node()
 			if p[2].expr.type[-1] != '*':
@@ -1140,12 +1176,22 @@ def p_statement(p):
 				 | GotoStmt
 				 | Block
 				 | IfStmt
+				 | PrintStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
 	p[0] = p[1] 
 	
 	if p[0].next[0][0] == 'l': 
 		p[0].code += [p[0].next[0] + ':'] # otherwise not labelx
+
+def p_print_stmt(p):
+	'''PrintStmt : PRINT PD Expression
+				 | PRINT PS Expression'''
+	p[0] = p[3]
+	if p[2] == '%s':
+		p[0].code += ['printstr ' + p[3].place]
+	elif p[2] == '%d':
+		p[0].code += ['printint ' + p[3].place]
 
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon
@@ -1203,12 +1249,18 @@ def p_assignment(p):
 				exprtype = p[1].exprlist[i].expr.type
 				p[0].expr.type = exprtype
 				if p[2] == '=':
-					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
+					if p[3].exprlist[i].expr.is_constant: ### CHANGE IN const:=
+						p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
+					else:
+						p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
 				ops = ['+=', '-=', '*=', '/=', '%=']
 				if p[2] in ops:
-					new_temp = newTemp(exprtype)			
-					p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
-					p[0].code += [p[1].exprlist[i].expr.value + ' := ' + new_temp]
+					new_temp = newTemp(exprtype)
+					if p[3].exprlist[i].expr.is_constant:
+						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + 'i ' +  p[3].exprlist[i].place]				
+					else:
+						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
+					p[0].code += [p[1].exprlist[i].place + ' := ' + new_temp]
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
@@ -1381,14 +1433,14 @@ def p_for(p):
 			p[4].forclause.begin[0] = update_label
 			p[0].code += p[3].forclause.initialise
 			p[0].code += [[p[0].begin , ":"]] + cond.code + [cond.expr.true_label[0] + ":"] 
-			p[0].code += p[4].code + [[update_label, ":"]] + p[3].forclause.update + [['goto: ',p[0].begin]]
+			p[0].code += p[4].code + [[update_label, ":"]] + p[3].forclause.update + [['goto ',p[0].begin]]
 		else:
 			p[3].expr.true_label[0] = newLabel()
 			p[3].expr.false_label[0] = p[0].next
 			p[4].next[0] = p[0].begin # TODO TODO TODO check confirm
 			p[4].forclause.begin[0] = p[0].begin 
 			p[4].begin[0] = p[0].begin
-			p[0].code += [[p[0].begin , ":"]] + p[3].code + [p[3].expr.true_label[0] + ":"] + p[4].code + [['goto: ',p[0].begin]]
+			p[0].code += [[p[0].begin , ":"]] + p[3].code + [p[3].expr.true_label[0] + ":"] + p[4].code + [['goto ',p[0].begin]]
 	p[0].next[0] = newLabel()
 
 def p_for_create_scope(p):
@@ -1452,6 +1504,11 @@ def p_return(p):
 	'''ReturnStmt : RETURN ExpressionListPureOpt'''
 	expr_types = []
 	p[0] = Node()
+	getCurrentFunc()
+	if not p[2]:
+		p[0].code += ['ret']
+		p[0].extra['is_return'] = True
+		return
 	for expr in p[2].exprlist:
 		p[0].code += expr.code
 		expr_types.append(expr.expr.type)
@@ -1466,7 +1523,7 @@ def p_return(p):
 def p_expressionlist_pure_opt(p):
 	'''ExpressionListPureOpt : ExpressionList
 				| epsilon'''
-	if p[0] != 'epsilon':
+	if p[1] != 'epsilon':
 		p[0] = p[1]
 	else:
 		p[0] = []
@@ -1642,6 +1699,7 @@ def computeOffsets(off_sum, parent):
 		# scope.offset += parent.offset
 		off_sum += scope.offset
 		off_sum = computeOffsets(off_sum, scope)
+	parent.offset = off_sum
 	return off_sum
 		# parent.offset += child_offset 
 
@@ -1659,6 +1717,7 @@ f.close()
 f = open(tablefile, 'w').close()
 f = open(tablefile, 'a')
 for scope in scope_list[::-1]:
+	# print scope.label, scope.offset
 	entries = scope.getAllEntries()
 	f.write('scope: ' + str(entries[1]) + '\n')
 	f.write('parent: ' + str(entries[3]) + '\n')

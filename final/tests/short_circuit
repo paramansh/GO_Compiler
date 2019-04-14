@@ -1,0 +1,15 @@
+package main;
+
+func main() {
+    a := 4;
+    b := 5;
+    m := 7;
+    n := 5;
+
+    if m > a && b == n {
+        print %d m-a;
+    }
+    else {
+        print %d n*b;
+    };
+};

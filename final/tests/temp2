@@ -1,19 +1,36 @@
 package main;
 
-var alpha float;
-var x, y, z int = 3, 4, 5;
-const name string = "siraj";
+func fib(n int) int {
+    if n == 0 {
+        return 1;
+    };
+    if n == 1 {
+        return 1;
+    };
+    return fib(n-1) + fib(n-2);
+};
+
+func fact(n int) int {
+    if n == 1 {
+        return 1;
+    };
+    return n * fact(n-1);
+};
+ 
 
 func main() {
-    var t0, t1, t2 int;
-    n := 4;
+    m := 6;
+    n := 2;
+    var x int;
 
-    t0 = 0;
-    t1 = 1;
-
-    for i := 0; i < n; i++ {
-        t2 = t1 + t0;
-        t1 = t2;
-        t0 = t1;
+    if m > n {
+        // print %d m;
+        x = fib(m);
+    }
+    else {
+        // print %d n;
+        x = fact(n);
     };
+
+    print %d x;
 };
