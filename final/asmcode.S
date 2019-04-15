@@ -16,109 +16,96 @@ main:
 	call __main__
 	jmp exit
 
-is_even:
+fun:
 
 	pushl %ebp
 	movl %esp, %ebp
-	subl $8, %esp
-	movl 8(%ebp), %ecx
-	movl $0, %edx
-	cmp %ecx, %edx
-	je label0
-	jmp label1
+	subl $12, %esp
+	movl $0, -4(%ebp)
 
 label0:
 
-	movl $1, %edx
-	movl %edx, -4(%ebp)
-	movl %ebp, %esp
-	pop %ebp
-	ret
-	jmp label2
+	movl -4(%ebp), %ecx
+	movl $5, %edx
+	cmp %ecx, %edx
+	jg label1
+	jmp label3
 
 label1:
 
-	movl 8(%ebp), %edx
-	subl $1, %edx
-	movl %edx, -4(%ebp)
-	pushl -4(%ebp)
-	call is_odd
-	movl -12(%esp), %edx
-	movl %edx, -8(%ebp)
-	addl $4, %esp
-	movl -8(%ebp), %edx
-	movl %edx, -4(%ebp)
-	movl %ebp, %esp
-	pop %ebp
-	ret
+	movl -4(%ebp), %ebx
+	imul $4, %ebx
+	addl 8(%ebp), %ebx
+	movl (%ebx), %ecx
+	movl %ecx, -12(%ebp)
+	movl -4(%ebp), %ebx
+	imul $4, %ebx
+	addl 8(%ebp), %ebx
+	movl -4(%ebp), %ecx
+	movl %ecx, (%ebx)
 
 label2:
 
-
-is_odd:
-
-	pushl %ebp
-	movl %esp, %ebp
-	subl $8, %esp
-	movl 8(%ebp), %ecx
-	movl $0, %edx
-	cmp %ecx, %edx
-	je label4
-	jmp label5
-
-label4:
-
-	movl $0, %edx
-	movl %edx, -4(%ebp)
-	movl %ebp, %esp
-	pop %ebp
-	ret
-	jmp label6
-
-label5:
-
-	movl 8(%ebp), %edx
-	subl $1, %edx
-	movl %edx, -4(%ebp)
-	pushl -4(%ebp)
-	call is_even
-	movl -12(%esp), %edx
+	movl -4(%ebp), %edx
+	addl $1, %edx
 	movl %edx, -8(%ebp)
-	addl $4, %esp
 	movl -8(%ebp), %edx
 	movl %edx, -4(%ebp)
+	jmp label0
+
+label3:
+
 	movl %ebp, %esp
 	pop %ebp
 	ret
-
-label6:
-
 
 __main__:
 
 	pushl %ebp
 	movl %esp, %ebp
-	subl $8, %esp
-	pushl $7
-	call is_even
-	movl -12(%esp), %edx
-	movl %edx, -4(%ebp)
-	addl $4, %esp
-	pushl -4(%ebp)
-	pushl $outFormatInt
-	call printf
-	pop %ebx
-	pop %ebx
-	pushl $7
-	call is_odd
-	movl -12(%esp), %edx
-	movl %edx, -8(%ebp)
-	addl $4, %esp
+	subl $20, %esp
+	movl $5, -4(%ebp)
+	movl -4(%ebp), %edx
+	imul $4, %edx
+	subl %edx, %esp
+	movl %esp, -8(%ebp)
 	pushl -8(%ebp)
+	call fun
+	addl $4, %esp
+	movl $0, -12(%ebp)
+
+label5:
+
+	movl -12(%ebp), %ecx
+	movl $5, %edx
+	cmp %ecx, %edx
+	jg label6
+	jmp label8
+
+label6:
+
+	movl -12(%ebp), %ebx
+	imul $4, %ebx
+	addl -8(%ebp), %ebx
+	movl (%ebx), %ecx
+	movl %ecx, -20(%ebp)
+	pushl -20(%ebp)
 	pushl $outFormatInt
 	call printf
 	pop %ebx
 	pop %ebx
+
+label7:
+
+	movl -12(%ebp), %edx
+	addl $1, %edx
+	movl %edx, -16(%ebp)
+	movl -16(%ebp), %edx
+	movl %edx, -12(%ebp)
+	jmp label5
+
+label8:
+
 
 exit:
 

@@ -1,64 +1,37 @@
-scope: 9
-parent: 0
-{'TEMP_VAR4': {'constant': False, 'offset': 0, 'type': 'int'},
- 'TEMP_VAR5': {'constant': False, 'offset': 4, 'type': 'int'}}
-{}
-
-scope: 8
-parent: 6
-{'TEMP_VAR2': {'constant': False, 'offset': 0, 'type': 'int'},
- 'TEMP_VAR3': {'constant': False, 'offset': 4, 'type': 'int'}}
-{}
-
-scope: 7
-parent: 6
-{}
-{}
-
-scope: 6
-parent: 0
-{'n': {'constant': False, 'offset': -8, 'type': 'int'}}
-{}
-
-scope: 5
-parent: 3
-{'TEMP_VAR0': {'constant': False, 'offset': 0, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'offset': 4, 'type': 'int'}}
-{}
-
 scope: 4
 parent: 3
-{}
+{'TEMP_VAR2': {'constant': False, 'offset': 12, 'type': 'int'},
+ 'TEMP_VAR3': {'constant': False, 'offset': 16, 'type': 'int'},
+ 'i': {'constant': False, 'offset': 8, 'type': 'int'}}
 {}
 
 scope: 3
 parent: 0
-{'n': {'constant': False, 'offset': -8, 'type': 'int'}}
+{'a': {'constant': False, 'offset': 4, 'type': 'Array(n(3), int)'},
+ 'n': {'constant': False, 'offset': 0, 'type': 'int'}}
 {}
 
 scope: 2
-parent: 0
-{}
+parent: 1
+{'TEMP_VAR0': {'constant': False, 'offset': 4, 'type': 'int'},
+ 'TEMP_VAR1': {'constant': False, 'offset': 8, 'type': 'int'},
+ 'i': {'constant': False, 'offset': 0, 'type': 'int'}}
 {}
 
 scope: 1
 parent: 0
-{}
+{'a': {'constant': False, 'offset': -8, 'type': 'Array(NULL, int)'}}
 {}
 
 scope: 0
 parent: None
-{'is_even': {'func_dict': {'symbol_table': 3},
-             'func_signature': [[{'int': ['n']}], ['int']],
-             'offset': 0,
-             'type': 'func'},
- 'is_odd': {'func_dict': {'symbol_table': 6},
-            'func_signature': [[{'int': ['n']}], ['int']],
-            'offset': 1,
-            'type': 'func'},
- 'main': {'func_dict': {'symbol_table': 9},
+{'fun': {'func_dict': {'symbol_table': 1},
+         'func_signature': [[{'Array(NULL, int)': ['a']}], []],
+         'offset': 0,
+         'type': 'func'},
+ 'main': {'func_dict': {'symbol_table': 3},
           'func_signature': [[], []],
-          'offset': 2,
+          'offset': 1,
           'type': 'func'}}
 {}
 

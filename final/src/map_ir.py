@@ -326,13 +326,20 @@ def map_instr(instr, scope_list, fp):
 		dest_offset = get_offset(instr.dest, scope_list)
 
 		# allocate space in stack
-		if instr.src1 == 'NULL':
+		if instr.src1 == 'NULL': # when passed as function parameter
 			None
 		else:
 			if is_immediate(instr.src1):
 				space = int(instr.src1) * type_size(instr.src2)
 				gen_instr('subl $' + str(space) + ', %esp', fp)
 				# set starting address of array to be the current esp value
+				gen_instr('movl %esp, ' + dest_offset + '(%ebp)', fp)
+			else:
+				tsize = str(type_size(instr.src2))
+				src_offset = get_offset(instr.src1, scope_list)
+				gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
+				gen_instr('imul $' + tsize + ', %edx', fp) # total space
+				gen_instr('subl %edx, %esp', fp)
 				gen_instr('movl %esp, ' + dest_offset + '(%ebp)', fp)
 
 	elif instr.type == 'goto':

@@ -1,0 +1,17 @@
+package main;
+
+func fun(a []int) {
+    for i:= 0; i < 5; i++ {
+        a[i] = i;
+    };
+    return;
+};
+
+func main() {
+    n := 5;
+    var a [n]int;
+    fun(a);
+    for i:= 0; i < 5; i++ {
+        print %d a[i];
+    };
+};

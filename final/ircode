@@ -1,35 +1,31 @@
-label3 function is_even:
-if n(3) == 0 goto label0
-goto label1
+label4 function fun:
+i(2) := 0
 label0:
-ret1: 1
-ret
-goto label2
+if i(2) < 5 goto label1
+goto label3
 label1:
-TEMP_VAR0(5) := n(3) int-i 1
-param TEMP_VAR0(5)
-callint, TEMP_VAR1(5), is_odd
-ret1: TEMP_VAR1(5)
-ret
+TEMP_VAR1(2) := a(1)[i(2)]4
+a(1)[i(2)]4 := i(2)
 label2:
-label7 function is_odd:
-if n(6) == 0 goto label4
-goto label5
-label4:
-ret1: 0
+TEMP_VAR0(2) := i(2) int+i 1
+i(2) := TEMP_VAR0(2)
+goto label0
+label3:
 ret
-goto label6
+label9 function main:
+n(3) := 5
+Allocate a(3) n(3) int
+param a(3)
+callvoid fun 4
+i(4) := 0
 label5:
-TEMP_VAR2(8) := n(6) int-i 1
-param TEMP_VAR2(8)
-callint, TEMP_VAR3(8), is_even
-ret1: TEMP_VAR3(8)
-ret
+if i(4) < 5 goto label6
+goto label8
 label6:
-label8 function main:
-param 7
-callint, TEMP_VAR4(9), is_even
-printint TEMP_VAR4(9)
-param 7
-callint, TEMP_VAR5(9), is_odd
-printint TEMP_VAR5(9)
+TEMP_VAR3(4) := a(3)[i(4)]4
+printint TEMP_VAR3(4)
+label7:
+TEMP_VAR2(4) := i(4) int+i 1
+i(4) := TEMP_VAR2(4)
+goto label5
+label8:
