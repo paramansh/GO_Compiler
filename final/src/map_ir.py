@@ -18,6 +18,18 @@ jumps = {
 	'!=' : 'jne'
 }
 
+def getTypeConversion(name, scope_list):
+	if name[-1] == '*':
+		# return name
+		return getTypeConversion(name[:-1], scope_list) + '*' 
+	if name[0:5] != 'ttype':
+		return name
+
+	for scope in scope_list[::-1]:
+		types = scope.types
+		if name in types:
+			return types[name]
+
 def get_opcode(x):
 	if x in opcode.keys():
 		return opcode[x]
@@ -33,10 +45,14 @@ def get_jump(x):
 def separate(var):
 	name = var.split('(')[0]
 	scope = var.split('(')[1].split(')')[0]
+	# name = name.split('*')[-1]
+	name = name.strip('*')
 	return name, int(scope)
 
 def type_size(t):		
-	if t == 'int':
+	if t[-1] == '*':
+		return 4
+	elif t == 'int':
 		return 4
 	elif t == 'float':
 		return 8
@@ -57,8 +73,6 @@ def type_size(t):
 			# length = t[6:-1].split(',')[0]
 			# element_type = ','.join(t[6:-1].split(',')[1:])[1:]
 			return 4
-	elif t[-1] == '*':
-		return 4
 	return 1
 
 def getStructOffset(var_type, selector):
@@ -71,17 +85,23 @@ def getStructOffset(var_type, selector):
 		offset += type_size(temp)
 	return offset
 
+def get_type(var, scope_list):
+	name, scope = separate(var)
+	table = scope_list[scope].table
+	var_type = table[name]['type']
+	return var_type
+
 def get_offset(var, scope_list):
 	name, scope = separate(var)
 	table = scope_list[scope].table
 	offset = table[name]['offset']
-	if '.' not in var:
+	var_type = table[name]['type'] # struct type
+	if '.' not in var or var_type[-1] == '*':
 		if offset >= 0:
 			return str(-(offset + 4))
 		else:
 			return str(-offset)
 	
-	var_type = table[name]['type'] # struct type
 	selector = var.split('.')[1]
 	field_offset = getStructOffset(var_type, selector)
 	if offset >= 0:
@@ -247,9 +267,53 @@ def map_instr(instr, scope_list, fp):
 				gen_instr('movl (%ebx), %ecx', fp)
 				gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
 		
-		# a[2] = a[1] should never be in 3ac because a[1] is always assigned tempvar	
-		elif '[' in instr.src1 and '[' in instr.dest:
-			print 'error: wrong ircode'
+		elif '*' in instr.dest:
+			dest_offset = get_offset(instr.dest, scope_list)
+			gen_instr('movl ' + str(dest_offset) + '(%ebp), %edx', fp)
+			if is_immediate(instr.src1):
+				gen_instr('movl $' + instr.src1 + ', (%edx)', fp)
+			else:
+				src1_offset = get_offset(instr.src1, scope_list)
+				gen_instr('movl ' + str(src1_offset) + '(%ebp), %ecx', fp)
+				gen_instr('movl %ecx, (%edx)', fp)
+
+		elif '*' in instr.src1:
+			dest_offset = get_offset(instr.dest, scope_list)
+			src1_offset = get_offset(instr.src1, scope_list)
+			gen_instr('movl ' + str(src1_offset) + '(%ebp), %edx', fp)
+			gen_instr('movl (%edx), %ecx', fp)
+			gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
+
+		elif '.' in instr.dest and get_type(instr.dest, scope_list)[-1] == '*':
+			var_type = get_type(instr.dest, scope_list)[:-1]
+			dest_offset = get_offset(instr.dest, scope_list)
+			gen_instr('movl ' + dest_offset + '(%ebp), %edx', fp)
+
+			selector = (instr.dest).split('.')[1]
+			field_offset = getStructOffset(var_type, selector)
+			gen_instr('subl $' + str(field_offset) + ', %edx', fp) #edx contains address of a now
+
+			if is_immediate(instr.src1):
+				gen_instr('movl $' + instr.src1 + ', (%edx)', fp)
+			else:
+				src1_offset = get_offset(instr.src1, scope_list)
+				gen_instr('movl ' + str(src1_offset) + '(%ebp), %ecx', fp)
+				gen_instr('movl %ecx, (%edx)', fp)
+
+		elif '.' in instr.src1 and get_type(instr.src1, scope_list)[-1] == '*':
+			dest_offset = get_offset(instr.dest, scope_list)
+			var_type = get_type(instr.src1, scope_list)[:-1]
+			var_type = getTypeConversion(var_type, scope_list)
+			src_offset = get_offset(instr.src1, scope_list)
+			gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
+
+			selector = (instr.src1).split('.')[1]
+			field_offset = getStructOffset(var_type, selector)
+			gen_instr('subl $' + str(field_offset) + ', %edx', fp)
+
+			gen_instr('movl (%edx), %ecx', fp)
+			gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
+
 		else:
 			if is_immediate(instr.src1):
 				gen_instr('movl $' + str(instr.src1) + ', ' + str(dest_offset) + '(%ebp)', fp)
@@ -307,7 +371,7 @@ def map_instr(instr, scope_list, fp):
 			name, scope = separate(instr.dest)
 			table = scope_list[scope].table
 			var_type = table[name]['type']
-			if var_type[0:6] == 'Struct':
+			if var_type[0:6] == 'Struct' and var_type[-1] != '*':
 				field_dic = ast.literal_eval(var_type[6:])
 				for selector in field_dic:
 					field_offset = get_offset(instr.dest + '.' + selector, scope_list)
@@ -339,6 +403,14 @@ def map_instr(instr, scope_list, fp):
 			scope = scope_list[table[instr.dest]['func_dict']['symbol_table']]
 			gen_instr('subl $' + str(scope.offset) + ', %esp', fp)
 	
+	elif instr.type == 'malloc':
+		gen_instr('subl $4, %esp', fp)
+		dest_offset = get_offset(instr.dest, scope_list)
+		gen_instr('movl %esp ,' + dest_offset + '(%ebp)', fp)
+		remaining_offset = int(instr.src1) - 4
+		if remaining_offset > 0:
+			gen_instr('subl $'+ str(remaining_offset) + ', %esp', fp)
+
 	elif instr.type == 'retvoid':
 		gen_instr("movl %ebp, %esp", fp)
   		gen_instr("pop %ebp", fp)

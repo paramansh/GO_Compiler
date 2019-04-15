@@ -40,6 +40,12 @@ class instruction:
             self.src1 = args[2] # function name
             self.src2 = None
         
+        elif len(args) == 3 and args[0][0:6] == 'malloc':
+            self.type = 'malloc'
+            self.dest = args[1]
+            self.src1 = args[2]
+            self.src2 = None
+        
         elif len(args) == 3: # dest := src1
             self.type = 'assign'
             self.dest = args[0]

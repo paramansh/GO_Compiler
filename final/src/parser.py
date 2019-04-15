@@ -36,7 +36,9 @@ def getIdInfo(ide):
 
 def type_size(t):
 	t = getTypeConversion(t)
-	if t == 'int':
+	if t[-1] == '*':
+		return 4
+	elif t == 'int':
 		return 4
 	elif t == 'float':
 		return 8
@@ -56,8 +58,6 @@ def type_size(t):
 		# 	length = t[6:-1].split(',')[0]
 		# 	element_type = ','.join(t[6:-1].split(',')[1:])[1:]
 		# 	return 4
-	elif t[-1] == '*':
-		return 4
 	return 1
 
 def insertId(idname, idtype, func_var=False):
@@ -69,7 +69,6 @@ def insertId(idname, idtype, func_var=False):
 		err = "Variable already exists in current scope"
 		return err
 	else:
-		
 		curr_scope = scope_stack[-1]
 		idtype = getTypeConversion(idtype)
 		curr_scope.insert(idname, idtype)
@@ -107,11 +106,11 @@ def typeInScope(name):
 	return False
 
 def getTypeConversion(name):
+	if name[-1] == '*':
+		# return name
+		return getTypeConversion(name[:-1]) + '*' 
 	if name[0:5] != 'ttype':
 		return name
-	if name[-1] == '*':
-		return name
-		# return getTypeConversion(name[-1]) + '*' 
 	if not typeInScope(name):
 		print 'type not in current scope'
 		return None
@@ -929,18 +928,30 @@ def p_prim_expr(p):
 			if temp_type[0:5] == 'ttype':
 				temp_type = getTypeConversion(temp_type)
 			if temp_type[0:6] != 'Struct':
-				print 'error at line', p.lineno(0), "can't selct on non-struct types"
+				print 'error at line', p.lineno(0), "can't select on non-struct types"
 				return
+			original_type = temp_type
+			temp_type = temp_type.strip('*') # TODO check
 			field_dic = ast.literal_eval(temp_type[6:])
 			if selector not in field_dic:
 				print 'error at line', p.lineno(0), "invalid selector"
 				return
-			p[0].expr.type = field_dic[selector]
-			p[0].expr.value = p[1].expr.value
-			# p[0].place = newTemp(p[0].expr.type)
-			p[0].place = p[1].place + '.' + selector
-			# p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
-			p[0].code = p[1].code
+			if original_type[-1] != '*':
+				p[0].expr.type = field_dic[selector]
+				p[0].expr.value = p[1].expr.value
+				# p[0].place = newTemp(p[0].expr.type)
+				p[0].place = p[1].place + '.' + selector
+				# p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+				p[0].code = p[1].code
+			else:
+				p[0].expr.type = field_dic[selector]
+				p[0].expr.value = p[1].expr.value
+				p[0].place = newTemp(p[0].expr.type)
+				# p[0].place = p[1].place + '.' + selector
+				p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+				# p[0].code = p[1].code
+				p[0].expr.is_selector = p[1].place + '.' + selector
+
 
 		if 'is_argument' in p[2].extra:
 			temp_type = p[1].expr.type
@@ -1097,10 +1108,15 @@ def p_expression(p):
 		binary_ops = ['+', '-', '*', '/', '%']
 		if p[2] in binary_ops:
 			exprtypes = ['int', 'float', 'imaginary']
-			if p[1].expr.type != p[3].expr.type:
-				# TODO int/float typecasting
-				print 'error: at line', p.lineno(0), "type mismatch in comparison"
-				return
+			type1 = getTypeConversion(p[1].expr.type)
+			type2 = getTypeConversion(p[3].expr.type)
+			if type1[-1] == '*' and type2 == 'int':
+				None
+			else:
+				if type1 != type2:
+					# TODO int/float typecasting
+					print 'error: at line', p.lineno(0), "type mismatch in comparison"
+					return
 			exprtype = p[1].expr.type
 			if exprtype not in exprtypes:
 				print 'error: at line', p.lineno(0), "operation not supported on the given type"
@@ -1136,9 +1152,14 @@ def p_expression(p):
 		rel_ops = ['==', '!=', '<', '>', '<=', '>=']
 		if p[2] in rel_ops:
 			#TODO check expression mismatch
-			if p[1].expr.type != p[3].expr.type:
-				print 'error: at line', p.lineno(0), "type mismatch in comparison"
-				return 
+			type1 = getTypeConversion(p[1].expr.type)
+			type2 = getTypeConversion(p[3].expr.type)
+			if type1[-1] == '*' and type2 == 'int':
+				None
+			else:
+				if type1 != type2:
+					print 'error: at line', p.lineno(0), "type mismatch in comparison"
+					return 
 			p[0].code = p[1].code + p[3].code + [['if ' + p[1].place + ' ' + p[2] + ' ' + p[3].place + ' goto ', p[0].expr.true_label]] + [['goto ', p[0].expr.false_label]]
 
 		if p[2] == '||':
@@ -1198,8 +1219,12 @@ def p_unary_expr(p):
 				print 'error at line', p.lineno(0), "can't dereference: invalid type"
 				return
 			p[0].expr.type = p[2].expr.type[:-1]
+			p[0].expr.value = p[2].expr.value
+			# p[0].place = '*' + p[2].place
+			p[0].expr.is_pointer =  '*' + p[2].place
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code = p[2].code + [p[0].place + ' := *' + p[2].place]
+			# p[0].code = p[2].code
 
 		if p[1] == '&':
 			p[0] = Node()
@@ -1236,12 +1261,27 @@ def p_statement(p):
 				 | Block
 				 | IfStmt
 				 | PrintStmt
+				 | MallocStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
 	p[0] = p[1] 
 	
 	if p[0].next[0][0] == 'l': 
 		p[0].code += [p[0].next[0] + ':'] # otherwise not labelx
+
+def p_malloc_stmt(p):
+	'''MallocStmt : MALLOC IDENTIFIER '''
+	p[0] = Node()
+	if not inScope(p[2]):
+		print 'error at line', p.lineno(0), 'variable not in scope'
+		return
+
+	var_type = getIdInfo(p[2])['type']
+	if var_type[-1] != '*':
+		print 'error at line', p.lineno(0), 'pointer type needed to malloc'
+		return
+	id_scope = getScope(p[2]).label
+	p[0].code += ['malloc ' + p[2] + '(' + str(id_scope) + ') ' + str(type_size(var_type[:-1]))]
 
 def p_print_stmt(p):
 	'''PrintStmt : PRINT PD Expression
@@ -1302,14 +1342,24 @@ def p_assignment(p):
 			if not inScope(p[1].exprlist[i].expr.value):
 				print "error: at line", p.lineno(0), "variable not in scope"
 			else:
-				if p[1].exprlist[i].expr.type != p[3].exprlist[i].expr.type:
-					print "error: at line", p.lineno(0), "type mismatch is assighment"
-					return
+				type1 = getTypeConversion(p[1].exprlist[i].expr.type)
+				type2 = getTypeConversion(p[3].exprlist[i].expr.type)
+				if type1[-1] == '*' and type2 == 'int':
+					None
+				else:
+					if type1 != type2:
+						# print p[1].exprlist[i].expr.type, p[3].exprlist[i].expr.type
+						print "error: at line", p.lineno(0), "type mismatch in assighment"
+						return
 				exprtype = p[1].exprlist[i].expr.type
 				p[0].expr.type = exprtype
 
 				if p[1].exprlist[i].expr.is_array:
 					temp_place = p[1].exprlist[i].expr.is_array
+				elif p[1].exprlist[i].expr.is_pointer:
+					temp_place = p[1].exprlist[i].expr.is_pointer
+				elif p[1].exprlist[i].expr.is_selector:
+					temp_place = p[1].exprlist[i].expr.is_selector
 				else:
 					temp_place = p[1].exprlist[i].place
 

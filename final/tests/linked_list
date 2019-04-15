@@ -1,0 +1,30 @@
+package main;
+
+type ttype Node struct{value int; next pointer ttype Node;};
+
+
+func main() {
+    var head, tail, curr pointer ttype Node;
+    malloc curr;
+    curr.value = -1;
+    head = curr;
+    tail = curr;
+
+    for i:= 0; i < 5; i++ {
+        malloc curr;
+        curr.value = i;
+        curr.next = 0;
+        tail.next = curr;
+        tail = curr;
+    };
+
+    key := 3;
+    curr = head;
+    for curr != 0 {
+        if curr.value == key {
+            print %d 1;
+            break;
+        };
+        curr = curr.next;
+    };
+};

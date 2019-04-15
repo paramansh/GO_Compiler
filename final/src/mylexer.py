@@ -29,7 +29,8 @@ keywords = [
         'type',
         'ttype',
         'var',
-        'pointer'
+        'pointer',
+        'malloc'
         ]
 
 # === TOKENS LIST === #

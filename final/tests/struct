@@ -18,6 +18,7 @@ func main() {
     a.a = 2;
     a.b = 4;
     a.c = 33;
+    c = a.a + a.b + a.c;
     fun(a);
     //c = a.a + a.b;
     //print %d c;

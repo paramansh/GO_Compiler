@@ -1,0 +1,30 @@
+package main;
+
+type ttype new_type struct{id, c int; next pointer ttype new_type;};
+
+//func fun(a pointer ttype new_type) {
+//    print %d a.a;
+//    print %d a.c;
+//    print %d a.a + a.c;
+//    return;
+//};
+
+func main() {
+    var a, c pointer ttype new_type;
+    //var b pointer int;
+    malloc a;
+    malloc c;
+    a.next = c;
+    c.id = 3;
+    print %d (a.next).id;
+    //malloc b;
+    //(*a).a = 2; // bracket necessary
+    //*b = *a + *a;
+   // b := a.a +2;
+    //a.a = 2;
+    //b := a.a;
+    //a.c = b * 2;
+    //print %d a.c + a.a;
+    //fun(a);
+
+};
