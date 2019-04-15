@@ -60,6 +60,12 @@ def type_size(t):
 		# 	return 4
 	return 1
 
+def is_immediate(var):
+	if '(' in var and ')' in var:
+		return False
+	else:
+		return True
+
 def insertId(idname, idtype, func_var=False):
 	err = ""
 	if len(idname) >= 8 and idname[:8] == 'TEMP_VAR':
@@ -145,7 +151,7 @@ def typeMatch(list1, list2):
 			if t2[0:5] == 'Array':
 				element_type1 = ','.join(t1[6:-1].split(',')[1:])[1:]
 				element_type2 = ','.join(t2[6:-1].split(',')[1:])[1:]
-				if element_type1 != element_type2:
+				if not typeMatch([element_type1], [element_type2]):
 					return False
 			else:
 				return False
@@ -653,8 +659,24 @@ def p_var_spec(p):
 					# 	int(p[2].type[6:-1].split(',')[0])
 					# except:
 					element_type = ','.join(p[2].type[6:-1].split(',')[1:])[1:]
-					scope_label = scope_stack[-1].label
-					p[0].code += ['Allocate ' + i + '(' + str(scope_label) + ') ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
+					if element_type[0:5] == 'Array':
+						dim1 = p[2].type[6:-1].split(',')[0]
+						dim2 = element_type[6:-1].split(',')[0]
+						element_type2 = ','.join(element_type[6:-1].split(',')[1:])[1:]
+						new_temp = ""
+						if is_immediate(dim1) and is_immediate(dim2):
+							new_temp = str(int(dim1) * int(dim2))
+						elif is_immediate(dim1) or is_immediate(dim2):
+							new_temp = newTemp('int')
+							p[0].code += [new_temp + ' := ' + dim1 + ' int*i ' + dim2]
+						else:
+							new_temp = newTemp('int')
+							p[0].code += [new_temp + ' := ' + dim1 + ' int* ' + dim2]
+						scope_label = scope_stack[-1].label
+						p[0].code += ['Allocate ' + i + '(' + str(scope_label) + ') ' + new_temp  + ' ' + element_type2]
+					else:
+						scope_label = scope_stack[-1].label
+						p[0].code += ['Allocate ' + i + '(' + str(scope_label) + ') ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
 				
 				err = insertId(i, p[2].type)
 				if p[2].type == 'int':
@@ -914,13 +936,55 @@ def p_prim_expr(p):
 				pass
 				
 			element_type = ','.join(temp_type[6:-1].split(',')[1:])[1:]
-			p[0].expr.type = element_type
-			p[0].place = newTemp(element_type)
-			# p[0].place = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
-			p[0].expr.value = p[1].expr.value
-			p[0].expr.is_array = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
-			p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']' + str(type_size(element_type))]
-			# p[0].code = p[1].code + p[2].code
+			arr_size = temp_type[6:-1].split(',')[0]
+			if element_type[0:5] == 'Array':
+				p[0].expr.type = element_type
+				p[0].expr.multid_array = p[2].place
+				p[0].place = p[1].place
+				# p[0].place = newTemp(element_type)
+				# p[0].place = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
+				p[0].expr.value = p[1].expr.value
+				p[0].expr.is_array = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
+				p[0].code = p[1].code + p[2].code 
+				# p[0].code = p[1].code + p[2].code
+			else:
+				if p[1].expr.multid_array:
+					p[0].code = []
+					index1 = p[1].expr.multid_array
+					index2 = p[2].place
+					p[0].expr.type = element_type
+					p[0].place = newTemp(element_type)
+					p[0].expr.value = p[1].expr.value
+					# actual offset is index1 * arr_size + index2
+					new_temp = ""
+					if is_immediate(index1) and is_immediate(arr_size):
+						new_temp = str(int(index1) * int(arr_size))
+					elif is_immediate(index1) or is_immediate(arr_size):
+						new_temp = newTemp('int')
+						p[0].code += [new_temp + ' := ' + index1 + ' int*i ' + arr_size]
+					else:
+						new_temp = newTemp('int')
+						p[0].code += [new_temp + ' := ' + index1 + ' int* ' + arr_size]
+
+					new_temp_new = new_temp
+					if is_immediate(new_temp) and is_immediate(index2):
+						new_temp_new = str(int(new_temp) + int(index2))
+					elif is_immediate(new_temp) or is_immediate(index2):
+						new_temp_new = newTemp('int')
+						p[0].code += [new_temp_new + ' := ' + new_temp + ' int+i ' + index2]
+					else:
+						new_temp_new = newTemp('int')
+						p[0].code += [new_temp_new + ' := ' + new_temp + ' int+ ' + index2]
+					p[0].expr.is_array = p[1].place + '[' + new_temp_new + ']'+str(type_size(element_type))
+					p[0].code += p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + new_temp_new + ']' + str(type_size(element_type))]
+				else:
+					p[0].expr.type = element_type
+					p[0].place = newTemp(element_type)
+					# p[0].place = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
+					p[0].expr.value = p[1].expr.value
+					p[0].expr.is_array = p[1].place + '[' + p[2].place + ']'+str(type_size(element_type))
+					p[0].code = p[1].code + p[2].code + [p[0].place + ' := ' + p[1].place + '[' + p[2].place + ']' + str(type_size(element_type))]
+					# p[0].code = p[1].code + p[2].code
 
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']

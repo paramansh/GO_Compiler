@@ -1,35 +1,31 @@
-scope: 4
-parent: 3
-{'TEMP_VAR2': {'constant': False, 'offset': 12, 'type': 'int'},
- 'TEMP_VAR3': {'constant': False, 'offset': 16, 'type': 'int'},
- 'i': {'constant': False, 'offset': 8, 'type': 'int'}}
-{}
-
-scope: 3
-parent: 0
-{'a': {'constant': False, 'offset': 4, 'type': 'Array(n(3), int)'},
- 'n': {'constant': False, 'offset': 0, 'type': 'int'}}
-{}
-
 scope: 2
-parent: 1
-{'TEMP_VAR0': {'constant': False, 'offset': 4, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'offset': 8, 'type': 'int'},
- 'i': {'constant': False, 'offset': 0, 'type': 'int'}}
+parent: 0
+{'TEMP_VAR1': {'constant': False, 'offset': 8, 'type': 'int'},
+ 'TEMP_VAR2': {'constant': False, 'offset': 16, 'type': 'int'},
+ 'TEMP_VAR3': {'constant': False, 'offset': 20, 'type': 'int'},
+ 'TEMP_VAR4': {'constant': False, 'offset': 24, 'type': 'int'},
+ 'TEMP_VAR5': {'constant': False, 'offset': 28, 'type': 'int'},
+ 'TEMP_VAR6': {'constant': False, 'offset': 32, 'type': 'int'},
+ 'TEMP_VAR7': {'constant': False, 'offset': 36, 'type': 'int'},
+ 'a': {'constant': False, 'offset': 12, 'type': 'Array(4, Array(m(2), int))'},
+ 'b': {'constant': False, 'offset': 40, 'type': 'int'},
+ 'm': {'constant': False, 'offset': 4, 'type': 'int'},
+ 'n': {'constant': False, 'offset': 0, 'type': 'int'}}
 {}
 
 scope: 1
 parent: 0
-{'a': {'constant': False, 'offset': -8, 'type': 'Array(NULL, int)'}}
+{'TEMP_VAR0': {'constant': False, 'offset': 0, 'type': 'int'},
+ 'a': {'constant': False, 'offset': -8, 'type': 'Array(NULL, Array(4, int))'}}
 {}
 
 scope: 0
 parent: None
 {'fun': {'func_dict': {'symbol_table': 1},
-         'func_signature': [[{'Array(NULL, int)': ['a']}], []],
+         'func_signature': [[{'Array(NULL, Array(4, int))': ['a']}], []],
          'offset': 0,
          'type': 'func'},
- 'main': {'func_dict': {'symbol_table': 3},
+ 'main': {'func_dict': {'symbol_table': 2},
           'func_signature': [[], []],
           'offset': 1,
           'type': 'func'}}
