@@ -35,7 +35,7 @@ def getIdInfo(ide):
 			return None
 
 def type_size(t):
-			
+	t = getTypeConversion(t)
 	if t == 'int':
 		return 4
 	elif t == 'float':
@@ -56,6 +56,8 @@ def type_size(t):
 		# 	length = t[6:-1].split(',')[0]
 		# 	element_type = ','.join(t[6:-1].split(',')[1:])[1:]
 		# 	return 4
+	elif t[-1] == '*':
+		return 4
 	return 1
 
 def insertId(idname, idtype, func_var=False):
@@ -69,6 +71,7 @@ def insertId(idname, idtype, func_var=False):
 	else:
 		
 		curr_scope = scope_stack[-1]
+		idtype = getTypeConversion(idtype)
 		curr_scope.insert(idname, idtype)
 		# TODO struct types etc??
 		if not func_var:
@@ -95,11 +98,27 @@ def insertInfo(idname, attr, value):
 		curr_scope.setArgs(idname, attr, value)
 
 def typeInScope(name):
+	if name[-1] == '*':
+		return True
 	for scope in scope_stack[::-1]:
 		types = scope.types
 		if name in types:
 			return True
 	return False
+
+def getTypeConversion(name):
+	if name[0:5] != 'ttype':
+		return name
+	if name[-1] == '*':
+		return name
+		# return getTypeConversion(name[-1]) + '*' 
+	if not typeInScope(name):
+		print 'type not in current scope'
+		return None
+	for scope in scope_stack[::-1]:
+		types = scope.types
+		if name in types:
+			return types[name]
 
 def validTypeConversion(type1, type2):
 	if type1 == 'string':
@@ -120,8 +139,9 @@ def getCurrentFunc():
 
 def typeMatch(list1, list2):
 	for index, i in enumerate(list1):
-		t1 = list1[index]
-		t2 = list2[index]
+		# getTypeConversion(name)
+		t1 = getTypeConversion(list1[index])
+		t2 = getTypeConversion(list2[index])
 		if t1[0:5] == 'Array':
 			if t2[0:5] == 'Array':
 				element_type1 = ','.join(t1[6:-1].split(',')[1:])[1:]
@@ -138,6 +158,7 @@ def typeMatch(list1, list2):
 
 temp_var_count = 0
 function_expr_types = [] # used to store return types
+current_type_pointer = []
 
 def newTemp(idtype):
 	curr_scope = scope_stack[-1]
@@ -200,8 +221,9 @@ def p_type_name(p):
 	temp = Node()
 	if len(p) == 3:
 		temp.type = p[1] + '_' + p[2]
-		if not typeInScope(p[2]):
-			print 'error at line', p.lineno(0), 'type ' + temp.type + ' not in scope'
+		if not typeInScope(temp.type):
+			if not current_type_pointer:
+				print 'error at line', p.lineno(0), 'type ' + temp.type + ' not in scope'
 	else:
 		temp.type = p[1]
 	p[0] = temp
@@ -268,8 +290,11 @@ def p_field_decl(p):
 	''' FieldDecl : IdentifierList Type TagOpt'''
 	### TODO Embedded Field and TAG
 	p[0] = ""
-	for i in p[1].idlist:
+	idlen = len(p[1].idlist)
+	for index, i in enumerate(p[1].idlist):
 		p[0] += "'" + i + "'" + ':' + "'" + p[2].type + "'"
+		if index != idlen-1:
+			p[0] += ','
 
 def p_tag_opt(p):
   	''' TagOpt : Tag
@@ -289,9 +314,14 @@ def p_tag(p):
 #-------------------------------PointerType------------------------------#
 
 def p_pointer_type(p):
-	'''PointerType : TIMES BaseType'''
+	'''PointerType : Pointer BaseType'''
 	p[0] = Node()
 	p[0].type = p[2].type + '*'
+	current_type_pointer.pop()
+
+def p_pointer(p):
+	'''Pointer : POINTER'''
+	current_type_pointer.append(True)
 
 def p_base_type(p):
 	'''BaseType : Type'''
@@ -896,6 +926,8 @@ def p_prim_expr(p):
 		if 'selector' in p[2].extra:
 			selector = p[2].extra['selector']
 			temp_type = p[1].expr.type
+			if temp_type[0:5] == 'ttype':
+				temp_type = getTypeConversion(temp_type)
 			if temp_type[0:6] != 'Struct':
 				print 'error at line', p.lineno(0), "can't selct on non-struct types"
 				return
@@ -904,8 +936,11 @@ def p_prim_expr(p):
 				print 'error at line', p.lineno(0), "invalid selector"
 				return
 			p[0].expr.type = field_dic[selector]
-			p[0].place = newTemp(p[0].expr.type)
-			p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+			p[0].expr.value = p[1].expr.value
+			# p[0].place = newTemp(p[0].expr.type)
+			p[0].place = p[1].place + '.' + selector
+			# p[0].code = p[1].code + [p[0].place + ' := ' + p[1].place + '.' + selector]
+			p[0].code = p[1].code
 
 		if 'is_argument' in p[2].extra:
 			temp_type = p[1].expr.type

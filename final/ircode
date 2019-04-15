@@ -1,73 +1,11 @@
-label10 function sort:
-i(1) := 0
-label6:
-TEMP_VAR0(2) := n(1) int-i 1
-if i(1) < TEMP_VAR0(2) goto label7
-goto label9
-label7:
-j(1) := 0
-label2:
-TEMP_VAR2(3) := n(1) int- i(1)
-TEMP_VAR3(3) := TEMP_VAR2(3) int-i 1
-if j(1) < TEMP_VAR3(3) goto label3
-goto label5
-label3:
-TEMP_VAR5(3) := a(1)[j(1)]4
-TEMP_VAR6(3) := j(1) int+i 1
-TEMP_VAR7(3) := a(1)[TEMP_VAR6(3)]4
-if TEMP_VAR5(3) > TEMP_VAR7(3) goto label0
-goto label1
-label0:
-TEMP_VAR8(4) := a(1)[j(1)]4
-temp(4) := TEMP_VAR8(4)
-TEMP_VAR9(4) := a(1)[j(1)]4
-TEMP_VAR10(4) := j(1) int+i 1
-TEMP_VAR11(4) := a(1)[TEMP_VAR10(4)]4
-a(1)[j(1)]4 := TEMP_VAR11(4)
-TEMP_VAR12(4) := j(1) int+i 1
-TEMP_VAR13(4) := a(1)[TEMP_VAR12(4)]4
-a(1)[TEMP_VAR12(4)]4 := temp(4)
-label1:
-label4:
-TEMP_VAR4(3) := j(1) int+i 1
-j(1) := TEMP_VAR4(3)
-goto label2
-label5:
-label8:
-TEMP_VAR1(2) := i(1) int+i 1
-i(1) := TEMP_VAR1(2)
-goto label6
-label9:
+label0 function fun:
+printint a(1).a
+printint a(1).c
+printint a(1).b
 ret
-label19 function main:
-Allocate a(5) 5 int
-i(6) := 0
-label11:
-if i(6) < 5 goto label12
-goto label14
-label12:
-TEMP_VAR15(6) := a(5)[i(6)]4
-TEMP_VAR16(6) := 5 int-i i(6)
-a(5)[i(6)]4 := TEMP_VAR16(6)
-TEMP_VAR17(6) := a(5)[i(6)]4
-printint TEMP_VAR17(6)
-label13:
-TEMP_VAR14(6) := i(6) int+i 1
-i(6) := TEMP_VAR14(6)
-goto label11
-label14:
-param 5
-param a(5)
-callvoid sort 8
-i(7) := 0
-label15:
-if i(7) < 5 goto label16
-goto label18
-label16:
-TEMP_VAR19(7) := a(5)[i(7)]4
-printint TEMP_VAR19(7)
-label17:
-TEMP_VAR18(7) := i(7) int+i 1
-i(7) := TEMP_VAR18(7)
-goto label15
-label18:
+label1 function main:
+a(2).a := 2
+a(2).b := 4
+a(2).c := 33
+param a(2)
+callvoid fun 12

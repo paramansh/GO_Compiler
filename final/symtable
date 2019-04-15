@@ -1,69 +1,30 @@
-scope: 7
-parent: 5
-{'TEMP_VAR18': {'constant': False, 'offset': 28, 'type': 'int'},
- 'TEMP_VAR19': {'constant': False, 'offset': 32, 'type': 'int'},
- 'i': {'constant': False, 'offset': 24, 'type': 'int'}}
-{}
-
-scope: 6
-parent: 5
-{'TEMP_VAR14': {'constant': False, 'offset': 8, 'type': 'int'},
- 'TEMP_VAR15': {'constant': False, 'offset': 12, 'type': 'int'},
- 'TEMP_VAR16': {'constant': False, 'offset': 16, 'type': 'int'},
- 'TEMP_VAR17': {'constant': False, 'offset': 20, 'type': 'int'},
- 'i': {'constant': False, 'offset': 4, 'type': 'int'}}
-{}
-
-scope: 5
-parent: 0
-{'a': {'constant': False, 'offset': 0, 'type': 'Array(5, int)'}}
-{}
-
-scope: 4
-parent: 3
-{'TEMP_VAR10': {'constant': False, 'offset': 52, 'type': 'int'},
- 'TEMP_VAR11': {'constant': False, 'offset': 56, 'type': 'int'},
- 'TEMP_VAR12': {'constant': False, 'offset': 60, 'type': 'int'},
- 'TEMP_VAR13': {'constant': False, 'offset': 64, 'type': 'int'},
- 'TEMP_VAR8': {'constant': False, 'offset': 40, 'type': 'int'},
- 'TEMP_VAR9': {'constant': False, 'offset': 48, 'type': 'int'},
- 'temp': {'constant': False, 'offset': 44, 'type': 'int'}}
-{}
-
-scope: 3
-parent: 2
-{'TEMP_VAR2': {'constant': False, 'offset': 16, 'type': 'int'},
- 'TEMP_VAR3': {'constant': False, 'offset': 20, 'type': 'int'},
- 'TEMP_VAR4': {'constant': False, 'offset': 24, 'type': 'int'},
- 'TEMP_VAR5': {'constant': False, 'offset': 28, 'type': 'int'},
- 'TEMP_VAR6': {'constant': False, 'offset': 32, 'type': 'int'},
- 'TEMP_VAR7': {'constant': False, 'offset': 36, 'type': 'int'}}
-{}
-
 scope: 2
-parent: 1
-{'TEMP_VAR0': {'constant': False, 'offset': 8, 'type': 'int'},
- 'TEMP_VAR1': {'constant': False, 'offset': 12, 'type': 'int'}}
+parent: 0
+{'a': {'constant': False,
+       'offset': 0,
+       'type': "Struct{'c':'int','a':'int','b':'int'}"},
+ 'b': {'constant': False,
+       'offset': 12,
+       'type': "Struct{'c':'int','a':'int','b':'int'}"},
+ 'c': {'constant': False, 'offset': 24, 'type': 'int', 'value': 0}}
 {}
 
 scope: 1
 parent: 0
-{'a': {'constant': False, 'offset': -8, 'type': 'Array(NULL, int)'},
- 'i': {'constant': False, 'offset': 4, 'type': 'int', 'value': 0},
- 'j': {'constant': False, 'offset': 0, 'type': 'int', 'value': 0},
- 'n': {'constant': False, 'offset': -12, 'type': 'int'}}
+{'a': {'constant': False,
+       'offset': -16,
+       'type': "Struct{'c':'int','a':'int','b':'int'}"}}
 {}
 
 scope: 0
 parent: None
-{'main': {'func_dict': {'symbol_table': 5},
+{'fun': {'func_dict': {'symbol_table': 1},
+         'func_signature': [[{'ttype_new_type': ['a']}], []],
+         'offset': 0,
+         'type': 'func'},
+ 'main': {'func_dict': {'symbol_table': 2},
           'func_signature': [[], []],
           'offset': 1,
-          'type': 'func'},
- 'sort': {'func_dict': {'symbol_table': 1},
-          'func_signature': [[{'Array(NULL, int)': ['a']}, {'int': ['n']}],
-                             []],
-          'offset': 0,
           'type': 'func'}}
-{}
+{'ttype_new_type': "Struct{'c':'int','a':'int','b':'int'}"}
 

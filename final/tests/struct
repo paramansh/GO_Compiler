@@ -1,0 +1,24 @@
+package main;
+
+
+//type ttype new_type struct{a, c int; b pointer ttype new_type;};
+type ttype new_type struct{a, c int; b int;};
+
+func fun(a ttype new_type) {
+    print %d a.a;
+    print %d a.c;
+    print %d a.b;
+    return;
+};
+
+func main() {
+    var a ttype new_type;
+    var b ttype new_type;
+    var c int;
+    a.a = 2;
+    a.b = 4;
+    a.c = 33;
+    fun(a);
+    //c = a.a + a.b;
+    //print %d c;
+};

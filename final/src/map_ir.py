@@ -1,4 +1,5 @@
 from asm_utils import *
+import ast
 
 opcode = {
 	'int+' : 'addl',
@@ -56,16 +57,37 @@ def type_size(t):
 			# length = t[6:-1].split(',')[0]
 			# element_type = ','.join(t[6:-1].split(',')[1:])[1:]
 			return 4
+	elif t[-1] == '*':
+		return 4
 	return 1
+
+def getStructOffset(var_type, selector):
+	field_dic = ast.literal_eval(var_type[6:])
+	offset = 0
+	for var in field_dic:
+		if var == selector:
+			break;
+		temp = field_dic[var]
+		offset += type_size(temp)
+	return offset
 
 def get_offset(var, scope_list):
 	name, scope = separate(var)
 	table = scope_list[scope].table
 	offset = table[name]['offset']
+	if '.' not in var:
+		if offset >= 0:
+			return str(-(offset + 4))
+		else:
+			return str(-offset)
+	
+	var_type = table[name]['type'] # struct type
+	selector = var.split('.')[1]
+	field_offset = getStructOffset(var_type, selector)
 	if offset >= 0:
-		return str(-(offset + 4))
+		return str(-(offset + field_offset + 4))
 	else:
-		return str(-offset)
+		return str(-offset-field_offset)
 
 def is_immediate(var):
 	if '(' in var and ')' in var:
@@ -282,8 +304,17 @@ def map_instr(instr, scope_list, fp):
 		if is_immediate(instr.dest):
 			gen_instr('pushl $' + instr.dest, fp)
 		else:
-			dest_offset = get_offset(instr.dest, scope_list)
-			gen_instr('pushl ' + dest_offset + '(%ebp)', fp)
+			name, scope = separate(instr.dest)
+			table = scope_list[scope].table
+			var_type = table[name]['type']
+			if var_type[0:6] == 'Struct':
+				field_dic = ast.literal_eval(var_type[6:])
+				for selector in field_dic:
+					field_offset = get_offset(instr.dest + '.' + selector, scope_list)
+					gen_instr('pushl ' + field_offset + '(%ebp)', fp)
+			else:
+				dest_offset = get_offset(instr.dest, scope_list)
+				gen_instr('pushl ' + dest_offset + '(%ebp)', fp)
 
 	elif instr.type == 'retval':
 		if is_immediate(instr.src1):
