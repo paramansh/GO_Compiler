@@ -1,5 +1,8 @@
 package main;
 
+func is_even(int) int;
+func is_odd(int) int;
+
 func is_even(n int) int {
     if n == 0 {
         return 1;

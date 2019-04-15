@@ -1,34 +1,40 @@
 package main;
 
+func fun(int);
 
-
-func fun(b []int) {
-    a := b[1];
-    print %d b[4];
-//
-//    print %d b;
-    //print %d c;
-    //print %d d;
-    //x := a+b+c+d;
-    //print %d x;
-    //return a+b+c+d;
-    return; 
+func fun(b int) {
+    return;
 };
 
+//func fun(b []int) {
+//    a := b[1];
+//    print %d b[4];
+////
+////    print %d b;
+//    //print %d c;
+//    //print %d d;
+//    //x := a+b+c+d;
+//    //print %d x;
+//    //return a+b+c+d;
+//    return; 
+//};
+
 func main() {
-    m := 2;
-    var a [5]int;
-    for i := 0; i < 5; i++ {
-        a[i] = i + 1;
-    };
-    sum := 0;
-    for i := 0; i < 5; i++ {
-        sum += a[i];
-    };
-    var b []int;
+    var a int;
     fun(a);
-    print %d sum;
-    n := 4;
-    n = a[m];
-    print %d n;
+    //m := 2;
+    //var a [5]int;
+    //for i := 0; i < 5; i++ {
+    //    a[i] = i + 1;
+    //};
+    //sum := 0;
+    //for i := 0; i < 5; i++ {
+    //    sum += a[i];
+    //};
+    //var b []int;
+    //fun(a);
+    //print %d sum;
+    //n := 4;
+    //n = a[m];
+    //print %d n;
 };

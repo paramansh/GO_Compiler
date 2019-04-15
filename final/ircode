@@ -1,61 +1,35 @@
-label2 function preorder:
-if node(1) == 0 goto label0
+label3 function is_even:
+if n(3) == 0 goto label0
 goto label1
 label0:
+ret1: 1
 ret
+goto label2
 label1:
-TEMP_VAR0(1) := node(1).left
-param TEMP_VAR0(1)
-callvoid preorder 4
-TEMP_VAR1(1) := node(1).value
-printint TEMP_VAR1(1)
-TEMP_VAR2(1) := node(1).right
-param TEMP_VAR2(1)
-callvoid preorder 4
+TEMP_VAR0(5) := n(3) int-i 1
+param TEMP_VAR0(5)
+callint, TEMP_VAR1(5), is_odd
+ret1: TEMP_VAR1(5)
 ret
-label3 function main:
-malloc node1(3) 12
-malloc node2(3) 12
-malloc node3(3) 12
-malloc node4(3) 12
-malloc node5(3) 12
-malloc node6(3) 12
-root(3) := node1(3)
-TEMP_VAR3(3) := node1(3).value
-node1(3).value := 7
-TEMP_VAR4(3) := node1(3).left
-node1(3).left := node2(3)
-TEMP_VAR5(3) := node1(3).right
-node1(3).right := node3(3)
-TEMP_VAR6(3) := node2(3).value
-node2(3).value := 4
-TEMP_VAR7(3) := node2(3).left
-node2(3).left := node4(3)
-TEMP_VAR8(3) := node2(3).right
-node2(3).right := 0
-TEMP_VAR9(3) := node3(3).value
-node3(3).value := 11
-TEMP_VAR10(3) := node3(3).left
-node3(3).left := node5(3)
-TEMP_VAR11(3) := node3(3).right
-node3(3).right := node6(3)
-TEMP_VAR12(3) := node4(3).value
-node4(3).value := 1
-TEMP_VAR13(3) := node4(3).left
-node4(3).left := 0
-TEMP_VAR14(3) := node4(3).right
-node4(3).right := 0
-TEMP_VAR15(3) := node5(3).value
-node5(3).value := 9
-TEMP_VAR16(3) := node5(3).left
-node5(3).left := 0
-TEMP_VAR17(3) := node5(3).right
-node5(3).right := 0
-TEMP_VAR18(3) := node6(3).value
-node6(3).value := 13
-TEMP_VAR19(3) := node6(3).left
-node6(3).left := 0
-TEMP_VAR20(3) := node6(3).right
-node6(3).right := 0
-param root(3)
-callvoid preorder 4
+label2:
+label7 function is_odd:
+if n(6) == 0 goto label4
+goto label5
+label4:
+ret1: 0
+ret
+goto label6
+label5:
+TEMP_VAR2(8) := n(6) int-i 1
+param TEMP_VAR2(8)
+callint, TEMP_VAR3(8), is_even
+ret1: TEMP_VAR3(8)
+ret
+label6:
+label8 function main:
+param 7
+callint, TEMP_VAR4(9), is_even
+printint TEMP_VAR4(9)
+param 7
+callint, TEMP_VAR5(9), is_odd
+printint TEMP_VAR5(9)

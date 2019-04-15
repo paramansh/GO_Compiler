@@ -66,13 +66,13 @@ def insertId(idname, idtype, func_var=False):
 		err = "Can't use temp_var as variable name: Reserved"
 		return err 
 	if inCurrentScope(idname):
-		err = "Variable already exists in current scope"
-		return err
+		if idtype != 'func':
+			err = "Variable already exists in current scope"
+			return err
 	else:
 		curr_scope = scope_stack[-1]
 		idtype = getTypeConversion(idtype)
 		curr_scope.insert(idname, idtype)
-		# TODO struct types etc??
 		if not func_var:
 			insertInfo(idname, 'offset', curr_scope.offset)
 			curr_scope.offset += type_size(idtype)
@@ -744,16 +744,16 @@ def p_func_decl(p):
 		# 	# TODO 
 		# 	if correct_types:
 		# 		print 'error at line', p.lineno(0), 'expected return value for function', p[2]
-
 		func_dict = {}
 		func_dict['symbol_table'] = p[3][1].extra['block_scope']
 		insertInfo(p[2], 'func_dict', func_dict)
 		# insertInfo(p[2], 'func_signature', p[3][0]) # CHANGED!!
 		p[0].code = [newLabel() + ' function ' + p[2] + ":" ] + p[0].code
 	else:
-		insertInfo(p[2], 'func_signature', p[3])
-		# TODO
-		print p[3]
+		# insertInfo(p[2], 'func_signature', p[3])
+		# TODO CHECK if correct
+		scope_stack.pop()
+		p[0] = Node()
 
 
 
