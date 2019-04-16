@@ -32,6 +32,7 @@ class Expr:
 		self.value = "None"
 		self.type = "None"
 		self.is_array = False
+		self.is_address = False
 		self.multid_array = False
 		self.is_selector = False
 		self.is_pointer = False

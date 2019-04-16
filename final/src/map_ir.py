@@ -43,6 +43,7 @@ def get_jump(x):
 		return None
 	
 def separate(var):
+	var = var.strip('&')
 	name = var.split('(')[0]
 	scope = var.split('(')[1].split(')')[0]
 	# name = name.split('*')[-1]
@@ -320,6 +321,27 @@ def map_instr(instr, scope_list, fp):
 
 			gen_instr('movl (%edx), %ecx', fp)
 			gen_instr('movl %ecx, ' + str(dest_offset) + '(%ebp)', fp)
+		
+		elif '&' in instr.dest:
+			# dest_offset = get_offset(instr.dest, scope_list)
+			# gen_instr('movl %ebp %edx', fp)
+			# gen_instr('addl $' + str(dest_offset) + ', %edx', fp)
+			if is_immediate(instr.src1):
+				print 'operation not supported'
+			else:
+				print 'scan assignment not supported'
+				# name1, scope1 = separate(instr.dest)
+				# name2, scope2 = separate(instr.src1)
+				# # TODO ?? are base address same
+				# scope_list[scope1].table[name1]['offset'] = scope_list[scope2].table[name2]['offset']
+	
+		
+		elif '&' in instr.src1:
+			dest_offset = get_offset(instr.dest, scope_list)
+			src1_offset = get_offset(instr.src1, scope_list)
+			gen_instr('movl %ebp, %edx', fp)
+			gen_instr('addl $' + str(src1_offset) + ', %edx', fp)
+			gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
 
 		else:
 			if is_immediate(instr.src1):

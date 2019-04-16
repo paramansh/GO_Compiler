@@ -1292,7 +1292,9 @@ def p_unary_expr(p):
 
 		if p[1] == '&':
 			p[0] = Node()
+			p[0].expr.value = p[2].expr.value
 			p[0].expr.type = p[2].expr.type + '*'
+			p[0].expr.is_address = '&' + p[2].place
 			p[0].place = newTemp(p[0].expr.type)
 			p[0].code = p[2].code + [p[0].place + ' := &' + p[2].place] 
 		if p[1] == '!':
@@ -1444,6 +1446,8 @@ def p_assignment(p):
 					temp_place = p[1].exprlist[i].expr.is_pointer
 				elif p[1].exprlist[i].expr.is_selector:
 					temp_place = p[1].exprlist[i].expr.is_selector
+				elif p[1].exprlist[i].expr.is_address:
+					temp_place = p[1].exprlist[i].expr.is_address
 				else:
 					temp_place = p[1].exprlist[i].place
 
