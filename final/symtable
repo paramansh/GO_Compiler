@@ -1,19 +1,73 @@
+scope: 3
+parent: 0
+{'TEMP_VAR10': {'constant': False, 'offset': 60, 'type': 'ttype_Node*'},
+ 'TEMP_VAR11': {'constant': False, 'offset': 64, 'type': 'ttype_Node*'},
+ 'TEMP_VAR12': {'constant': False, 'offset': 68, 'type': 'int'},
+ 'TEMP_VAR13': {'constant': False, 'offset': 72, 'type': 'ttype_Node*'},
+ 'TEMP_VAR14': {'constant': False, 'offset': 76, 'type': 'ttype_Node*'},
+ 'TEMP_VAR15': {'constant': False, 'offset': 80, 'type': 'int'},
+ 'TEMP_VAR16': {'constant': False, 'offset': 84, 'type': 'ttype_Node*'},
+ 'TEMP_VAR17': {'constant': False, 'offset': 88, 'type': 'ttype_Node*'},
+ 'TEMP_VAR18': {'constant': False, 'offset': 92, 'type': 'int'},
+ 'TEMP_VAR19': {'constant': False, 'offset': 96, 'type': 'ttype_Node*'},
+ 'TEMP_VAR20': {'constant': False, 'offset': 100, 'type': 'ttype_Node*'},
+ 'TEMP_VAR3': {'constant': False, 'offset': 32, 'type': 'int'},
+ 'TEMP_VAR4': {'constant': False, 'offset': 36, 'type': 'ttype_Node*'},
+ 'TEMP_VAR5': {'constant': False, 'offset': 40, 'type': 'ttype_Node*'},
+ 'TEMP_VAR6': {'constant': False, 'offset': 44, 'type': 'int'},
+ 'TEMP_VAR7': {'constant': False, 'offset': 48, 'type': 'ttype_Node*'},
+ 'TEMP_VAR8': {'constant': False, 'offset': 52, 'type': 'ttype_Node*'},
+ 'TEMP_VAR9': {'constant': False, 'offset': 56, 'type': 'int'},
+ 'curr': {'constant': False,
+          'offset': 0,
+          'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'node1': {'constant': False,
+           'offset': 28,
+           'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'node2': {'constant': False,
+           'offset': 8,
+           'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'node3': {'constant': False,
+           'offset': 12,
+           'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'node4': {'constant': False,
+           'offset': 16,
+           'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'node5': {'constant': False,
+           'offset': 20,
+           'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'node6': {'constant': False,
+           'offset': 24,
+           'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"},
+ 'root': {'constant': False,
+          'offset': 4,
+          'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"}}
+{}
+
+scope: 2
+parent: 1
+{}
+{}
+
 scope: 1
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'offset': 0, 'type': 'string'},
- 'TEMP_VAR1': {'constant': False, 'offset': 3, 'type': 'string'},
- 'a': {'constant': False, 'offset': 1, 'type': 'string'},
- 'b': {'constant': False, 'offset': 2, 'type': 'string'}}
+{'TEMP_VAR0': {'constant': False, 'offset': 0, 'type': 'ttype_Node*'},
+ 'TEMP_VAR1': {'constant': False, 'offset': 4, 'type': 'int'},
+ 'TEMP_VAR2': {'constant': False, 'offset': 8, 'type': 'ttype_Node*'},
+ 'node': {'constant': False,
+          'offset': -8,
+          'type': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}*"}}
 {}
 
 scope: 0
 parent: None
-{'TEMP_VAR0': {'type': 'string', 'value': '"hello"'},
- 'TEMP_VAR1': {'type': 'string', 'value': '"bye"'},
- 'main': {'func_dict': {'symbol_table': 1},
+{'main': {'func_dict': {'symbol_table': 3},
           'func_signature': [[], []],
-          'offset': 4,
+          'offset': 1,
           'type': 'func'},
- 'n': {'constant': False, 'offset': 0, 'type': 'int', 'value': 0}}
-{}
+ 'preorder': {'func_dict': {'symbol_table': 1},
+              'func_signature': [[{'ttype_Node*': ['node']}], []],
+              'offset': 0,
+              'type': 'func'}}
+{'ttype_Node': "Struct{'value':'int','right':'ttype_Node*','left':'ttype_Node*'}"}
 

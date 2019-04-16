@@ -554,3 +554,47 @@ def map_instr(instr, scope_list, fp):
 		gen_instr("movl %ebp, %esp", fp)
   		gen_instr("pop %ebp", fp)
 		gen_instr("ret", fp)
+
+	elif instr.type == 'write':
+		gen_instr('movl $5, %eax', fp)
+		file_name = var_to_str[instr.dest]
+		# print file_name
+		gen_instr('movl $' + file_name + ', %ebx', fp)
+		gen_instr('movl $0x41, %ecx', fp)
+		gen_instr('movl $0x1ff, %edx', fp)
+		gen_instr('int $0x80', fp)
+
+		msg = var_to_str[instr.src1]
+
+		gen_instr('movl %eax, %ebx', fp)
+		gen_instr('movl $' + msg + ', %ecx', fp)
+		if is_immediate(instr.src2):
+			gen_instr('movl $' + instr.src2 + ', %edx', fp)
+			
+		else:
+			src_offset = get_offset(instr.src2, scope_list)
+			gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
+		gen_instr('movl $4, %eax', fp)
+		gen_instr('int $0x80', fp)
+
+	elif instr.type == 'read':
+		gen_instr('movl $5, %eax', fp)
+		file_name = var_to_str[instr.dest]
+		# print file_name
+		gen_instr('movl $' + file_name + ', %ebx', fp)
+		gen_instr('movl $0x0, %ecx', fp)
+		gen_instr('movl $0x100, %edx', fp)
+		gen_instr('int $0x80', fp)
+
+		msg = var_to_str[instr.src1]
+
+		gen_instr('movl %eax, %ebx', fp)
+		gen_instr('movl $' + msg + ', %ecx', fp)
+		if is_immediate(instr.src2):
+			gen_instr('movl $' + instr.src2 + ', %edx', fp)
+			
+		else:
+			src_offset = get_offset(instr.src2, scope_list)
+			gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
+		gen_instr('movl $3, %eax', fp)
+		gen_instr('int $0x80', fp)

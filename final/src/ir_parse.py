@@ -25,6 +25,18 @@ class instruction:
             self.dest = args[5]
             self.src1 = args[1]
             self.src2 = args[3]
+
+        elif len(args) == 4 and args[0] == 'write':
+            self.type = 'write'
+            self.dest = args[1]
+            self.src1 = args[2]
+            self.src2 = args[3]
+
+        elif len(args) == 4 and args[0] == 'read':
+            self.type = 'read'
+            self.dest = args[1]
+            self.src1 = args[2]
+            self.src2 = args[3]
         
         elif len(args) == 5: # dest := src1 op src2
             self.type = ('binop', args[3])
@@ -55,7 +67,7 @@ class instruction:
             self.dest = args[1] # return value
             self.src1 = args[2] # function name
             self.src2 = None
-            
+
         elif args[0][0:4] == 'call':
             self.type = 'callother'
             self.dest = args[1]

@@ -730,6 +730,9 @@ def p_short_var_decl(p):
 		print 'error: at line', p.lineno(0), err
 		return
 	insertInfo(p[1], 'constant', False)
+	# if p[3].expr.type == 'func':
+	# 	insertInfo(p[1], 'is_function', p[3].place)
+	# 	return
 	scope_label = scope_stack[-1].label
 	if p[3].expr.is_constant:
 		p[0].code += p[3].code + [p[1] + '(' + str(scope_label) + ')' + ' := ' + p[3].place] ### CHANGE IN const:=
@@ -1031,6 +1034,13 @@ def p_prim_expr(p):
 				print 'error at line', p.lineno(0), "need function type"
 				return
 			
+			# p[1].place = p[1].place.split('(')[0]
+			# temp = getIdInfo(p[1].place)
+			# if not 'func_signature' in temp:
+			# 	if not 'is_function' in temp:
+			# 		print 'error at line', p.lineno(0), "need function type"
+			# 	else:
+			# 		p[1].place = temp['is_function']
 			p[1].place = p[1].place.split('(')[0]
 			func_params = getIdInfo(p[1].place)['func_signature'][0]
 			func_result = getIdInfo(p[1].place)['func_signature'][1]
@@ -1357,6 +1367,8 @@ def p_statement(p):
 				 | IfStmt
 				 | PrintStmt
 				 | ScanStmt
+				 | WriteStmt
+				 | ReadStmt
 				 | MallocStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
@@ -1364,6 +1376,22 @@ def p_statement(p):
 	
 	if p[0].next[0][0] == 'l': 
 		p[0].code += [p[0].next[0] + ':'] # otherwise not labelx
+
+def p_write_stmt(p):
+	''' WriteStmt : WRITE Expression PS Expression PS Expression'''
+	p[0] = Node()
+	if p[2].expr.type == 'string' and p[4].expr.type == 'string' and p[6].expr.type == 'int':
+		p[0].code += p[2].code + p[4].code + p[6].code + ['write ' + p[2].place + ' ' + p[4].place + ' ' + p[6].place]
+	else:
+		print 'error at line', p.lineno(0), 'Invalid types'
+	# p[0].code = p[2].code + p[3]
+def p_read_stmt(p):
+	''' ReadStmt : READ Expression PS Expression PS Expression'''
+	p[0] = Node()
+	if p[2].expr.type == 'string' and p[4].expr.type == 'string' and p[6].expr.type == 'int':
+		p[0].code += p[2].code + p[4].code + p[6].code + ['read ' + p[2].place + ' ' + p[4].place + ' ' + p[6].place]
+	else:
+		print 'error at line', p.lineno(0), 'Invalid types'
 
 def p_malloc_stmt(p):
 	'''MallocStmt : MALLOC IDENTIFIER '''
@@ -1465,6 +1493,15 @@ def p_assignment(p):
 		else:
 			type1 = getTypeConversion(p[1].exprlist[i].expr.type)
 			type2 = getTypeConversion(p[3].exprlist[i].expr.type)
+			# if type1 == 'func' and type2 == 'func':
+			# 	place = p[1].exprlist[i].place
+			# 	place = place.split('(')[0]
+			# 	temp = getIdInfo(place)
+			# 	if not 'is_function' in temp:
+			# 		print 'error at line', p.lineno(0), "need function type"
+			# 	else:
+			# 		new_place = temp['is_function']
+			# 		insertInfo(place, 'is_function', new_place)
 			if type1[-1] == '*' and type2 == 'int':
 				None
 			else:

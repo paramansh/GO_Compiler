@@ -1,0 +1,13 @@
+package main;
+
+
+func main() {
+    file_name := "hello.txt";
+    contents := "contents";
+    num := 6;
+    write file_name %s contents %s num;
+    new_contents := "";
+    read file_name %s new_contents %s 1;
+    print %s new_contents;
+    
+};
