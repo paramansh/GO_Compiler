@@ -419,6 +419,18 @@ def map_instr(instr, scope_list, fp):
 		gen_instr('movl %edx, ' + dest_offset + '(%ebp)', fp)
 		gen_instr('addl $' + '4' + ', %esp', fp) #TODO
 
+	elif instr.type == 'callmulti':
+		# print instr.dest, instr.src1, instr.src2
+		gen_instr('call ' + instr.src1, fp)
+		ret_offset = 8
+		for dest in instr.dest:
+			dest_offset = get_offset(dest, scope_list)
+			ret_offset += 4
+			gen_instr('movl -' + str(ret_offset) + '(%esp), %edx', fp)
+			gen_instr('movl %edx, ' + dest_offset + '(%ebp)', fp)
+
+		gen_instr('addl $' + '4' + ', %esp', fp) #TODO
+
 	elif instr.type == 'parameter':
 		if is_immediate(instr.dest):
 			gen_instr('pushl $' + instr.dest, fp)
@@ -442,6 +454,17 @@ def map_instr(instr, scope_list, fp):
 			src_offset = get_offset(instr.src1, scope_list)
 			gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
 		gen_instr('movl %edx, -4(%ebp)', fp)
+	
+	elif instr.type == 'retmulti':
+		ret_offset = 0
+		for src in instr.src1:
+			if is_immediate(src):
+				gen_instr('movl $' + src + ', %edx', fp)
+			else:
+				src_offset = get_offset(src, scope_list)
+				gen_instr('movl ' + src_offset + '(%ebp), %edx', fp)
+			ret_offset += 4
+			gen_instr('movl %edx,-' + str(ret_offset) +'(%ebp)', fp)
 
 	elif instr.type == 'label':
 		if not instr.dest:

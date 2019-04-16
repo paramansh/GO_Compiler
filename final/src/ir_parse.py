@@ -1,10 +1,24 @@
+import ast
 class instruction:
     def __init__(self, instr):
         self.instr = instr
 
         args = instr.split(' ')
-
-        if len(args) == 6: # if src1 comp src2 goto dest
+        if args[0] == 'call' and '[' in instr and ']' in instr:
+            self.type = 'callmulti'
+            temp = '[' + instr.split('[')[2].split(']')[0] + ']'
+            temp = ast.literal_eval(temp)
+            self.dest = temp
+            temp = '[' + instr.split('[')[1].split(']')[0] + ']'
+            temp = ast.literal_eval(temp)
+            self.src2 = temp
+            self.src1 = args[-1] # func name
+        elif args[0] == 'ret:' and len(args) > 3:
+            self.type = 'retmulti'
+            self.dest = None
+            self.src1 = args[1:]
+            self.src2 = None
+        elif len(args) == 6 and args[0] == 'if': # if src1 comp src2 goto dest
             self.type = ('if', args[2])
             self.dest = args[5]
             self.src1 = args[1]

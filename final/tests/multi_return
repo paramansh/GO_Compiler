@@ -2,12 +2,7 @@ package main;
 
 
 func fun(a, b int) (x int, y int, z int) {
-    if a > b {
-        return a+b, b, z;
-    }
-    else {
-        return b-a, b, z;
-    };
+    return a+b, b, z;
 };
 
 func fun2(a, b int) int {
@@ -16,11 +11,11 @@ func fun2(a, b int) int {
 
 
 func main() {
-    var a int = 2;
+    var a int = 4;
     b := 3;
     var c, d int;
     c, d, b = fun(a, b);
-    print %d c;
+    print %d b;
     c = fun2(a, b);
     print %d c;
 };

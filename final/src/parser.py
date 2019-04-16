@@ -143,6 +143,8 @@ def getCurrentFunc():
 	# print scope.label
 
 def typeMatch(list1, list2):
+	if len(list1) != len(list2):
+		return False
 	for index, i in enumerate(list1):
 		# getTypeConversion(name)
 		t1 = getTypeConversion(list1[index])
@@ -749,23 +751,28 @@ def p_func_decl(p):
 					
 	p[0] = p[3][1]
 	if type(p[3]) == tuple:
+		# print 'here1', function_expr_types, p[2]
+		return_types = p[3][0][1]
+		correct_types = []
+		# print 'here2', return_types
+		for ret_dict in return_types:
+			if type(ret_dict) == dict:
+				for ret_type in ret_dict:
+					correct_types += [ret_type] * len(ret_dict[ret_type])
+			else:
+				correct_types += [ret_dict]
+		# print 'here3', correct_types
 		
-		# return_types = p[3][0][1]
-		# correct_types = []
-		# for ret_dict in return_types:
-		# 	for ret_type in ret_dict:
-		# 		correct_types += [ret_type] * len(ret_dict[ret_type])
-		# print correct_types
-		# print function_expr_types
-		
-		# if function_expr_types:
-		# 	if correct_types != function_expr_types[0]:
-		# 		print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
-		# 	function_expr_types.pop()
-		# else:
-		# 	# TODO 
-		# 	if correct_types:
-		# 		print 'error at line', p.lineno(0), 'expected return value for function', p[2]
+		if function_expr_types:
+			for explist in function_expr_types:
+				if not typeMatch(correct_types, explist):
+					print 'error at line', p.lineno(0), "type mismatch in return value in function", p[2]
+			while function_expr_types:
+				function_expr_types.pop()
+		else:
+			# TODO 
+			if correct_types:
+				print 'error at line', p.lineno(0), 'expected return value for function', p[2]
 		func_dict = {}
 		func_dict['symbol_table'] = p[3][1].extra['block_scope']
 		insertInfo(p[2], 'func_dict', func_dict)
@@ -1057,19 +1064,33 @@ def p_prim_expr(p):
 				p[0].code += ['callvoid ' + p[1].place + " " + str(total_size)]
 				p[0].expr.type = 'void'
 			else: ### TODO multiple return values
+				flag = False
+				return_out_list = []
+				return_arg_list = []
 				for arg in func_result:
 					result = arg
-					break
-				if type(result) == dict:
-					new_place = newTemp(result.keys()[0])
-					p[0].expr.type = result.keys()[0]
-					p[0].place = new_place
-					p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
-				else:
-					new_place = newTemp(result)
-					p[0].expr.type = result
-					p[0].place = new_place
-					p[0].code += ['call' + result + ', ' + new_place + ', ' + p[1].place]
+					if type(result) == dict:
+						flag = True
+						new_place = newTemp(result.keys()[0])
+						for res in result:
+							for v in result[res]:
+								temp_node = Node()
+								temp_node.expr.type = res
+								temp_node.place = newTemp(res)
+								p[0].exprlist.append(temp_node)
+								return_out_list.append(res)
+								return_arg_list.append(temp_node.place)
+						# p[0].expr.type = ret_types
+						# p[0].place = new_place
+						# p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
+					else:
+						# should be only once
+						new_place = newTemp(result)
+						p[0].expr.type = result
+						p[0].place = new_place
+						p[0].code += ['call' + result + ', ' + new_place + ', ' + p[1].place]
+				if flag:
+					p[0].code += ['call ' + str(return_out_list) + ' ' + str(return_arg_list) + ' ' + p[1].place]
 
 
 def p_selector(p):
@@ -1422,47 +1443,53 @@ def p_assignment(p):
 	# TODO restriction on LHS expressions
 	p[0] = Node()
 	if len(p[1].exprlist) != len(p[3].exprlist):
-		print "error: at line", p.lineno(0), "Unequal number of arguments"
-	else:
-		for i in range(len(p[1].exprlist)):
-			if not inScope(p[1].exprlist[i].expr.value):
-				print "error: at line", p.lineno(0), "variable not in scope"
+		if len(p[1].exprlist) and len(p[1].exprlist) == len(p[3].exprlist[0].exprlist):
+			func_code = p[3].exprlist[0].code
+			p[0].code += func_code
+			p[3].exprlist = p[3].exprlist[0].exprlist
+		else:
+			print "error: at line", p.lineno(0), "Unequal number of arguments"
+			return
+		
+	for i in range(len(p[1].exprlist)):
+		if not inScope(p[1].exprlist[i].expr.value):
+			print "error: at line", p.lineno(0), "variable not in scope"
+		else:
+			type1 = getTypeConversion(p[1].exprlist[i].expr.type)
+			type2 = getTypeConversion(p[3].exprlist[i].expr.type)
+			if type1[-1] == '*' and type2 == 'int':
+				None
 			else:
-				type1 = getTypeConversion(p[1].exprlist[i].expr.type)
-				type2 = getTypeConversion(p[3].exprlist[i].expr.type)
-				if type1[-1] == '*' and type2 == 'int':
-					None
+				if type1 != type2:
+					# print p[1].exprlist[i].expr.type, p[3].exprlist[i].expr.type
+					print "error: at line", p.lineno(0), "type mismatch in assighment"
+					return
+			exprtype = p[1].exprlist[i].expr.type
+			p[0].expr.type = exprtype
+
+			if p[1].exprlist[i].expr.is_array:
+				temp_place = p[1].exprlist[i].expr.is_array
+			elif p[1].exprlist[i].expr.is_pointer:
+				temp_place = p[1].exprlist[i].expr.is_pointer
+			elif p[1].exprlist[i].expr.is_selector:
+				temp_place = p[1].exprlist[i].expr.is_selector
+			elif p[1].exprlist[i].expr.is_address:
+				temp_place = p[1].exprlist[i].expr.is_address
+			else:
+				temp_place = p[1].exprlist[i].place
+
+			if p[2] == '=':
+				p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [temp_place + ' := ' + p[3].exprlist[i].place]
+				# p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
+
+			ops = ['+=', '-=', '*=', '/=', '%=']
+			if p[2] in ops:
+				new_temp = newTemp(exprtype)
+				if p[3].exprlist[i].expr.is_constant:
+					p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + 'i ' +  p[3].exprlist[i].place]				
 				else:
-					if type1 != type2:
-						# print p[1].exprlist[i].expr.type, p[3].exprlist[i].expr.type
-						print "error: at line", p.lineno(0), "type mismatch in assighment"
-						return
-				exprtype = p[1].exprlist[i].expr.type
-				p[0].expr.type = exprtype
-
-				if p[1].exprlist[i].expr.is_array:
-					temp_place = p[1].exprlist[i].expr.is_array
-				elif p[1].exprlist[i].expr.is_pointer:
-					temp_place = p[1].exprlist[i].expr.is_pointer
-				elif p[1].exprlist[i].expr.is_selector:
-					temp_place = p[1].exprlist[i].expr.is_selector
-				elif p[1].exprlist[i].expr.is_address:
-					temp_place = p[1].exprlist[i].expr.is_address
-				else:
-					temp_place = p[1].exprlist[i].place
-
-				if p[2] == '=':
-					p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [temp_place + ' := ' + p[3].exprlist[i].place]
-					# p[0].code += p[1].exprlist[i].code + p[3].exprlist[i].code + [p[1].exprlist[i].place + ' := ' + p[3].exprlist[i].place]
-
-				ops = ['+=', '-=', '*=', '/=', '%=']
-				if p[2] in ops:
-					new_temp = newTemp(exprtype)
-					if p[3].exprlist[i].expr.is_constant:
-						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + 'i ' +  p[3].exprlist[i].place]				
-					else:
-						p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
-					p[0].code += [temp_place + ' := ' + new_temp]
+					p[0].code = p[1].exprlist[i].code + p[3].exprlist[i].code + [new_temp + ' := ' + p[1].exprlist[i].place + ' ' + exprtype + p[2][0] + ' ' +  p[3].exprlist[i].place]
+				p[0].code += [temp_place + ' := ' + new_temp]
 
 def p_assign_op(p):
 	''' assign_op : AssignOp'''
@@ -1714,8 +1741,14 @@ def p_return(p):
 	for expr in p[2].exprlist:
 		p[0].code += expr.code
 		expr_types.append(expr.expr.type)
+	temp = "ret:"
+	# if p[2].exprlist:
+	# 	p[2].exprlist.insert(0, p[2].exprlist[-1])
+	# 	p[2].exprlist.pop()
 	for index, expr in enumerate(p[2].exprlist):
-		p[0].code += ['ret' + str(index+1) + ": " + expr.place]
+		temp += ' ' + expr.place
+	if p[2].exprlist:
+		p[0].code += [temp]
 
 	p[0].code += ['ret']
 	p[0].extra['is_return'] = True
