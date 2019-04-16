@@ -2,11 +2,11 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    GO
     DEFER
     FALLTHROUGH
     LMINUS
     AMPCAREQ
+    GO
     MAP
     INTERFACE
     CONSTANT
@@ -174,118 +174,120 @@ Rule 151   Statement -> GotoStmt
 Rule 152   Statement -> Block
 Rule 153   Statement -> IfStmt
 Rule 154   Statement -> PrintStmt
-Rule 155   Statement -> MallocStmt
-Rule 156   Statement -> ForStmt
-Rule 157   MallocStmt -> MALLOC IDENTIFIER
-Rule 158   PrintStmt -> PRINT PD Expression
-Rule 159   PrintStmt -> PRINT PS Expression
-Rule 160   SimpleStmt -> epsilon
-Rule 161   SimpleStmt -> ExpressionStmt
-Rule 162   SimpleStmt -> IncDecStmt
-Rule 163   SimpleStmt -> Assignment
-Rule 164   SimpleStmt -> ShortVarDecl
-Rule 165   LabeledStmt -> Label COLON Statement
-Rule 166   Label -> IDENTIFIER
-Rule 167   ExpressionStmt -> Expression
-Rule 168   IncDecStmt -> PrimaryExpr PLUSPLUS
-Rule 169   IncDecStmt -> PrimaryExpr MINUSMIN
-Rule 170   Assignment -> ExpressionList assign_op ExpressionList
-Rule 171   assign_op -> AssignOp
-Rule 172   AssignOp -> PLUSEQ
-Rule 173   AssignOp -> MINUSEQ
-Rule 174   AssignOp -> TIMESEQ
-Rule 175   AssignOp -> DIVIDEEQ
-Rule 176   AssignOp -> MODEQ
-Rule 177   AssignOp -> AMPEQ
-Rule 178   AssignOp -> OREQ
-Rule 179   AssignOp -> CAREQ
-Rule 180   AssignOp -> LLEQ
-Rule 181   AssignOp -> GGEQ
-Rule 182   AssignOp -> EQUAL
-Rule 183   IfStmt -> IF Expression Block ElseOpt
-Rule 184   ElseOpt -> ELSE IfStmt
-Rule 185   ElseOpt -> ELSE Block
-Rule 186   ElseOpt -> epsilon
-Rule 187   ForStmt -> CreateForScope FOR ConditionBlockOpt Block
-Rule 188   CreateForScope -> epsilon
-Rule 189   ConditionBlockOpt -> epsilon
-Rule 190   ConditionBlockOpt -> Condition
-Rule 191   ConditionBlockOpt -> ForClause
-Rule 192   Condition -> Expression
-Rule 193   ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt
-Rule 194   ConditionOpt -> epsilon
-Rule 195   ConditionOpt -> Condition
-Rule 196   RangeClause -> ExpressionIdentListOpt RANGE Expression
-Rule 197   ExpressionIdentListOpt -> epsilon
-Rule 198   ExpressionIdentListOpt -> ExpressionIdentifier
-Rule 199   ExpressionIdentifier -> ExpressionList EQUAL
-Rule 200   ReturnStmt -> RETURN ExpressionListPureOpt
-Rule 201   ExpressionListPureOpt -> ExpressionList
-Rule 202   ExpressionListPureOpt -> epsilon
-Rule 203   BreakStmt -> BREAK LabelOpt
-Rule 204   ContinueStmt -> CONTINUE LabelOpt
-Rule 205   LabelOpt -> Label
-Rule 206   LabelOpt -> epsilon
-Rule 207   GotoStmt -> GOTO Label
-Rule 208   Source -> PackageClause SEMICOL ImportDeclRep TopLevelDeclRep
-Rule 209   ImportDeclRep -> epsilon
-Rule 210   ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL
-Rule 211   TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL
-Rule 212   TopLevelDeclRep -> epsilon
-Rule 213   PackageClause -> PACKAGE PackageName
-Rule 214   PackageName -> IDENTIFIER
-Rule 215   ImportDecl -> IMPORT ImportSpec
-Rule 216   ImportDecl -> IMPORT LPAREN ImportSpecRep RPAREN
-Rule 217   ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL
-Rule 218   ImportSpecRep -> epsilon
-Rule 219   ImportSpec -> PackageNameDotOpt ImportPath
-Rule 220   PackageNameDotOpt -> DOT
-Rule 221   PackageNameDotOpt -> PackageName
-Rule 222   PackageNameDotOpt -> epsilon
-Rule 223   ImportPath -> STRING
-Rule 224   epsilon -> <empty>
+Rule 155   Statement -> ScanStmt
+Rule 156   Statement -> MallocStmt
+Rule 157   Statement -> ForStmt
+Rule 158   MallocStmt -> MALLOC IDENTIFIER
+Rule 159   PrintStmt -> PRINT PD Expression
+Rule 160   PrintStmt -> PRINT PS Expression
+Rule 161   ScanStmt -> SCAN PD IDENTIFIER
+Rule 162   SimpleStmt -> epsilon
+Rule 163   SimpleStmt -> ExpressionStmt
+Rule 164   SimpleStmt -> IncDecStmt
+Rule 165   SimpleStmt -> Assignment
+Rule 166   SimpleStmt -> ShortVarDecl
+Rule 167   LabeledStmt -> Label COLON Statement
+Rule 168   Label -> IDENTIFIER
+Rule 169   ExpressionStmt -> Expression
+Rule 170   IncDecStmt -> PrimaryExpr PLUSPLUS
+Rule 171   IncDecStmt -> PrimaryExpr MINUSMIN
+Rule 172   Assignment -> ExpressionList assign_op ExpressionList
+Rule 173   assign_op -> AssignOp
+Rule 174   AssignOp -> PLUSEQ
+Rule 175   AssignOp -> MINUSEQ
+Rule 176   AssignOp -> TIMESEQ
+Rule 177   AssignOp -> DIVIDEEQ
+Rule 178   AssignOp -> MODEQ
+Rule 179   AssignOp -> AMPEQ
+Rule 180   AssignOp -> OREQ
+Rule 181   AssignOp -> CAREQ
+Rule 182   AssignOp -> LLEQ
+Rule 183   AssignOp -> GGEQ
+Rule 184   AssignOp -> EQUAL
+Rule 185   IfStmt -> IF Expression Block ElseOpt
+Rule 186   ElseOpt -> ELSE IfStmt
+Rule 187   ElseOpt -> ELSE Block
+Rule 188   ElseOpt -> epsilon
+Rule 189   ForStmt -> CreateForScope FOR ConditionBlockOpt Block
+Rule 190   CreateForScope -> epsilon
+Rule 191   ConditionBlockOpt -> epsilon
+Rule 192   ConditionBlockOpt -> Condition
+Rule 193   ConditionBlockOpt -> ForClause
+Rule 194   Condition -> Expression
+Rule 195   ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt
+Rule 196   ConditionOpt -> epsilon
+Rule 197   ConditionOpt -> Condition
+Rule 198   RangeClause -> ExpressionIdentListOpt RANGE Expression
+Rule 199   ExpressionIdentListOpt -> epsilon
+Rule 200   ExpressionIdentListOpt -> ExpressionIdentifier
+Rule 201   ExpressionIdentifier -> ExpressionList EQUAL
+Rule 202   ReturnStmt -> RETURN ExpressionListPureOpt
+Rule 203   ExpressionListPureOpt -> ExpressionList
+Rule 204   ExpressionListPureOpt -> epsilon
+Rule 205   BreakStmt -> BREAK LabelOpt
+Rule 206   ContinueStmt -> CONTINUE LabelOpt
+Rule 207   LabelOpt -> Label
+Rule 208   LabelOpt -> epsilon
+Rule 209   GotoStmt -> GOTO Label
+Rule 210   Source -> PackageClause SEMICOL ImportDeclRep TopLevelDeclRep
+Rule 211   ImportDeclRep -> epsilon
+Rule 212   ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL
+Rule 213   TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL
+Rule 214   TopLevelDeclRep -> epsilon
+Rule 215   PackageClause -> PACKAGE PackageName
+Rule 216   PackageName -> IDENTIFIER
+Rule 217   ImportDecl -> IMPORT ImportSpec
+Rule 218   ImportDecl -> IMPORT LPAREN ImportSpecRep RPAREN
+Rule 219   ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL
+Rule 220   ImportSpecRep -> epsilon
+Rule 221   ImportSpec -> PackageNameDotOpt ImportPath
+Rule 222   PackageNameDotOpt -> DOT
+Rule 223   PackageNameDotOpt -> PackageName
+Rule 224   PackageNameDotOpt -> epsilon
+Rule 225   ImportPath -> STRING
+Rule 226   epsilon -> <empty>
 
 Terminals, with rules where they appear
 
 AMPAMP               : 118
 AMPCAR               : 135
 AMPCAREQ             : 
-AMPEQ                : 177
+AMPEQ                : 179
 AMPERS               : 132 143
-BREAK                : 203
-CAREQ                : 179
+BREAK                : 205
+CAREQ                : 181
 CARET                : 128
 CASE                 : 
 CHAN                 : 
-COLON                : 109 165
+COLON                : 109 167
 COLONEQ              : 79
 COMMA                : 39 40 61 114
 CONST                : 53 54
 CONSTANT             : 
-CONTINUE             : 204
+CONTINUE             : 206
 DDD                  : 
 DEFAULT              : 
 DEFER                : 
 DIVIDE               : 130
-DIVIDEEQ             : 175
-DOT                  : 107 220
-ELSE                 : 184 185
+DIVIDEEQ             : 177
+DOT                  : 107 222
+ELSE                 : 186 187
 EQEQ                 : 119
-EQUAL                : 58 69 76 77 182 199
+EQUAL                : 58 69 76 77 184 201
 FALLTHROUGH          : 
 FLOAT                : 95
-FOR                  : 187
+FOR                  : 189
 FUNC                 : 27 80 81
 GEQ                  : 124
 GG                   : 134
-GGEQ                 : 181
+GGEQ                 : 183
 GO                   : 
-GOTO                 : 207
+GOTO                 : 209
 GREAT                : 122
-IDENTIFIER           : 6 60 61 69 70 79 82 99 107 157 166 214
-IF                   : 183
+IDENTIFIER           : 6 60 61 69 70 79 82 99 107 158 161 168 216
+IF                   : 185
 IMAGINARY            : 96
-IMPORT               : 215 216
+IMPORT               : 217 218
 INTEGER              : 94
 INTERFACE            : 
 LBRACE               : 17 43
@@ -293,42 +295,43 @@ LBRACK               : 13 14 108 109
 LEQ                  : 123
 LESS                 : 121
 LL                   : 133
-LLEQ                 : 180
+LLEQ                 : 182
 LMINUS               : 
-LPAREN               : 4 33 54 64 72 87 100 110 216
-MALLOC               : 157
+LPAREN               : 4 33 54 64 72 87 100 110 218
+MALLOC               : 158
 MAP                  : 
 MINUS                : 126 141
-MINUSEQ              : 173
-MINUSMIN             : 169
+MINUSEQ              : 175
+MINUSMIN             : 171
 MOD                  : 131
-MODEQ                : 176
+MODEQ                : 178
 NOT                  : 144
 NOTEQ                : 120
 OR                   : 127
-OREQ                 : 178
+OREQ                 : 180
 OROR                 : 117
-PACKAGE              : 213
-PD                   : 158
+PACKAGE              : 215
+PD                   : 159 161
 PLUS                 : 125 140
-PLUSEQ               : 172
-PLUSPLUS             : 168
+PLUSEQ               : 174
+PLUSPLUS             : 170
 POINTER              : 25
-PRINT                : 158 159
-PS                   : 159
-RANGE                : 196
+PRINT                : 159 160
+PS                   : 160
+RANGE                : 198
 RBRACE               : 17 43
 RBRACK               : 13 14 108 109
-RETURN               : 200
-RPAREN               : 4 33 54 64 72 87 100 110 216
+RETURN               : 202
+RPAREN               : 4 33 54 64 72 87 100 110 218
 RUNE                 : 97
+SCAN                 : 161
 SELECT               : 
-SEMICOL              : 18 46 55 65 73 193 193 208 210 211 217
-STRING               : 23 98 223
+SEMICOL              : 18 46 55 65 73 195 195 210 212 213 219
+STRING               : 23 98 225
 STRUCT               : 17
 SWITCH               : 
 TIMES                : 129 142
-TIMESEQ              : 174
+TIMESEQ              : 176
 TTYPE                : 6 70
 TYPE                 : 63 64
 TYPEX                : 5
@@ -341,40 +344,40 @@ AliasDecl            : 67
 Arguments            : 106
 ArrayLength          : 13
 ArrayType            : 7
-AssignOp             : 171
-Assignment           : 163
+AssignOp             : 173
+Assignment           : 165
 BaseType             : 24
 BasicLit             : 88
-Block                : 84 152 183 185 187
+Block                : 84 152 185 187 189
 BreakStmt            : 149
-Condition            : 190 195
-ConditionBlockOpt    : 187
-ConditionOpt         : 193
+Condition            : 192 197
+ConditionBlockOpt    : 189
+ConditionOpt         : 195
 ConstDecl            : 48
 ConstSpec            : 53 55
 ConstSpecRep         : 54 55
 ContinueStmt         : 150
 Conversion           : 102
-CreateForScope       : 187
+CreateForScope       : 189
 CreateScope          : 43
 Declaration          : 51 145
 ElementType          : 13 14
-ElseOpt              : 183
-Expression           : 15 79 87 100 108 113 114 117 117 118 118 119 119 120 120 121 121 122 122 123 123 124 124 125 125 126 126 127 127 128 128 129 129 130 130 131 131 132 132 133 133 134 134 135 135 136 158 159 167 183 192 196
-ExpressionIdentListOpt : 196
-ExpressionIdentifier : 198
-ExpressionList       : 58 76 77 111 170 170 199 201
+ElseOpt              : 185
+Expression           : 15 79 87 100 108 113 114 117 117 118 118 119 119 120 120 121 121 122 122 123 123 124 124 125 125 126 126 127 127 128 128 129 129 130 130 131 131 132 132 133 133 134 134 135 135 136 159 160 169 185 194 198
+ExpressionIdentListOpt : 198
+ExpressionIdentifier : 200
+ExpressionList       : 58 76 77 111 172 172 201 203
 ExpressionListOpt    : 75
-ExpressionListPureOpt : 200
+ExpressionListPureOpt : 202
 ExpressionListTypeOpt : 110
 ExpressionOpt        : 109 109
 ExpressionRep        : 113 114
-ExpressionStmt       : 161
+ExpressionStmt       : 163
 FieldDecl            : 18
 FieldDeclRep         : 17 18
 FloatLiteral         : 90
-ForClause            : 191
-ForStmt              : 156
+ForClause            : 193
+ForStmt              : 157
 Function             : 80
 FunctionBody         : 83
 FunctionDecl         : 52
@@ -383,26 +386,26 @@ FunctionType         : 10
 GotoStmt             : 151
 IdentifierList       : 20 37 41 57 75 76
 IdentifierRep        : 60 61
-IfStmt               : 153 184
+IfStmt               : 153 186
 ImgLiteral           : 91
-ImportDecl           : 210
-ImportDeclRep        : 208 210
-ImportPath           : 219
-ImportSpec           : 215 217
-ImportSpecRep        : 216 217
-IncDecStmt           : 162
+ImportDecl           : 212
+ImportDeclRep        : 210 212
+ImportPath           : 221
+ImportSpec           : 217 219
+ImportSpecRep        : 218 219
+IncDecStmt           : 164
 Index                : 104
 IntLiteral           : 89
-Label                : 165 205 207
-LabelOpt             : 203 204
+Label                : 167 207 209
+LabelOpt             : 205 206
 LabeledStmt          : 146
 Literal              : 85
-MallocStmt           : 155
+MallocStmt           : 156
 Operand              : 101
 OperandName          : 86
-PackageClause        : 208
-PackageName          : 213 221
-PackageNameDotOpt    : 219
+PackageClause        : 210
+PackageName          : 215 223
+PackageNameDotOpt    : 221
 ParameterDecl        : 39 40 40
 ParameterDeclCommaRep : 38 39
 ParameterListOpt     : 33
@@ -410,28 +413,29 @@ Parameters           : 28 31
 ParametersList       : 34
 Pointer              : 24
 PointerType          : 9
-PrimaryExpr          : 103 104 105 106 138 168 169
+PrimaryExpr          : 103 104 105 106 138 170 171
 PrintStmt            : 154
 RangeClause          : 
 Result               : 29
 ResultOpt            : 28
 ReturnStmt           : 148
 RuneLiteral          : 92
+ScanStmt             : 155
 Selector             : 103
-ShortVarDecl         : 164
+ShortVarDecl         : 166
 Signature            : 27 81 83
-SimpleStmt           : 147 193 193
+SimpleStmt           : 147 195 195
 Slice                : 105
 Source               : 1
-Statement            : 46 165
+Statement            : 46 167
 StatementList        : 43
 StatementRep         : 45 46
 StringLiteral        : 93
 StructType           : 8
 Tag                  : 21
 TagOpt               : 20
-TopLevelDecl         : 211
-TopLevelDeclRep      : 208 211
+TopLevelDecl         : 213
+TopLevelDeclRep      : 210 213
 Type                 : 4 11 16 20 26 32 36 37 41 42 69 70 75 100
 TypeDecl             : 49
 TypeDef              : 68
@@ -446,8 +450,8 @@ UnaryOp              : 139
 VarDecl              : 50
 VarSpec              : 71 73
 VarSpecRep           : 72 73
-assign_op            : 170
-epsilon              : 12 19 22 30 35 44 47 56 59 62 66 74 78 112 115 137 160 186 188 189 194 197 202 206 209 212 218 222
+assign_op            : 172
+epsilon              : 12 19 22 30 35 44 47 56 59 62 66 74 78 112 115 137 162 188 190 191 196 199 204 208 211 214 220 224
 start                : 0
 
 Parsing method: LALR
@@ -456,8 +460,8 @@ state 0
 
     (0) S' -> . start
     (1) start -> . Source
-    (208) Source -> . PackageClause SEMICOL ImportDeclRep TopLevelDeclRep
-    (213) PackageClause -> . PACKAGE PackageName
+    (210) Source -> . PackageClause SEMICOL ImportDeclRep TopLevelDeclRep
+    (215) PackageClause -> . PACKAGE PackageName
 
     PACKAGE         shift and go to state 2
 
@@ -467,15 +471,15 @@ state 0
 
 state 1
 
-    (208) Source -> PackageClause . SEMICOL ImportDeclRep TopLevelDeclRep
+    (210) Source -> PackageClause . SEMICOL ImportDeclRep TopLevelDeclRep
 
     SEMICOL         shift and go to state 5
 
 
 state 2
 
-    (213) PackageClause -> PACKAGE . PackageName
-    (214) PackageName -> . IDENTIFIER
+    (215) PackageClause -> PACKAGE . PackageName
+    (216) PackageName -> . IDENTIFIER
 
     IDENTIFIER      shift and go to state 7
 
@@ -496,64 +500,64 @@ state 4
 
 state 5
 
-    (208) Source -> PackageClause SEMICOL . ImportDeclRep TopLevelDeclRep
-    (209) ImportDeclRep -> . epsilon
-    (210) ImportDeclRep -> . ImportDeclRep ImportDecl SEMICOL
-    (224) epsilon -> .
+    (210) Source -> PackageClause SEMICOL . ImportDeclRep TopLevelDeclRep
+    (211) ImportDeclRep -> . epsilon
+    (212) ImportDeclRep -> . ImportDeclRep ImportDecl SEMICOL
+    (226) epsilon -> .
 
-    IMPORT          reduce using rule 224 (epsilon -> .)
-    FUNC            reduce using rule 224 (epsilon -> .)
-    CONST           reduce using rule 224 (epsilon -> .)
-    TYPE            reduce using rule 224 (epsilon -> .)
-    VAR             reduce using rule 224 (epsilon -> .)
-    $end            reduce using rule 224 (epsilon -> .)
+    IMPORT          reduce using rule 226 (epsilon -> .)
+    FUNC            reduce using rule 226 (epsilon -> .)
+    CONST           reduce using rule 226 (epsilon -> .)
+    TYPE            reduce using rule 226 (epsilon -> .)
+    VAR             reduce using rule 226 (epsilon -> .)
+    $end            reduce using rule 226 (epsilon -> .)
 
     ImportDeclRep                  shift and go to state 9
     epsilon                        shift and go to state 8
 
 state 6
 
-    (213) PackageClause -> PACKAGE PackageName .
+    (215) PackageClause -> PACKAGE PackageName .
 
-    SEMICOL         reduce using rule 213 (PackageClause -> PACKAGE PackageName .)
+    SEMICOL         reduce using rule 215 (PackageClause -> PACKAGE PackageName .)
 
 
 state 7
 
-    (214) PackageName -> IDENTIFIER .
+    (216) PackageName -> IDENTIFIER .
 
-    STRING          reduce using rule 214 (PackageName -> IDENTIFIER .)
-    SEMICOL         reduce using rule 214 (PackageName -> IDENTIFIER .)
+    STRING          reduce using rule 216 (PackageName -> IDENTIFIER .)
+    SEMICOL         reduce using rule 216 (PackageName -> IDENTIFIER .)
 
 
 state 8
 
-    (209) ImportDeclRep -> epsilon .
+    (211) ImportDeclRep -> epsilon .
 
-    IMPORT          reduce using rule 209 (ImportDeclRep -> epsilon .)
-    FUNC            reduce using rule 209 (ImportDeclRep -> epsilon .)
-    CONST           reduce using rule 209 (ImportDeclRep -> epsilon .)
-    TYPE            reduce using rule 209 (ImportDeclRep -> epsilon .)
-    VAR             reduce using rule 209 (ImportDeclRep -> epsilon .)
-    $end            reduce using rule 209 (ImportDeclRep -> epsilon .)
+    IMPORT          reduce using rule 211 (ImportDeclRep -> epsilon .)
+    FUNC            reduce using rule 211 (ImportDeclRep -> epsilon .)
+    CONST           reduce using rule 211 (ImportDeclRep -> epsilon .)
+    TYPE            reduce using rule 211 (ImportDeclRep -> epsilon .)
+    VAR             reduce using rule 211 (ImportDeclRep -> epsilon .)
+    $end            reduce using rule 211 (ImportDeclRep -> epsilon .)
 
 
 state 9
 
-    (208) Source -> PackageClause SEMICOL ImportDeclRep . TopLevelDeclRep
-    (210) ImportDeclRep -> ImportDeclRep . ImportDecl SEMICOL
-    (211) TopLevelDeclRep -> . TopLevelDeclRep TopLevelDecl SEMICOL
-    (212) TopLevelDeclRep -> . epsilon
-    (215) ImportDecl -> . IMPORT ImportSpec
-    (216) ImportDecl -> . IMPORT LPAREN ImportSpecRep RPAREN
-    (224) epsilon -> .
+    (210) Source -> PackageClause SEMICOL ImportDeclRep . TopLevelDeclRep
+    (212) ImportDeclRep -> ImportDeclRep . ImportDecl SEMICOL
+    (213) TopLevelDeclRep -> . TopLevelDeclRep TopLevelDecl SEMICOL
+    (214) TopLevelDeclRep -> . epsilon
+    (217) ImportDecl -> . IMPORT ImportSpec
+    (218) ImportDecl -> . IMPORT LPAREN ImportSpecRep RPAREN
+    (226) epsilon -> .
 
     IMPORT          shift and go to state 13
-    FUNC            reduce using rule 224 (epsilon -> .)
-    CONST           reduce using rule 224 (epsilon -> .)
-    TYPE            reduce using rule 224 (epsilon -> .)
-    VAR             reduce using rule 224 (epsilon -> .)
-    $end            reduce using rule 224 (epsilon -> .)
+    FUNC            reduce using rule 226 (epsilon -> .)
+    CONST           reduce using rule 226 (epsilon -> .)
+    TYPE            reduce using rule 226 (epsilon -> .)
+    VAR             reduce using rule 226 (epsilon -> .)
+    $end            reduce using rule 226 (epsilon -> .)
 
     TopLevelDeclRep                shift and go to state 10
     epsilon                        shift and go to state 11
@@ -561,8 +565,8 @@ state 9
 
 state 10
 
-    (208) Source -> PackageClause SEMICOL ImportDeclRep TopLevelDeclRep .
-    (211) TopLevelDeclRep -> TopLevelDeclRep . TopLevelDecl SEMICOL
+    (210) Source -> PackageClause SEMICOL ImportDeclRep TopLevelDeclRep .
+    (213) TopLevelDeclRep -> TopLevelDeclRep . TopLevelDecl SEMICOL
     (51) TopLevelDecl -> . Declaration
     (52) TopLevelDecl -> . FunctionDecl
     (48) Declaration -> . ConstDecl
@@ -577,7 +581,7 @@ state 10
     (71) VarDecl -> . VAR VarSpec
     (72) VarDecl -> . VAR LPAREN VarSpecRep RPAREN
 
-    $end            reduce using rule 208 (Source -> PackageClause SEMICOL ImportDeclRep TopLevelDeclRep .)
+    $end            reduce using rule 210 (Source -> PackageClause SEMICOL ImportDeclRep TopLevelDeclRep .)
     FUNC            shift and go to state 20
     CONST           shift and go to state 14
     TYPE            shift and go to state 23
@@ -592,37 +596,37 @@ state 10
 
 state 11
 
-    (212) TopLevelDeclRep -> epsilon .
+    (214) TopLevelDeclRep -> epsilon .
 
-    FUNC            reduce using rule 212 (TopLevelDeclRep -> epsilon .)
-    CONST           reduce using rule 212 (TopLevelDeclRep -> epsilon .)
-    TYPE            reduce using rule 212 (TopLevelDeclRep -> epsilon .)
-    VAR             reduce using rule 212 (TopLevelDeclRep -> epsilon .)
-    $end            reduce using rule 212 (TopLevelDeclRep -> epsilon .)
+    FUNC            reduce using rule 214 (TopLevelDeclRep -> epsilon .)
+    CONST           reduce using rule 214 (TopLevelDeclRep -> epsilon .)
+    TYPE            reduce using rule 214 (TopLevelDeclRep -> epsilon .)
+    VAR             reduce using rule 214 (TopLevelDeclRep -> epsilon .)
+    $end            reduce using rule 214 (TopLevelDeclRep -> epsilon .)
 
 
 state 12
 
-    (210) ImportDeclRep -> ImportDeclRep ImportDecl . SEMICOL
+    (212) ImportDeclRep -> ImportDeclRep ImportDecl . SEMICOL
 
     SEMICOL         shift and go to state 24
 
 
 state 13
 
-    (215) ImportDecl -> IMPORT . ImportSpec
-    (216) ImportDecl -> IMPORT . LPAREN ImportSpecRep RPAREN
-    (219) ImportSpec -> . PackageNameDotOpt ImportPath
-    (220) PackageNameDotOpt -> . DOT
-    (221) PackageNameDotOpt -> . PackageName
-    (222) PackageNameDotOpt -> . epsilon
-    (214) PackageName -> . IDENTIFIER
-    (224) epsilon -> .
+    (217) ImportDecl -> IMPORT . ImportSpec
+    (218) ImportDecl -> IMPORT . LPAREN ImportSpecRep RPAREN
+    (221) ImportSpec -> . PackageNameDotOpt ImportPath
+    (222) PackageNameDotOpt -> . DOT
+    (223) PackageNameDotOpt -> . PackageName
+    (224) PackageNameDotOpt -> . epsilon
+    (216) PackageName -> . IDENTIFIER
+    (226) epsilon -> .
 
     LPAREN          shift and go to state 25
     DOT             shift and go to state 30
     IDENTIFIER      shift and go to state 7
-    STRING          reduce using rule 224 (epsilon -> .)
+    STRING          reduce using rule 226 (epsilon -> .)
 
     ImportSpec                     shift and go to state 26
     epsilon                        shift and go to state 27
@@ -651,7 +655,7 @@ state 15
 
 state 16
 
-    (211) TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl . SEMICOL
+    (213) TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl . SEMICOL
 
     SEMICOL         shift and go to state 35
 
@@ -727,56 +731,56 @@ state 23
 
 state 24
 
-    (210) ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .
+    (212) ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .
 
-    IMPORT          reduce using rule 210 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
-    FUNC            reduce using rule 210 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
-    CONST           reduce using rule 210 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
-    TYPE            reduce using rule 210 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
-    VAR             reduce using rule 210 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
-    $end            reduce using rule 210 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
+    IMPORT          reduce using rule 212 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
+    FUNC            reduce using rule 212 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
+    CONST           reduce using rule 212 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
+    TYPE            reduce using rule 212 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
+    VAR             reduce using rule 212 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
+    $end            reduce using rule 212 (ImportDeclRep -> ImportDeclRep ImportDecl SEMICOL .)
 
 
 state 25
 
-    (216) ImportDecl -> IMPORT LPAREN . ImportSpecRep RPAREN
-    (217) ImportSpecRep -> . ImportSpecRep ImportSpec SEMICOL
-    (218) ImportSpecRep -> . epsilon
-    (224) epsilon -> .
+    (218) ImportDecl -> IMPORT LPAREN . ImportSpecRep RPAREN
+    (219) ImportSpecRep -> . ImportSpecRep ImportSpec SEMICOL
+    (220) ImportSpecRep -> . epsilon
+    (226) epsilon -> .
 
-    RPAREN          reduce using rule 224 (epsilon -> .)
-    DOT             reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      reduce using rule 224 (epsilon -> .)
-    STRING          reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
+    DOT             reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      reduce using rule 226 (epsilon -> .)
+    STRING          reduce using rule 226 (epsilon -> .)
 
     epsilon                        shift and go to state 47
     ImportSpecRep                  shift and go to state 48
 
 state 26
 
-    (215) ImportDecl -> IMPORT ImportSpec .
+    (217) ImportDecl -> IMPORT ImportSpec .
 
-    SEMICOL         reduce using rule 215 (ImportDecl -> IMPORT ImportSpec .)
+    SEMICOL         reduce using rule 217 (ImportDecl -> IMPORT ImportSpec .)
 
 
 state 27
 
-    (222) PackageNameDotOpt -> epsilon .
+    (224) PackageNameDotOpt -> epsilon .
 
-    STRING          reduce using rule 222 (PackageNameDotOpt -> epsilon .)
+    STRING          reduce using rule 224 (PackageNameDotOpt -> epsilon .)
 
 
 state 28
 
-    (221) PackageNameDotOpt -> PackageName .
+    (223) PackageNameDotOpt -> PackageName .
 
-    STRING          reduce using rule 221 (PackageNameDotOpt -> PackageName .)
+    STRING          reduce using rule 223 (PackageNameDotOpt -> PackageName .)
 
 
 state 29
 
-    (219) ImportSpec -> PackageNameDotOpt . ImportPath
-    (223) ImportPath -> . STRING
+    (221) ImportSpec -> PackageNameDotOpt . ImportPath
+    (225) ImportPath -> . STRING
 
     STRING          shift and go to state 50
 
@@ -784,9 +788,9 @@ state 29
 
 state 30
 
-    (220) PackageNameDotOpt -> DOT .
+    (222) PackageNameDotOpt -> DOT .
 
-    STRING          reduce using rule 220 (PackageNameDotOpt -> DOT .)
+    STRING          reduce using rule 222 (PackageNameDotOpt -> DOT .)
 
 
 state 31
@@ -801,10 +805,10 @@ state 32
     (54) ConstDecl -> CONST LPAREN . ConstSpecRep RPAREN
     (55) ConstSpecRep -> . ConstSpecRep ConstSpec SEMICOL
     (56) ConstSpecRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    RPAREN          reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      reduce using rule 226 (epsilon -> .)
 
     ConstSpecRep                   shift and go to state 51
     epsilon                        shift and go to state 52
@@ -816,7 +820,7 @@ state 33
     (59) TypeExprListOpt -> . epsilon
     (11) TypeOpt -> . Type
     (12) TypeOpt -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
     (2) Type -> . TypeName
     (3) Type -> . TypeLit
     (4) Type -> . LPAREN Type RPAREN
@@ -833,8 +837,8 @@ state 33
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    EQUAL           reduce using rule 224 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    EQUAL           reduce using rule 226 (epsilon -> .)
     LPAREN          shift and go to state 62
     TYPEX           shift and go to state 58
     TTYPE           shift and go to state 63
@@ -860,31 +864,31 @@ state 34
     (60) IdentifierList -> IDENTIFIER . IdentifierRep
     (61) IdentifierRep -> . IdentifierRep COMMA IDENTIFIER
     (62) IdentifierRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    COMMA           reduce using rule 224 (epsilon -> .)
-    LPAREN          reduce using rule 224 (epsilon -> .)
-    TYPEX           reduce using rule 224 (epsilon -> .)
-    TTYPE           reduce using rule 224 (epsilon -> .)
-    LBRACK          reduce using rule 224 (epsilon -> .)
-    STRUCT          reduce using rule 224 (epsilon -> .)
-    FUNC            reduce using rule 224 (epsilon -> .)
-    POINTER         reduce using rule 224 (epsilon -> .)
-    EQUAL           reduce using rule 224 (epsilon -> .)
-    SEMICOL         reduce using rule 224 (epsilon -> .)
+    COMMA           reduce using rule 226 (epsilon -> .)
+    LPAREN          reduce using rule 226 (epsilon -> .)
+    TYPEX           reduce using rule 226 (epsilon -> .)
+    TTYPE           reduce using rule 226 (epsilon -> .)
+    LBRACK          reduce using rule 226 (epsilon -> .)
+    STRUCT          reduce using rule 226 (epsilon -> .)
+    FUNC            reduce using rule 226 (epsilon -> .)
+    POINTER         reduce using rule 226 (epsilon -> .)
+    EQUAL           reduce using rule 226 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
 
     epsilon                        shift and go to state 71
     IdentifierRep                  shift and go to state 72
 
 state 35
 
-    (211) TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .
+    (213) TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .
 
-    FUNC            reduce using rule 211 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
-    CONST           reduce using rule 211 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
-    TYPE            reduce using rule 211 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
-    VAR             reduce using rule 211 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
-    $end            reduce using rule 211 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
+    FUNC            reduce using rule 213 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
+    CONST           reduce using rule 213 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
+    TYPE            reduce using rule 213 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
+    VAR             reduce using rule 213 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
+    $end            reduce using rule 213 (TopLevelDeclRep -> TopLevelDeclRep TopLevelDecl SEMICOL .)
 
 
 state 36
@@ -920,10 +924,10 @@ state 39
     (72) VarDecl -> VAR LPAREN . VarSpecRep RPAREN
     (73) VarSpecRep -> . VarSpecRep VarSpec SEMICOL
     (74) VarSpecRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    RPAREN          reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      reduce using rule 226 (epsilon -> .)
 
     VarSpecRep                     shift and go to state 77
     epsilon                        shift and go to state 78
@@ -992,11 +996,11 @@ state 44
     (64) TypeDecl -> TYPE LPAREN . TypeSpecRep RPAREN
     (65) TypeSpecRep -> . TypeSpecRep TypeSpec SEMICOL
     (66) TypeSpecRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    RPAREN          reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      reduce using rule 224 (epsilon -> .)
-    TTYPE           reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      reduce using rule 226 (epsilon -> .)
+    TTYPE           reduce using rule 226 (epsilon -> .)
 
     TypeSpecRep                    shift and go to state 82
     epsilon                        shift and go to state 83
@@ -1017,29 +1021,29 @@ state 46
 
 state 47
 
-    (218) ImportSpecRep -> epsilon .
+    (220) ImportSpecRep -> epsilon .
 
-    RPAREN          reduce using rule 218 (ImportSpecRep -> epsilon .)
-    DOT             reduce using rule 218 (ImportSpecRep -> epsilon .)
-    IDENTIFIER      reduce using rule 218 (ImportSpecRep -> epsilon .)
-    STRING          reduce using rule 218 (ImportSpecRep -> epsilon .)
+    RPAREN          reduce using rule 220 (ImportSpecRep -> epsilon .)
+    DOT             reduce using rule 220 (ImportSpecRep -> epsilon .)
+    IDENTIFIER      reduce using rule 220 (ImportSpecRep -> epsilon .)
+    STRING          reduce using rule 220 (ImportSpecRep -> epsilon .)
 
 
 state 48
 
-    (216) ImportDecl -> IMPORT LPAREN ImportSpecRep . RPAREN
-    (217) ImportSpecRep -> ImportSpecRep . ImportSpec SEMICOL
-    (219) ImportSpec -> . PackageNameDotOpt ImportPath
-    (220) PackageNameDotOpt -> . DOT
-    (221) PackageNameDotOpt -> . PackageName
-    (222) PackageNameDotOpt -> . epsilon
-    (214) PackageName -> . IDENTIFIER
-    (224) epsilon -> .
+    (218) ImportDecl -> IMPORT LPAREN ImportSpecRep . RPAREN
+    (219) ImportSpecRep -> ImportSpecRep . ImportSpec SEMICOL
+    (221) ImportSpec -> . PackageNameDotOpt ImportPath
+    (222) PackageNameDotOpt -> . DOT
+    (223) PackageNameDotOpt -> . PackageName
+    (224) PackageNameDotOpt -> . epsilon
+    (216) PackageName -> . IDENTIFIER
+    (226) epsilon -> .
 
     RPAREN          shift and go to state 85
     DOT             shift and go to state 30
     IDENTIFIER      shift and go to state 7
-    STRING          reduce using rule 224 (epsilon -> .)
+    STRING          reduce using rule 226 (epsilon -> .)
 
     ImportSpec                     shift and go to state 86
     epsilon                        shift and go to state 27
@@ -1048,16 +1052,16 @@ state 48
 
 state 49
 
-    (219) ImportSpec -> PackageNameDotOpt ImportPath .
+    (221) ImportSpec -> PackageNameDotOpt ImportPath .
 
-    SEMICOL         reduce using rule 219 (ImportSpec -> PackageNameDotOpt ImportPath .)
+    SEMICOL         reduce using rule 221 (ImportSpec -> PackageNameDotOpt ImportPath .)
 
 
 state 50
 
-    (223) ImportPath -> STRING .
+    (225) ImportPath -> STRING .
 
-    SEMICOL         reduce using rule 223 (ImportPath -> STRING .)
+    SEMICOL         reduce using rule 225 (ImportPath -> STRING .)
 
 
 state 51
@@ -1475,7 +1479,7 @@ state 74
     (30) ResultOpt -> . epsilon
     (31) Result -> . Parameters
     (32) Result -> . Type
-    (224) epsilon -> .
+    (226) epsilon -> .
     (33) Parameters -> . LPAREN ParameterListOpt RPAREN
     (2) Type -> . TypeName
     (3) Type -> . TypeLit
@@ -1494,12 +1498,12 @@ state 74
     (25) Pointer -> . POINTER
 
   ! shift/reduce conflict for LPAREN resolved as shift
-    EQUAL           reduce using rule 224 (epsilon -> .)
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    RPAREN          reduce using rule 224 (epsilon -> .)
-    LBRACE          reduce using rule 224 (epsilon -> .)
-    COMMA           reduce using rule 224 (epsilon -> .)
-    STRING          reduce using rule 224 (epsilon -> .)
+    EQUAL           reduce using rule 226 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
+    COMMA           reduce using rule 226 (epsilon -> .)
+    STRING          reduce using rule 226 (epsilon -> .)
     LPAREN          shift and go to state 130
     TYPEX           shift and go to state 58
     TTYPE           shift and go to state 63
@@ -1508,7 +1512,7 @@ state 74
     FUNC            shift and go to state 53
     POINTER         shift and go to state 59
 
-  ! LPAREN          [ reduce using rule 224 (epsilon -> .) ]
+  ! LPAREN          [ reduce using rule 226 (epsilon -> .) ]
 
     StructType                     shift and go to state 60
     Parameters                     shift and go to state 126
@@ -1530,10 +1534,10 @@ state 75
     (84) FunctionBody -> . Block
     (43) Block -> . CreateScope LBRACE StatementList RBRACE
     (44) CreateScope -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
     SEMICOL         reduce using rule 81 (FunctionDecl -> FUNC FunctionName Signature .)
-    LBRACE          reduce using rule 224 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
 
     FunctionBody                   shift and go to state 132
     epsilon                        shift and go to state 133
@@ -1548,7 +1552,7 @@ state 76
     (36) ParametersList -> . Type
     (37) ParametersList -> . IdentifierList Type
     (38) ParametersList -> . ParameterDeclCommaRep
-    (224) epsilon -> .
+    (226) epsilon -> .
     (2) Type -> . TypeName
     (3) Type -> . TypeLit
     (4) Type -> . LPAREN Type RPAREN
@@ -1570,7 +1574,7 @@ state 76
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    RPAREN          reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
     LPAREN          shift and go to state 62
     IDENTIFIER      shift and go to state 34
     TYPEX           shift and go to state 58
@@ -1734,10 +1738,10 @@ state 80
     (75) VarSpec -> IdentifierList Type . ExpressionListOpt
     (77) ExpressionListOpt -> . EQUAL ExpressionList
     (78) ExpressionListOpt -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
     EQUAL           shift and go to state 147
-    SEMICOL         reduce using rule 224 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
 
     ExpressionListOpt              shift and go to state 149
     epsilon                        shift and go to state 148
@@ -1842,14 +1846,14 @@ state 84
 
 state 85
 
-    (216) ImportDecl -> IMPORT LPAREN ImportSpecRep RPAREN .
+    (218) ImportDecl -> IMPORT LPAREN ImportSpecRep RPAREN .
 
-    SEMICOL         reduce using rule 216 (ImportDecl -> IMPORT LPAREN ImportSpecRep RPAREN .)
+    SEMICOL         reduce using rule 218 (ImportDecl -> IMPORT LPAREN ImportSpecRep RPAREN .)
 
 
 state 86
 
-    (217) ImportSpecRep -> ImportSpecRep ImportSpec . SEMICOL
+    (219) ImportSpecRep -> ImportSpecRep ImportSpec . SEMICOL
 
     SEMICOL         shift and go to state 154
 
@@ -2018,10 +2022,10 @@ state 93
     (17) StructType -> STRUCT LBRACE . FieldDeclRep RBRACE
     (18) FieldDeclRep -> . FieldDeclRep FieldDecl SEMICOL
     (19) FieldDeclRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    RBRACE          reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      reduce using rule 224 (epsilon -> .)
+    RBRACE          reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      reduce using rule 226 (epsilon -> .)
 
     FieldDeclRep                   shift and go to state 158
     epsilon                        shift and go to state 159
@@ -2173,7 +2177,6 @@ state 98
     GG              reduce using rule 93 (BasicLit -> StringLiteral .)
     AMPCAR          reduce using rule 93 (BasicLit -> StringLiteral .)
     SEMICOL         reduce using rule 93 (BasicLit -> StringLiteral .)
-    LBRACE          reduce using rule 93 (BasicLit -> StringLiteral .)
     RBRACK          reduce using rule 93 (BasicLit -> StringLiteral .)
     COMMA           reduce using rule 93 (BasicLit -> StringLiteral .)
     RPAREN          reduce using rule 93 (BasicLit -> StringLiteral .)
@@ -2189,6 +2192,7 @@ state 98
     LLEQ            reduce using rule 93 (BasicLit -> StringLiteral .)
     GGEQ            reduce using rule 93 (BasicLit -> StringLiteral .)
     EQUAL           reduce using rule 93 (BasicLit -> StringLiteral .)
+    LBRACE          reduce using rule 93 (BasicLit -> StringLiteral .)
     PLUSPLUS        reduce using rule 93 (BasicLit -> StringLiteral .)
     MINUSMIN        reduce using rule 93 (BasicLit -> StringLiteral .)
 
@@ -2267,7 +2271,6 @@ state 100
     GG              reduce using rule 90 (BasicLit -> FloatLiteral .)
     AMPCAR          reduce using rule 90 (BasicLit -> FloatLiteral .)
     SEMICOL         reduce using rule 90 (BasicLit -> FloatLiteral .)
-    LBRACE          reduce using rule 90 (BasicLit -> FloatLiteral .)
     RBRACK          reduce using rule 90 (BasicLit -> FloatLiteral .)
     COMMA           reduce using rule 90 (BasicLit -> FloatLiteral .)
     RPAREN          reduce using rule 90 (BasicLit -> FloatLiteral .)
@@ -2283,6 +2286,7 @@ state 100
     LLEQ            reduce using rule 90 (BasicLit -> FloatLiteral .)
     GGEQ            reduce using rule 90 (BasicLit -> FloatLiteral .)
     EQUAL           reduce using rule 90 (BasicLit -> FloatLiteral .)
+    LBRACE          reduce using rule 90 (BasicLit -> FloatLiteral .)
     PLUSPLUS        reduce using rule 90 (BasicLit -> FloatLiteral .)
     MINUSMIN        reduce using rule 90 (BasicLit -> FloatLiteral .)
 
@@ -2345,10 +2349,10 @@ state 103
     GG              reduce using rule 98 (StringLiteral -> STRING .)
     AMPCAR          reduce using rule 98 (StringLiteral -> STRING .)
     RBRACK          reduce using rule 98 (StringLiteral -> STRING .)
-    SEMICOL         reduce using rule 98 (StringLiteral -> STRING .)
-    RPAREN          reduce using rule 98 (StringLiteral -> STRING .)
+    PLUSPLUS        reduce using rule 98 (StringLiteral -> STRING .)
+    MINUSMIN        reduce using rule 98 (StringLiteral -> STRING .)
     COMMA           reduce using rule 98 (StringLiteral -> STRING .)
-    COLON           reduce using rule 98 (StringLiteral -> STRING .)
+    SEMICOL         reduce using rule 98 (StringLiteral -> STRING .)
     PLUSEQ          reduce using rule 98 (StringLiteral -> STRING .)
     MINUSEQ         reduce using rule 98 (StringLiteral -> STRING .)
     TIMESEQ         reduce using rule 98 (StringLiteral -> STRING .)
@@ -2360,9 +2364,9 @@ state 103
     LLEQ            reduce using rule 98 (StringLiteral -> STRING .)
     GGEQ            reduce using rule 98 (StringLiteral -> STRING .)
     EQUAL           reduce using rule 98 (StringLiteral -> STRING .)
+    RPAREN          reduce using rule 98 (StringLiteral -> STRING .)
+    COLON           reduce using rule 98 (StringLiteral -> STRING .)
     LBRACE          reduce using rule 98 (StringLiteral -> STRING .)
-    PLUSPLUS        reduce using rule 98 (StringLiteral -> STRING .)
-    MINUSMIN        reduce using rule 98 (StringLiteral -> STRING .)
 
 
 state 104
@@ -2600,8 +2604,6 @@ state 109
 
     (94) IntLiteral -> INTEGER .
 
-    PLUSPLUS        reduce using rule 94 (IntLiteral -> INTEGER .)
-    MINUSMIN        reduce using rule 94 (IntLiteral -> INTEGER .)
     DOT             reduce using rule 94 (IntLiteral -> INTEGER .)
     LBRACK          reduce using rule 94 (IntLiteral -> INTEGER .)
     LPAREN          reduce using rule 94 (IntLiteral -> INTEGER .)
@@ -2624,8 +2626,11 @@ state 109
     LL              reduce using rule 94 (IntLiteral -> INTEGER .)
     GG              reduce using rule 94 (IntLiteral -> INTEGER .)
     AMPCAR          reduce using rule 94 (IntLiteral -> INTEGER .)
+    RBRACK          reduce using rule 94 (IntLiteral -> INTEGER .)
     COMMA           reduce using rule 94 (IntLiteral -> INTEGER .)
     SEMICOL         reduce using rule 94 (IntLiteral -> INTEGER .)
+    RPAREN          reduce using rule 94 (IntLiteral -> INTEGER .)
+    COLON           reduce using rule 94 (IntLiteral -> INTEGER .)
     PLUSEQ          reduce using rule 94 (IntLiteral -> INTEGER .)
     MINUSEQ         reduce using rule 94 (IntLiteral -> INTEGER .)
     TIMESEQ         reduce using rule 94 (IntLiteral -> INTEGER .)
@@ -2637,10 +2642,9 @@ state 109
     LLEQ            reduce using rule 94 (IntLiteral -> INTEGER .)
     GGEQ            reduce using rule 94 (IntLiteral -> INTEGER .)
     EQUAL           reduce using rule 94 (IntLiteral -> INTEGER .)
-    RBRACK          reduce using rule 94 (IntLiteral -> INTEGER .)
-    RPAREN          reduce using rule 94 (IntLiteral -> INTEGER .)
-    COLON           reduce using rule 94 (IntLiteral -> INTEGER .)
     LBRACE          reduce using rule 94 (IntLiteral -> INTEGER .)
+    PLUSPLUS        reduce using rule 94 (IntLiteral -> INTEGER .)
+    MINUSMIN        reduce using rule 94 (IntLiteral -> INTEGER .)
 
 
 state 110
@@ -2716,9 +2720,10 @@ state 111
     LL              reduce using rule 99 (OperandName -> IDENTIFIER .)
     GG              reduce using rule 99 (OperandName -> IDENTIFIER .)
     AMPCAR          reduce using rule 99 (OperandName -> IDENTIFIER .)
-    SEMICOL         reduce using rule 99 (OperandName -> IDENTIFIER .)
+    LBRACE          reduce using rule 99 (OperandName -> IDENTIFIER .)
     RBRACK          reduce using rule 99 (OperandName -> IDENTIFIER .)
     COMMA           reduce using rule 99 (OperandName -> IDENTIFIER .)
+    SEMICOL         reduce using rule 99 (OperandName -> IDENTIFIER .)
     RPAREN          reduce using rule 99 (OperandName -> IDENTIFIER .)
     COLON           reduce using rule 99 (OperandName -> IDENTIFIER .)
     PLUSEQ          reduce using rule 99 (OperandName -> IDENTIFIER .)
@@ -2732,7 +2737,6 @@ state 111
     LLEQ            reduce using rule 99 (OperandName -> IDENTIFIER .)
     GGEQ            reduce using rule 99 (OperandName -> IDENTIFIER .)
     EQUAL           reduce using rule 99 (OperandName -> IDENTIFIER .)
-    LBRACE          reduce using rule 99 (OperandName -> IDENTIFIER .)
 
 
 state 112
@@ -2762,7 +2766,6 @@ state 112
     GG              reduce using rule 89 (BasicLit -> IntLiteral .)
     AMPCAR          reduce using rule 89 (BasicLit -> IntLiteral .)
     SEMICOL         reduce using rule 89 (BasicLit -> IntLiteral .)
-    LBRACE          reduce using rule 89 (BasicLit -> IntLiteral .)
     RBRACK          reduce using rule 89 (BasicLit -> IntLiteral .)
     COMMA           reduce using rule 89 (BasicLit -> IntLiteral .)
     RPAREN          reduce using rule 89 (BasicLit -> IntLiteral .)
@@ -2778,6 +2781,7 @@ state 112
     LLEQ            reduce using rule 89 (BasicLit -> IntLiteral .)
     GGEQ            reduce using rule 89 (BasicLit -> IntLiteral .)
     EQUAL           reduce using rule 89 (BasicLit -> IntLiteral .)
+    LBRACE          reduce using rule 89 (BasicLit -> IntLiteral .)
     PLUSPLUS        reduce using rule 89 (BasicLit -> IntLiteral .)
     MINUSMIN        reduce using rule 89 (BasicLit -> IntLiteral .)
 
@@ -2809,7 +2813,6 @@ state 113
     GG              reduce using rule 91 (BasicLit -> ImgLiteral .)
     AMPCAR          reduce using rule 91 (BasicLit -> ImgLiteral .)
     SEMICOL         reduce using rule 91 (BasicLit -> ImgLiteral .)
-    LBRACE          reduce using rule 91 (BasicLit -> ImgLiteral .)
     RBRACK          reduce using rule 91 (BasicLit -> ImgLiteral .)
     COMMA           reduce using rule 91 (BasicLit -> ImgLiteral .)
     RPAREN          reduce using rule 91 (BasicLit -> ImgLiteral .)
@@ -2825,6 +2828,7 @@ state 113
     LLEQ            reduce using rule 91 (BasicLit -> ImgLiteral .)
     GGEQ            reduce using rule 91 (BasicLit -> ImgLiteral .)
     EQUAL           reduce using rule 91 (BasicLit -> ImgLiteral .)
+    LBRACE          reduce using rule 91 (BasicLit -> ImgLiteral .)
     PLUSPLUS        reduce using rule 91 (BasicLit -> ImgLiteral .)
     MINUSMIN        reduce using rule 91 (BasicLit -> ImgLiteral .)
 
@@ -2936,7 +2940,6 @@ state 116
     GG              reduce using rule 92 (BasicLit -> RuneLiteral .)
     AMPCAR          reduce using rule 92 (BasicLit -> RuneLiteral .)
     SEMICOL         reduce using rule 92 (BasicLit -> RuneLiteral .)
-    LBRACE          reduce using rule 92 (BasicLit -> RuneLiteral .)
     RBRACK          reduce using rule 92 (BasicLit -> RuneLiteral .)
     COMMA           reduce using rule 92 (BasicLit -> RuneLiteral .)
     RPAREN          reduce using rule 92 (BasicLit -> RuneLiteral .)
@@ -2952,6 +2955,7 @@ state 116
     LLEQ            reduce using rule 92 (BasicLit -> RuneLiteral .)
     GGEQ            reduce using rule 92 (BasicLit -> RuneLiteral .)
     EQUAL           reduce using rule 92 (BasicLit -> RuneLiteral .)
+    LBRACE          reduce using rule 92 (BasicLit -> RuneLiteral .)
     PLUSPLUS        reduce using rule 92 (BasicLit -> RuneLiteral .)
     MINUSMIN        reduce using rule 92 (BasicLit -> RuneLiteral .)
 
@@ -3389,7 +3393,7 @@ state 130
     (36) ParametersList -> . Type
     (37) ParametersList -> . IdentifierList Type
     (38) ParametersList -> . ParameterDeclCommaRep
-    (224) epsilon -> .
+    (226) epsilon -> .
     (5) TypeName -> . TYPEX
     (6) TypeName -> . TTYPE IDENTIFIER
     (7) TypeLit -> . ArrayType
@@ -3409,7 +3413,7 @@ state 130
     (25) Pointer -> . POINTER
 
     LPAREN          shift and go to state 62
-    RPAREN          reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
     TYPEX           shift and go to state 58
     TTYPE           shift and go to state 63
     IDENTIFIER      shift and go to state 34
@@ -3602,7 +3606,7 @@ state 146
     (135) Expression -> Expression . AMPCAR Expression
     (114) ExpressionRep -> . ExpressionRep COMMA Expression
     (115) ExpressionRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
     OROR            shift and go to state 168
     AMPAMP          shift and go to state 183
@@ -3623,10 +3627,10 @@ state 146
     LL              shift and go to state 175
     GG              shift and go to state 179
     AMPCAR          shift and go to state 172
-    COMMA           reduce using rule 224 (epsilon -> .)
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    RPAREN          reduce using rule 224 (epsilon -> .)
-    LBRACE          reduce using rule 224 (epsilon -> .)
+    COMMA           reduce using rule 226 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
 
     epsilon                        shift and go to state 203
     ExpressionRep                  shift and go to state 202
@@ -3787,12 +3791,12 @@ state 153
 
 state 154
 
-    (217) ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .
+    (219) ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .
 
-    RPAREN          reduce using rule 217 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
-    DOT             reduce using rule 217 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
-    IDENTIFIER      reduce using rule 217 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
-    STRING          reduce using rule 217 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
+    RPAREN          reduce using rule 219 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
+    DOT             reduce using rule 219 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
+    IDENTIFIER      reduce using rule 219 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
+    STRING          reduce using rule 219 (ImportSpecRep -> ImportSpecRep ImportSpec SEMICOL .)
 
 
 state 155
@@ -6437,7 +6441,7 @@ state 189
     (137) ExpressionOpt -> . epsilon
     (138) UnaryExpr -> . PrimaryExpr
     (139) UnaryExpr -> . UnaryOp UnaryExpr
-    (224) epsilon -> .
+    (226) epsilon -> .
     (101) PrimaryExpr -> . Operand
     (102) PrimaryExpr -> . Conversion
     (103) PrimaryExpr -> . PrimaryExpr Selector
@@ -6481,7 +6485,7 @@ state 189
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    COLON           reduce using rule 224 (epsilon -> .)
+    COLON           reduce using rule 226 (epsilon -> .)
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
     TIMES           shift and go to state 117
@@ -6626,7 +6630,7 @@ state 192
     (111) ExpressionListTypeOpt -> . ExpressionList
     (112) ExpressionListTypeOpt -> . epsilon
     (113) ExpressionList -> . Expression ExpressionRep
-    (224) epsilon -> .
+    (226) epsilon -> .
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -6692,7 +6696,7 @@ state 192
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    RPAREN          reduce using rule 224 (epsilon -> .)
+    RPAREN          reduce using rule 226 (epsilon -> .)
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
     TIMES           shift and go to state 117
@@ -6780,40 +6784,41 @@ state 196
     (45) StatementList -> . StatementRep
     (46) StatementRep -> . StatementRep Statement SEMICOL
     (47) StatementRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    RETURN          reduce using rule 224 (epsilon -> .)
-    BREAK           reduce using rule 224 (epsilon -> .)
-    CONTINUE        reduce using rule 224 (epsilon -> .)
-    GOTO            reduce using rule 224 (epsilon -> .)
-    IF              reduce using rule 224 (epsilon -> .)
-    PRINT           reduce using rule 224 (epsilon -> .)
-    MALLOC          reduce using rule 224 (epsilon -> .)
-    CONST           reduce using rule 224 (epsilon -> .)
-    TYPE            reduce using rule 224 (epsilon -> .)
-    VAR             reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      reduce using rule 224 (epsilon -> .)
-    LPAREN          reduce using rule 224 (epsilon -> .)
-    PLUS            reduce using rule 224 (epsilon -> .)
-    MINUS           reduce using rule 224 (epsilon -> .)
-    TIMES           reduce using rule 224 (epsilon -> .)
-    AMPERS          reduce using rule 224 (epsilon -> .)
-    NOT             reduce using rule 224 (epsilon -> .)
-    TYPEX           reduce using rule 224 (epsilon -> .)
-    TTYPE           reduce using rule 224 (epsilon -> .)
-    INTEGER         reduce using rule 224 (epsilon -> .)
-    FLOAT           reduce using rule 224 (epsilon -> .)
-    IMAGINARY       reduce using rule 224 (epsilon -> .)
-    RUNE            reduce using rule 224 (epsilon -> .)
-    STRING          reduce using rule 224 (epsilon -> .)
-    LBRACK          reduce using rule 224 (epsilon -> .)
-    STRUCT          reduce using rule 224 (epsilon -> .)
-    FUNC            reduce using rule 224 (epsilon -> .)
-    POINTER         reduce using rule 224 (epsilon -> .)
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    LBRACE          reduce using rule 224 (epsilon -> .)
-    FOR             reduce using rule 224 (epsilon -> .)
-    RBRACE          reduce using rule 224 (epsilon -> .)
+    RETURN          reduce using rule 226 (epsilon -> .)
+    BREAK           reduce using rule 226 (epsilon -> .)
+    CONTINUE        reduce using rule 226 (epsilon -> .)
+    GOTO            reduce using rule 226 (epsilon -> .)
+    IF              reduce using rule 226 (epsilon -> .)
+    PRINT           reduce using rule 226 (epsilon -> .)
+    SCAN            reduce using rule 226 (epsilon -> .)
+    MALLOC          reduce using rule 226 (epsilon -> .)
+    CONST           reduce using rule 226 (epsilon -> .)
+    TYPE            reduce using rule 226 (epsilon -> .)
+    VAR             reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      reduce using rule 226 (epsilon -> .)
+    LPAREN          reduce using rule 226 (epsilon -> .)
+    PLUS            reduce using rule 226 (epsilon -> .)
+    MINUS           reduce using rule 226 (epsilon -> .)
+    TIMES           reduce using rule 226 (epsilon -> .)
+    AMPERS          reduce using rule 226 (epsilon -> .)
+    NOT             reduce using rule 226 (epsilon -> .)
+    TYPEX           reduce using rule 226 (epsilon -> .)
+    TTYPE           reduce using rule 226 (epsilon -> .)
+    INTEGER         reduce using rule 226 (epsilon -> .)
+    FLOAT           reduce using rule 226 (epsilon -> .)
+    IMAGINARY       reduce using rule 226 (epsilon -> .)
+    RUNE            reduce using rule 226 (epsilon -> .)
+    STRING          reduce using rule 226 (epsilon -> .)
+    LBRACK          reduce using rule 226 (epsilon -> .)
+    STRUCT          reduce using rule 226 (epsilon -> .)
+    FUNC            reduce using rule 226 (epsilon -> .)
+    POINTER         reduce using rule 226 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
+    FOR             reduce using rule 226 (epsilon -> .)
+    RBRACE          reduce using rule 226 (epsilon -> .)
 
     epsilon                        shift and go to state 239
     StatementRep                   shift and go to state 238
@@ -8810,6 +8815,7 @@ state 237
     GG              reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     AMPCAR          reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     COMMA           reduce using rule 107 (Selector -> DOT IDENTIFIER .)
+    LBRACE          reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     SEMICOL         reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     PLUSEQ          reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     MINUSEQ         reduce using rule 107 (Selector -> DOT IDENTIFIER .)
@@ -8822,7 +8828,6 @@ state 237
     LLEQ            reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     GGEQ            reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     EQUAL           reduce using rule 107 (Selector -> DOT IDENTIFIER .)
-    LBRACE          reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     RBRACK          reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     RPAREN          reduce using rule 107 (Selector -> DOT IDENTIFIER .)
     COLON           reduce using rule 107 (Selector -> DOT IDENTIFIER .)
@@ -8842,42 +8847,44 @@ state 238
     (152) Statement -> . Block
     (153) Statement -> . IfStmt
     (154) Statement -> . PrintStmt
-    (155) Statement -> . MallocStmt
-    (156) Statement -> . ForStmt
+    (155) Statement -> . ScanStmt
+    (156) Statement -> . MallocStmt
+    (157) Statement -> . ForStmt
     (48) Declaration -> . ConstDecl
     (49) Declaration -> . TypeDecl
     (50) Declaration -> . VarDecl
-    (165) LabeledStmt -> . Label COLON Statement
-    (160) SimpleStmt -> . epsilon
-    (161) SimpleStmt -> . ExpressionStmt
-    (162) SimpleStmt -> . IncDecStmt
-    (163) SimpleStmt -> . Assignment
-    (164) SimpleStmt -> . ShortVarDecl
-    (200) ReturnStmt -> . RETURN ExpressionListPureOpt
-    (203) BreakStmt -> . BREAK LabelOpt
-    (204) ContinueStmt -> . CONTINUE LabelOpt
-    (207) GotoStmt -> . GOTO Label
+    (167) LabeledStmt -> . Label COLON Statement
+    (162) SimpleStmt -> . epsilon
+    (163) SimpleStmt -> . ExpressionStmt
+    (164) SimpleStmt -> . IncDecStmt
+    (165) SimpleStmt -> . Assignment
+    (166) SimpleStmt -> . ShortVarDecl
+    (202) ReturnStmt -> . RETURN ExpressionListPureOpt
+    (205) BreakStmt -> . BREAK LabelOpt
+    (206) ContinueStmt -> . CONTINUE LabelOpt
+    (209) GotoStmt -> . GOTO Label
     (43) Block -> . CreateScope LBRACE StatementList RBRACE
-    (183) IfStmt -> . IF Expression Block ElseOpt
-    (158) PrintStmt -> . PRINT PD Expression
-    (159) PrintStmt -> . PRINT PS Expression
-    (157) MallocStmt -> . MALLOC IDENTIFIER
-    (187) ForStmt -> . CreateForScope FOR ConditionBlockOpt Block
+    (185) IfStmt -> . IF Expression Block ElseOpt
+    (159) PrintStmt -> . PRINT PD Expression
+    (160) PrintStmt -> . PRINT PS Expression
+    (161) ScanStmt -> . SCAN PD IDENTIFIER
+    (158) MallocStmt -> . MALLOC IDENTIFIER
+    (189) ForStmt -> . CreateForScope FOR ConditionBlockOpt Block
     (53) ConstDecl -> . CONST ConstSpec
     (54) ConstDecl -> . CONST LPAREN ConstSpecRep RPAREN
     (63) TypeDecl -> . TYPE TypeSpec
     (64) TypeDecl -> . TYPE LPAREN TypeSpecRep RPAREN
     (71) VarDecl -> . VAR VarSpec
     (72) VarDecl -> . VAR LPAREN VarSpecRep RPAREN
-    (166) Label -> . IDENTIFIER
-    (224) epsilon -> .
-    (167) ExpressionStmt -> . Expression
-    (168) IncDecStmt -> . PrimaryExpr PLUSPLUS
-    (169) IncDecStmt -> . PrimaryExpr MINUSMIN
-    (170) Assignment -> . ExpressionList assign_op ExpressionList
+    (168) Label -> . IDENTIFIER
+    (226) epsilon -> .
+    (169) ExpressionStmt -> . Expression
+    (170) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (171) IncDecStmt -> . PrimaryExpr MINUSMIN
+    (172) Assignment -> . ExpressionList assign_op ExpressionList
     (79) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (44) CreateScope -> . epsilon
-    (188) CreateForScope -> . epsilon
+    (190) CreateForScope -> . epsilon
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -8945,20 +8952,21 @@ state 238
     (25) Pointer -> . POINTER
 
     RBRACE          reduce using rule 45 (StatementList -> StatementRep .)
-    RETURN          shift and go to state 261
-    BREAK           shift and go to state 275
-    CONTINUE        shift and go to state 267
-    GOTO            shift and go to state 279
-    IF              shift and go to state 281
-    PRINT           shift and go to state 263
-    MALLOC          shift and go to state 271
+    RETURN          shift and go to state 262
+    BREAK           shift and go to state 276
+    CONTINUE        shift and go to state 268
+    GOTO            shift and go to state 281
+    IF              shift and go to state 283
+    PRINT           shift and go to state 264
+    SCAN            shift and go to state 278
+    MALLOC          shift and go to state 272
     CONST           shift and go to state 14
     TYPE            shift and go to state 23
     VAR             shift and go to state 21
-    IDENTIFIER      shift and go to state 270
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    LBRACE          reduce using rule 224 (epsilon -> .)
-    FOR             reduce using rule 224 (epsilon -> .)
+    IDENTIFIER      shift and go to state 271
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
+    FOR             reduce using rule 226 (epsilon -> .)
     LPAREN          shift and go to state 120
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
@@ -8977,52 +8985,53 @@ state 238
     FUNC            shift and go to state 53
     POINTER         shift and go to state 59
 
-    CreateForScope                 shift and go to state 260
+    CreateForScope                 shift and go to state 261
     Pointer                        shift and go to state 66
     UnaryOp                        shift and go to state 106
     ContinueStmt                   shift and go to state 252
     Conversion                     shift and go to state 97
-    SimpleStmt                     shift and go to state 277
-    Label                          shift and go to state 262
+    SimpleStmt                     shift and go to state 279
+    Label                          shift and go to state 263
     ExpressionStmt                 shift and go to state 253
     PointerType                    shift and go to state 69
-    ForStmt                        shift and go to state 278
-    Statement                      shift and go to state 254
+    ForStmt                        shift and go to state 280
+    ScanStmt                       shift and go to state 254
+    Statement                      shift and go to state 255
     RuneLiteral                    shift and go to state 116
     ImgLiteral                     shift and go to state 113
     FloatLiteral                   shift and go to state 100
-    MallocStmt                     shift and go to state 268
-    IfStmt                         shift and go to state 255
+    MallocStmt                     shift and go to state 269
+    IfStmt                         shift and go to state 256
     OperandName                    shift and go to state 104
     ArrayType                      shift and go to state 54
-    Assignment                     shift and go to state 256
+    Assignment                     shift and go to state 257
     TypeName                       shift and go to state 57
-    IncDecStmt                     shift and go to state 257
-    Declaration                    shift and go to state 269
+    IncDecStmt                     shift and go to state 258
+    Declaration                    shift and go to state 270
     FunctionType                   shift and go to state 70
     CreateScope                    shift and go to state 134
     StringLiteral                  shift and go to state 98
-    GotoStmt                       shift and go to state 264
+    GotoStmt                       shift and go to state 265
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     TypeDecl                       shift and go to state 19
-    LabeledStmt                    shift and go to state 258
-    epsilon                        shift and go to state 272
+    LabeledStmt                    shift and go to state 259
+    epsilon                        shift and go to state 273
     UnaryExpr                      shift and go to state 115
     Operand                        shift and go to state 118
-    ExpressionList                 shift and go to state 273
-    Expression                     shift and go to state 274
-    ShortVarDecl                   shift and go to state 280
-    Block                          shift and go to state 266
+    ExpressionList                 shift and go to state 274
+    Expression                     shift and go to state 275
+    ShortVarDecl                   shift and go to state 282
+    Block                          shift and go to state 267
     Type                           shift and go to state 101
-    BreakStmt                      shift and go to state 282
+    BreakStmt                      shift and go to state 284
     VarDecl                        shift and go to state 22
     Literal                        shift and go to state 99
-    PrintStmt                      shift and go to state 259
+    PrintStmt                      shift and go to state 260
     TypeLit                        shift and go to state 56
     BasicLit                       shift and go to state 105
-    PrimaryExpr                    shift and go to state 265
-    ReturnStmt                     shift and go to state 276
+    PrimaryExpr                    shift and go to state 266
+    ReturnStmt                     shift and go to state 277
     ConstDecl                      shift and go to state 18
 
 state 239
@@ -9035,6 +9044,7 @@ state 239
     GOTO            reduce using rule 47 (StatementRep -> epsilon .)
     IF              reduce using rule 47 (StatementRep -> epsilon .)
     PRINT           reduce using rule 47 (StatementRep -> epsilon .)
+    SCAN            reduce using rule 47 (StatementRep -> epsilon .)
     MALLOC          reduce using rule 47 (StatementRep -> epsilon .)
     CONST           reduce using rule 47 (StatementRep -> epsilon .)
     TYPE            reduce using rule 47 (StatementRep -> epsilon .)
@@ -9067,7 +9077,7 @@ state 240
 
     (43) Block -> CreateScope LBRACE StatementList . RBRACE
 
-    RBRACE          shift and go to state 283
+    RBRACE          shift and go to state 285
 
 
 state 241
@@ -9098,7 +9108,7 @@ state 241
     POINTER         shift and go to state 59
 
     StructType                     shift and go to state 60
-    Type                           shift and go to state 284
+    Type                           shift and go to state 286
     ArrayType                      shift and go to state 54
     TypeName                       shift and go to state 57
     Pointer                        shift and go to state 66
@@ -9232,7 +9242,7 @@ state 245
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     Operand                        shift and go to state 118
-    Expression                     shift and go to state 285
+    Expression                     shift and go to state 287
     PointerType                    shift and go to state 69
     Pointer                        shift and go to state 66
     StringLiteral                  shift and go to state 98
@@ -9254,14 +9264,14 @@ state 247
     (21) TagOpt -> . Tag
     (22) TagOpt -> . epsilon
     (23) Tag -> . STRING
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    STRING          shift and go to state 286
-    SEMICOL         reduce using rule 224 (epsilon -> .)
+    STRING          shift and go to state 288
+    SEMICOL         reduce using rule 226 (epsilon -> .)
 
-    epsilon                        shift and go to state 287
-    Tag                            shift and go to state 288
-    TagOpt                         shift and go to state 289
+    epsilon                        shift and go to state 289
+    Tag                            shift and go to state 290
+    TagOpt                         shift and go to state 291
 
 state 248
 
@@ -9335,7 +9345,7 @@ state 249
     (133) Expression -> . Expression LL Expression
     (134) Expression -> . Expression GG Expression
     (135) Expression -> . Expression AMPCAR Expression
-    (224) epsilon -> .
+    (226) epsilon -> .
     (138) UnaryExpr -> . PrimaryExpr
     (139) UnaryExpr -> . UnaryOp UnaryExpr
     (101) PrimaryExpr -> . Operand
@@ -9381,7 +9391,7 @@ state 249
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    RBRACK          reduce using rule 224 (epsilon -> .)
+    RBRACK          reduce using rule 226 (epsilon -> .)
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
     TIMES           shift and go to state 117
@@ -9411,14 +9421,14 @@ state 249
     OperandName                    shift and go to state 104
     BasicLit                       shift and go to state 105
     TypeName                       shift and go to state 57
-    ExpressionOpt                  shift and go to state 290
+    ExpressionOpt                  shift and go to state 292
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     epsilon                        shift and go to state 232
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     Operand                        shift and go to state 118
-    Expression                     shift and go to state 291
+    Expression                     shift and go to state 293
     PointerType                    shift and go to state 69
     Pointer                        shift and go to state 66
     StringLiteral                  shift and go to state 98
@@ -9455,6 +9465,7 @@ state 250
     GG              reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     AMPCAR          reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     COMMA           reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
+    LBRACE          reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     SEMICOL         reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     PLUSEQ          reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     MINUSEQ         reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
@@ -9467,7 +9478,6 @@ state 250
     LLEQ            reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     GGEQ            reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     EQUAL           reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
-    LBRACE          reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     RBRACK          reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     RPAREN          reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
     COLON           reduce using rule 108 (Index -> LBRACK Expression RBRACK .)
@@ -9477,6 +9487,8 @@ state 251
 
     (110) Arguments -> LPAREN ExpressionListTypeOpt RPAREN .
 
+    PLUSPLUS        reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    MINUSMIN        reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     DOT             reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     LBRACK          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     LPAREN          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
@@ -9499,11 +9511,9 @@ state 251
     LL              reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     GG              reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     AMPCAR          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    RBRACK          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     COMMA           reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    LBRACE          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     SEMICOL         reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    RPAREN          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    COLON           reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     PLUSEQ          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     MINUSEQ         reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     TIMESEQ         reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
@@ -9515,9 +9525,9 @@ state 251
     LLEQ            reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     GGEQ            reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
     EQUAL           reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    LBRACE          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    PLUSPLUS        reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
-    MINUSMIN        reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    RBRACK          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    RPAREN          reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
+    COLON           reduce using rule 110 (Arguments -> LPAREN ExpressionListTypeOpt RPAREN .)
 
 
 state 252
@@ -9529,70 +9539,77 @@ state 252
 
 state 253
 
-    (161) SimpleStmt -> ExpressionStmt .
+    (163) SimpleStmt -> ExpressionStmt .
 
-    SEMICOL         reduce using rule 161 (SimpleStmt -> ExpressionStmt .)
-    LBRACE          reduce using rule 161 (SimpleStmt -> ExpressionStmt .)
+    SEMICOL         reduce using rule 163 (SimpleStmt -> ExpressionStmt .)
+    LBRACE          reduce using rule 163 (SimpleStmt -> ExpressionStmt .)
 
 
 state 254
 
-    (46) StatementRep -> StatementRep Statement . SEMICOL
+    (155) Statement -> ScanStmt .
 
-    SEMICOL         shift and go to state 292
+    SEMICOL         reduce using rule 155 (Statement -> ScanStmt .)
 
 
 state 255
+
+    (46) StatementRep -> StatementRep Statement . SEMICOL
+
+    SEMICOL         shift and go to state 294
+
+
+state 256
 
     (153) Statement -> IfStmt .
 
     SEMICOL         reduce using rule 153 (Statement -> IfStmt .)
 
 
-state 256
-
-    (163) SimpleStmt -> Assignment .
-
-    SEMICOL         reduce using rule 163 (SimpleStmt -> Assignment .)
-    LBRACE          reduce using rule 163 (SimpleStmt -> Assignment .)
-
-
 state 257
 
-    (162) SimpleStmt -> IncDecStmt .
+    (165) SimpleStmt -> Assignment .
 
-    SEMICOL         reduce using rule 162 (SimpleStmt -> IncDecStmt .)
-    LBRACE          reduce using rule 162 (SimpleStmt -> IncDecStmt .)
+    SEMICOL         reduce using rule 165 (SimpleStmt -> Assignment .)
+    LBRACE          reduce using rule 165 (SimpleStmt -> Assignment .)
 
 
 state 258
+
+    (164) SimpleStmt -> IncDecStmt .
+
+    SEMICOL         reduce using rule 164 (SimpleStmt -> IncDecStmt .)
+    LBRACE          reduce using rule 164 (SimpleStmt -> IncDecStmt .)
+
+
+state 259
 
     (146) Statement -> LabeledStmt .
 
     SEMICOL         reduce using rule 146 (Statement -> LabeledStmt .)
 
 
-state 259
+state 260
 
     (154) Statement -> PrintStmt .
 
     SEMICOL         reduce using rule 154 (Statement -> PrintStmt .)
 
 
-state 260
-
-    (187) ForStmt -> CreateForScope . FOR ConditionBlockOpt Block
-
-    FOR             shift and go to state 293
-
-
 state 261
 
-    (200) ReturnStmt -> RETURN . ExpressionListPureOpt
-    (201) ExpressionListPureOpt -> . ExpressionList
-    (202) ExpressionListPureOpt -> . epsilon
+    (189) ForStmt -> CreateForScope . FOR ConditionBlockOpt Block
+
+    FOR             shift and go to state 295
+
+
+state 262
+
+    (202) ReturnStmt -> RETURN . ExpressionListPureOpt
+    (203) ExpressionListPureOpt -> . ExpressionList
+    (204) ExpressionListPureOpt -> . epsilon
     (113) ExpressionList -> . Expression ExpressionRep
-    (224) epsilon -> .
+    (226) epsilon -> .
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -9658,7 +9675,7 @@ state 261
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    SEMICOL         reduce using rule 224 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
     TIMES           shift and go to state 117
@@ -9680,7 +9697,7 @@ state 261
 
     UnaryOp                        shift and go to state 106
     Conversion                     shift and go to state 97
-    ExpressionListPureOpt          shift and go to state 294
+    ExpressionListPureOpt          shift and go to state 296
     Literal                        shift and go to state 99
     FloatLiteral                   shift and go to state 100
     Type                           shift and go to state 101
@@ -9690,11 +9707,11 @@ state 261
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     ImgLiteral                     shift and go to state 113
-    epsilon                        shift and go to state 295
+    epsilon                        shift and go to state 297
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     PrimaryExpr                    shift and go to state 124
-    ExpressionList                 shift and go to state 296
+    ExpressionList                 shift and go to state 298
     ArrayType                      shift and go to state 54
     Expression                     shift and go to state 146
     PointerType                    shift and go to state 69
@@ -9704,33 +9721,33 @@ state 261
     Operand                        shift and go to state 118
     FunctionType                   shift and go to state 70
 
-state 262
-
-    (165) LabeledStmt -> Label . COLON Statement
-
-    COLON           shift and go to state 297
-
-
 state 263
 
-    (158) PrintStmt -> PRINT . PD Expression
-    (159) PrintStmt -> PRINT . PS Expression
+    (167) LabeledStmt -> Label . COLON Statement
 
-    PD              shift and go to state 299
-    PS              shift and go to state 298
+    COLON           shift and go to state 299
 
 
 state 264
+
+    (159) PrintStmt -> PRINT . PD Expression
+    (160) PrintStmt -> PRINT . PS Expression
+
+    PD              shift and go to state 301
+    PS              shift and go to state 300
+
+
+state 265
 
     (151) Statement -> GotoStmt .
 
     SEMICOL         reduce using rule 151 (Statement -> GotoStmt .)
 
 
-state 265
+state 266
 
-    (168) IncDecStmt -> PrimaryExpr . PLUSPLUS
-    (169) IncDecStmt -> PrimaryExpr . MINUSMIN
+    (170) IncDecStmt -> PrimaryExpr . PLUSPLUS
+    (171) IncDecStmt -> PrimaryExpr . MINUSMIN
     (103) PrimaryExpr -> PrimaryExpr . Selector
     (104) PrimaryExpr -> PrimaryExpr . Index
     (105) PrimaryExpr -> PrimaryExpr . Slice
@@ -9741,8 +9758,8 @@ state 265
     (109) Slice -> . LBRACK ExpressionOpt COLON ExpressionOpt RBRACK
     (110) Arguments -> . LPAREN ExpressionListTypeOpt RPAREN
 
-    PLUSPLUS        shift and go to state 300
-    MINUSMIN        shift and go to state 301
+    PLUSPLUS        shift and go to state 302
+    MINUSMIN        shift and go to state 303
     OROR            reduce using rule 138 (UnaryExpr -> PrimaryExpr .)
     AMPAMP          reduce using rule 138 (UnaryExpr -> PrimaryExpr .)
     EQEQ            reduce using rule 138 (UnaryExpr -> PrimaryExpr .)
@@ -9785,50 +9802,50 @@ state 265
     Selector                       shift and go to state 190
     Arguments                      shift and go to state 191
 
-state 266
+state 267
 
     (152) Statement -> Block .
 
     SEMICOL         reduce using rule 152 (Statement -> Block .)
 
 
-state 267
-
-    (204) ContinueStmt -> CONTINUE . LabelOpt
-    (205) LabelOpt -> . Label
-    (206) LabelOpt -> . epsilon
-    (166) Label -> . IDENTIFIER
-    (224) epsilon -> .
-
-    IDENTIFIER      shift and go to state 303
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-
-    epsilon                        shift and go to state 302
-    LabelOpt                       shift and go to state 304
-    Label                          shift and go to state 305
-
 state 268
 
-    (155) Statement -> MallocStmt .
+    (206) ContinueStmt -> CONTINUE . LabelOpt
+    (207) LabelOpt -> . Label
+    (208) LabelOpt -> . epsilon
+    (168) Label -> . IDENTIFIER
+    (226) epsilon -> .
 
-    SEMICOL         reduce using rule 155 (Statement -> MallocStmt .)
+    IDENTIFIER      shift and go to state 305
+    SEMICOL         reduce using rule 226 (epsilon -> .)
 
+    epsilon                        shift and go to state 304
+    LabelOpt                       shift and go to state 306
+    Label                          shift and go to state 307
 
 state 269
+
+    (156) Statement -> MallocStmt .
+
+    SEMICOL         reduce using rule 156 (Statement -> MallocStmt .)
+
+
+state 270
 
     (145) Statement -> Declaration .
 
     SEMICOL         reduce using rule 145 (Statement -> Declaration .)
 
 
-state 270
+state 271
 
-    (166) Label -> IDENTIFIER .
+    (168) Label -> IDENTIFIER .
     (79) ShortVarDecl -> IDENTIFIER . COLONEQ Expression
     (99) OperandName -> IDENTIFIER .
 
-    COLON           reduce using rule 166 (Label -> IDENTIFIER .)
-    COLONEQ         shift and go to state 306
+    COLON           reduce using rule 168 (Label -> IDENTIFIER .)
+    COLONEQ         shift and go to state 308
     PLUSPLUS        reduce using rule 99 (OperandName -> IDENTIFIER .)
     MINUSMIN        reduce using rule 99 (OperandName -> IDENTIFIER .)
     DOT             reduce using rule 99 (OperandName -> IDENTIFIER .)
@@ -9868,58 +9885,58 @@ state 270
     EQUAL           reduce using rule 99 (OperandName -> IDENTIFIER .)
 
 
-state 271
-
-    (157) MallocStmt -> MALLOC . IDENTIFIER
-
-    IDENTIFIER      shift and go to state 307
-
-
 state 272
 
-    (160) SimpleStmt -> epsilon .
-    (44) CreateScope -> epsilon .
-    (188) CreateForScope -> epsilon .
+    (158) MallocStmt -> MALLOC . IDENTIFIER
 
-    SEMICOL         reduce using rule 160 (SimpleStmt -> epsilon .)
-    LBRACE          reduce using rule 44 (CreateScope -> epsilon .)
-    FOR             reduce using rule 188 (CreateForScope -> epsilon .)
+    IDENTIFIER      shift and go to state 309
 
 
 state 273
 
-    (170) Assignment -> ExpressionList . assign_op ExpressionList
-    (171) assign_op -> . AssignOp
-    (172) AssignOp -> . PLUSEQ
-    (173) AssignOp -> . MINUSEQ
-    (174) AssignOp -> . TIMESEQ
-    (175) AssignOp -> . DIVIDEEQ
-    (176) AssignOp -> . MODEQ
-    (177) AssignOp -> . AMPEQ
-    (178) AssignOp -> . OREQ
-    (179) AssignOp -> . CAREQ
-    (180) AssignOp -> . LLEQ
-    (181) AssignOp -> . GGEQ
-    (182) AssignOp -> . EQUAL
+    (162) SimpleStmt -> epsilon .
+    (44) CreateScope -> epsilon .
+    (190) CreateForScope -> epsilon .
 
-    PLUSEQ          shift and go to state 312
-    MINUSEQ         shift and go to state 317
-    TIMESEQ         shift and go to state 311
-    DIVIDEEQ        shift and go to state 320
-    MODEQ           shift and go to state 313
-    AMPEQ           shift and go to state 318
-    OREQ            shift and go to state 316
-    CAREQ           shift and go to state 310
-    LLEQ            shift and go to state 315
-    GGEQ            shift and go to state 314
-    EQUAL           shift and go to state 309
+    SEMICOL         reduce using rule 162 (SimpleStmt -> epsilon .)
+    LBRACE          reduce using rule 44 (CreateScope -> epsilon .)
+    FOR             reduce using rule 190 (CreateForScope -> epsilon .)
 
-    AssignOp                       shift and go to state 308
-    assign_op                      shift and go to state 319
 
 state 274
 
-    (167) ExpressionStmt -> Expression .
+    (172) Assignment -> ExpressionList . assign_op ExpressionList
+    (173) assign_op -> . AssignOp
+    (174) AssignOp -> . PLUSEQ
+    (175) AssignOp -> . MINUSEQ
+    (176) AssignOp -> . TIMESEQ
+    (177) AssignOp -> . DIVIDEEQ
+    (178) AssignOp -> . MODEQ
+    (179) AssignOp -> . AMPEQ
+    (180) AssignOp -> . OREQ
+    (181) AssignOp -> . CAREQ
+    (182) AssignOp -> . LLEQ
+    (183) AssignOp -> . GGEQ
+    (184) AssignOp -> . EQUAL
+
+    PLUSEQ          shift and go to state 314
+    MINUSEQ         shift and go to state 319
+    TIMESEQ         shift and go to state 313
+    DIVIDEEQ        shift and go to state 322
+    MODEQ           shift and go to state 315
+    AMPEQ           shift and go to state 320
+    OREQ            shift and go to state 318
+    CAREQ           shift and go to state 312
+    LLEQ            shift and go to state 317
+    GGEQ            shift and go to state 316
+    EQUAL           shift and go to state 311
+
+    AssignOp                       shift and go to state 310
+    assign_op                      shift and go to state 321
+
+state 275
+
+    (169) ExpressionStmt -> Expression .
     (117) Expression -> Expression . OROR Expression
     (118) Expression -> Expression . AMPAMP Expression
     (119) Expression -> Expression . EQEQ Expression
@@ -9942,10 +9959,10 @@ state 274
     (113) ExpressionList -> Expression . ExpressionRep
     (114) ExpressionRep -> . ExpressionRep COMMA Expression
     (115) ExpressionRep -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
-    SEMICOL         reduce using rule 167 (ExpressionStmt -> Expression .)
-    LBRACE          reduce using rule 167 (ExpressionStmt -> Expression .)
+    LBRACE          reduce using rule 169 (ExpressionStmt -> Expression .)
+    SEMICOL         reduce using rule 169 (ExpressionStmt -> Expression .)
     OROR            shift and go to state 168
     AMPAMP          shift and go to state 183
     EQEQ            shift and go to state 174
@@ -9965,78 +9982,85 @@ state 274
     LL              shift and go to state 175
     GG              shift and go to state 179
     AMPCAR          shift and go to state 172
-    COMMA           reduce using rule 224 (epsilon -> .)
-    PLUSEQ          reduce using rule 224 (epsilon -> .)
-    MINUSEQ         reduce using rule 224 (epsilon -> .)
-    TIMESEQ         reduce using rule 224 (epsilon -> .)
-    DIVIDEEQ        reduce using rule 224 (epsilon -> .)
-    MODEQ           reduce using rule 224 (epsilon -> .)
-    AMPEQ           reduce using rule 224 (epsilon -> .)
-    OREQ            reduce using rule 224 (epsilon -> .)
-    CAREQ           reduce using rule 224 (epsilon -> .)
-    LLEQ            reduce using rule 224 (epsilon -> .)
-    GGEQ            reduce using rule 224 (epsilon -> .)
-    EQUAL           reduce using rule 224 (epsilon -> .)
+    COMMA           reduce using rule 226 (epsilon -> .)
+    PLUSEQ          reduce using rule 226 (epsilon -> .)
+    MINUSEQ         reduce using rule 226 (epsilon -> .)
+    TIMESEQ         reduce using rule 226 (epsilon -> .)
+    DIVIDEEQ        reduce using rule 226 (epsilon -> .)
+    MODEQ           reduce using rule 226 (epsilon -> .)
+    AMPEQ           reduce using rule 226 (epsilon -> .)
+    OREQ            reduce using rule 226 (epsilon -> .)
+    CAREQ           reduce using rule 226 (epsilon -> .)
+    LLEQ            reduce using rule 226 (epsilon -> .)
+    GGEQ            reduce using rule 226 (epsilon -> .)
+    EQUAL           reduce using rule 226 (epsilon -> .)
 
     epsilon                        shift and go to state 203
     ExpressionRep                  shift and go to state 202
 
-state 275
-
-    (203) BreakStmt -> BREAK . LabelOpt
-    (205) LabelOpt -> . Label
-    (206) LabelOpt -> . epsilon
-    (166) Label -> . IDENTIFIER
-    (224) epsilon -> .
-
-    IDENTIFIER      shift and go to state 303
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-
-    epsilon                        shift and go to state 302
-    LabelOpt                       shift and go to state 321
-    Label                          shift and go to state 305
-
 state 276
+
+    (205) BreakStmt -> BREAK . LabelOpt
+    (207) LabelOpt -> . Label
+    (208) LabelOpt -> . epsilon
+    (168) Label -> . IDENTIFIER
+    (226) epsilon -> .
+
+    IDENTIFIER      shift and go to state 305
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+
+    epsilon                        shift and go to state 304
+    LabelOpt                       shift and go to state 323
+    Label                          shift and go to state 307
+
+state 277
 
     (148) Statement -> ReturnStmt .
 
     SEMICOL         reduce using rule 148 (Statement -> ReturnStmt .)
 
 
-state 277
+state 278
+
+    (161) ScanStmt -> SCAN . PD IDENTIFIER
+
+    PD              shift and go to state 324
+
+
+state 279
 
     (147) Statement -> SimpleStmt .
 
     SEMICOL         reduce using rule 147 (Statement -> SimpleStmt .)
 
 
-state 278
-
-    (156) Statement -> ForStmt .
-
-    SEMICOL         reduce using rule 156 (Statement -> ForStmt .)
-
-
-state 279
-
-    (207) GotoStmt -> GOTO . Label
-    (166) Label -> . IDENTIFIER
-
-    IDENTIFIER      shift and go to state 303
-
-    Label                          shift and go to state 322
-
 state 280
 
-    (164) SimpleStmt -> ShortVarDecl .
+    (157) Statement -> ForStmt .
 
-    SEMICOL         reduce using rule 164 (SimpleStmt -> ShortVarDecl .)
-    LBRACE          reduce using rule 164 (SimpleStmt -> ShortVarDecl .)
+    SEMICOL         reduce using rule 157 (Statement -> ForStmt .)
 
 
 state 281
 
-    (183) IfStmt -> IF . Expression Block ElseOpt
+    (209) GotoStmt -> GOTO . Label
+    (168) Label -> . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 305
+
+    Label                          shift and go to state 325
+
+state 282
+
+    (166) SimpleStmt -> ShortVarDecl .
+
+    SEMICOL         reduce using rule 166 (SimpleStmt -> ShortVarDecl .)
+    LBRACE          reduce using rule 166 (SimpleStmt -> ShortVarDecl .)
+
+
+state 283
+
+    (185) IfStmt -> IF . Expression Block ElseOpt
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -10137,29 +10161,29 @@ state 281
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     Operand                        shift and go to state 118
-    Expression                     shift and go to state 323
+    Expression                     shift and go to state 326
     Pointer                        shift and go to state 66
     StringLiteral                  shift and go to state 98
     TypeLit                        shift and go to state 56
     ImgLiteral                     shift and go to state 113
     FunctionType                   shift and go to state 70
 
-state 282
+state 284
 
     (149) Statement -> BreakStmt .
 
     SEMICOL         reduce using rule 149 (Statement -> BreakStmt .)
 
 
-state 283
+state 285
 
     (43) Block -> CreateScope LBRACE StatementList RBRACE .
 
-    SEMICOL         reduce using rule 43 (Block -> CreateScope LBRACE StatementList RBRACE .)
     ELSE            reduce using rule 43 (Block -> CreateScope LBRACE StatementList RBRACE .)
+    SEMICOL         reduce using rule 43 (Block -> CreateScope LBRACE StatementList RBRACE .)
 
 
-state 284
+state 286
 
     (41) ParameterDecl -> IdentifierList Type .
 
@@ -10167,7 +10191,7 @@ state 284
     RPAREN          reduce using rule 41 (ParameterDecl -> IdentifierList Type .)
 
 
-state 285
+state 287
 
     (114) ExpressionRep -> ExpressionRep COMMA Expression .
     (117) Expression -> Expression . OROR Expression
@@ -10226,42 +10250,42 @@ state 285
     AMPCAR          shift and go to state 172
 
 
-state 286
+state 288
 
     (23) Tag -> STRING .
 
     SEMICOL         reduce using rule 23 (Tag -> STRING .)
 
 
-state 287
+state 289
 
     (22) TagOpt -> epsilon .
 
     SEMICOL         reduce using rule 22 (TagOpt -> epsilon .)
 
 
-state 288
+state 290
 
     (21) TagOpt -> Tag .
 
     SEMICOL         reduce using rule 21 (TagOpt -> Tag .)
 
 
-state 289
+state 291
 
     (20) FieldDecl -> IdentifierList Type TagOpt .
 
     SEMICOL         reduce using rule 20 (FieldDecl -> IdentifierList Type TagOpt .)
 
 
-state 290
+state 292
 
     (109) Slice -> LBRACK ExpressionOpt COLON ExpressionOpt . RBRACK
 
-    RBRACK          shift and go to state 324
+    RBRACK          shift and go to state 327
 
 
-state 291
+state 293
 
     (136) ExpressionOpt -> Expression .
     (117) Expression -> Expression . OROR Expression
@@ -10306,7 +10330,7 @@ state 291
     AMPCAR          shift and go to state 172
 
 
-state 292
+state 294
 
     (46) StatementRep -> StatementRep Statement SEMICOL .
 
@@ -10316,6 +10340,7 @@ state 292
     GOTO            reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
     IF              reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
     PRINT           reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
+    SCAN            reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
     MALLOC          reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
     CONST           reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
     TYPE            reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
@@ -10344,15 +10369,15 @@ state 292
     RBRACE          reduce using rule 46 (StatementRep -> StatementRep Statement SEMICOL .)
 
 
-state 293
+state 295
 
-    (187) ForStmt -> CreateForScope FOR . ConditionBlockOpt Block
-    (189) ConditionBlockOpt -> . epsilon
-    (190) ConditionBlockOpt -> . Condition
-    (191) ConditionBlockOpt -> . ForClause
-    (224) epsilon -> .
-    (192) Condition -> . Expression
-    (193) ForClause -> . SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt
+    (189) ForStmt -> CreateForScope FOR . ConditionBlockOpt Block
+    (191) ConditionBlockOpt -> . epsilon
+    (192) ConditionBlockOpt -> . Condition
+    (193) ConditionBlockOpt -> . ForClause
+    (226) epsilon -> .
+    (194) Condition -> . Expression
+    (195) ForClause -> . SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -10373,17 +10398,17 @@ state 293
     (133) Expression -> . Expression LL Expression
     (134) Expression -> . Expression GG Expression
     (135) Expression -> . Expression AMPCAR Expression
-    (160) SimpleStmt -> . epsilon
-    (161) SimpleStmt -> . ExpressionStmt
-    (162) SimpleStmt -> . IncDecStmt
-    (163) SimpleStmt -> . Assignment
-    (164) SimpleStmt -> . ShortVarDecl
+    (162) SimpleStmt -> . epsilon
+    (163) SimpleStmt -> . ExpressionStmt
+    (164) SimpleStmt -> . IncDecStmt
+    (165) SimpleStmt -> . Assignment
+    (166) SimpleStmt -> . ShortVarDecl
     (138) UnaryExpr -> . PrimaryExpr
     (139) UnaryExpr -> . UnaryOp UnaryExpr
-    (167) ExpressionStmt -> . Expression
-    (168) IncDecStmt -> . PrimaryExpr PLUSPLUS
-    (169) IncDecStmt -> . PrimaryExpr MINUSMIN
-    (170) Assignment -> . ExpressionList assign_op ExpressionList
+    (169) ExpressionStmt -> . Expression
+    (170) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (171) IncDecStmt -> . PrimaryExpr MINUSMIN
+    (172) Assignment -> . ExpressionList assign_op ExpressionList
     (79) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (101) PrimaryExpr -> . Operand
     (102) PrimaryExpr -> . Conversion
@@ -10429,9 +10454,9 @@ state 293
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    LBRACE          reduce using rule 224 (epsilon -> .)
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      shift and go to state 326
+    LBRACE          reduce using rule 226 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      shift and go to state 329
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
     TIMES           shift and go to state 117
@@ -10452,30 +10477,30 @@ state 293
 
     Conversion                     shift and go to state 97
     UnaryOp                        shift and go to state 106
-    SimpleStmt                     shift and go to state 331
+    SimpleStmt                     shift and go to state 334
     StringLiteral                  shift and go to state 98
     ExpressionStmt                 shift and go to state 253
     PointerType                    shift and go to state 69
     FloatLiteral                   shift and go to state 100
     Type                           shift and go to state 101
     OperandName                    shift and go to state 104
-    Assignment                     shift and go to state 256
+    Assignment                     shift and go to state 257
     TypeName                       shift and go to state 57
-    IncDecStmt                     shift and go to state 257
-    Condition                      shift and go to state 327
+    IncDecStmt                     shift and go to state 258
+    Condition                      shift and go to state 330
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     ImgLiteral                     shift and go to state 113
-    epsilon                        shift and go to state 328
+    epsilon                        shift and go to state 331
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
-    ConditionBlockOpt              shift and go to state 329
-    PrimaryExpr                    shift and go to state 325
-    ExpressionList                 shift and go to state 273
+    ConditionBlockOpt              shift and go to state 332
+    PrimaryExpr                    shift and go to state 328
+    ExpressionList                 shift and go to state 274
     ArrayType                      shift and go to state 54
-    ForClause                      shift and go to state 332
-    Expression                     shift and go to state 330
-    ShortVarDecl                   shift and go to state 280
+    ForClause                      shift and go to state 335
+    Expression                     shift and go to state 333
+    ShortVarDecl                   shift and go to state 282
     Pointer                        shift and go to state 66
     Literal                        shift and go to state 99
     TypeLit                        shift and go to state 56
@@ -10483,30 +10508,30 @@ state 293
     Operand                        shift and go to state 118
     FunctionType                   shift and go to state 70
 
-state 294
-
-    (200) ReturnStmt -> RETURN ExpressionListPureOpt .
-
-    SEMICOL         reduce using rule 200 (ReturnStmt -> RETURN ExpressionListPureOpt .)
-
-
-state 295
-
-    (202) ExpressionListPureOpt -> epsilon .
-
-    SEMICOL         reduce using rule 202 (ExpressionListPureOpt -> epsilon .)
-
-
 state 296
 
-    (201) ExpressionListPureOpt -> ExpressionList .
+    (202) ReturnStmt -> RETURN ExpressionListPureOpt .
 
-    SEMICOL         reduce using rule 201 (ExpressionListPureOpt -> ExpressionList .)
+    SEMICOL         reduce using rule 202 (ReturnStmt -> RETURN ExpressionListPureOpt .)
 
 
 state 297
 
-    (165) LabeledStmt -> Label COLON . Statement
+    (204) ExpressionListPureOpt -> epsilon .
+
+    SEMICOL         reduce using rule 204 (ExpressionListPureOpt -> epsilon .)
+
+
+state 298
+
+    (203) ExpressionListPureOpt -> ExpressionList .
+
+    SEMICOL         reduce using rule 203 (ExpressionListPureOpt -> ExpressionList .)
+
+
+state 299
+
+    (167) LabeledStmt -> Label COLON . Statement
     (145) Statement -> . Declaration
     (146) Statement -> . LabeledStmt
     (147) Statement -> . SimpleStmt
@@ -10517,42 +10542,44 @@ state 297
     (152) Statement -> . Block
     (153) Statement -> . IfStmt
     (154) Statement -> . PrintStmt
-    (155) Statement -> . MallocStmt
-    (156) Statement -> . ForStmt
+    (155) Statement -> . ScanStmt
+    (156) Statement -> . MallocStmt
+    (157) Statement -> . ForStmt
     (48) Declaration -> . ConstDecl
     (49) Declaration -> . TypeDecl
     (50) Declaration -> . VarDecl
-    (165) LabeledStmt -> . Label COLON Statement
-    (160) SimpleStmt -> . epsilon
-    (161) SimpleStmt -> . ExpressionStmt
-    (162) SimpleStmt -> . IncDecStmt
-    (163) SimpleStmt -> . Assignment
-    (164) SimpleStmt -> . ShortVarDecl
-    (200) ReturnStmt -> . RETURN ExpressionListPureOpt
-    (203) BreakStmt -> . BREAK LabelOpt
-    (204) ContinueStmt -> . CONTINUE LabelOpt
-    (207) GotoStmt -> . GOTO Label
+    (167) LabeledStmt -> . Label COLON Statement
+    (162) SimpleStmt -> . epsilon
+    (163) SimpleStmt -> . ExpressionStmt
+    (164) SimpleStmt -> . IncDecStmt
+    (165) SimpleStmt -> . Assignment
+    (166) SimpleStmt -> . ShortVarDecl
+    (202) ReturnStmt -> . RETURN ExpressionListPureOpt
+    (205) BreakStmt -> . BREAK LabelOpt
+    (206) ContinueStmt -> . CONTINUE LabelOpt
+    (209) GotoStmt -> . GOTO Label
     (43) Block -> . CreateScope LBRACE StatementList RBRACE
-    (183) IfStmt -> . IF Expression Block ElseOpt
-    (158) PrintStmt -> . PRINT PD Expression
-    (159) PrintStmt -> . PRINT PS Expression
-    (157) MallocStmt -> . MALLOC IDENTIFIER
-    (187) ForStmt -> . CreateForScope FOR ConditionBlockOpt Block
+    (185) IfStmt -> . IF Expression Block ElseOpt
+    (159) PrintStmt -> . PRINT PD Expression
+    (160) PrintStmt -> . PRINT PS Expression
+    (161) ScanStmt -> . SCAN PD IDENTIFIER
+    (158) MallocStmt -> . MALLOC IDENTIFIER
+    (189) ForStmt -> . CreateForScope FOR ConditionBlockOpt Block
     (53) ConstDecl -> . CONST ConstSpec
     (54) ConstDecl -> . CONST LPAREN ConstSpecRep RPAREN
     (63) TypeDecl -> . TYPE TypeSpec
     (64) TypeDecl -> . TYPE LPAREN TypeSpecRep RPAREN
     (71) VarDecl -> . VAR VarSpec
     (72) VarDecl -> . VAR LPAREN VarSpecRep RPAREN
-    (166) Label -> . IDENTIFIER
-    (224) epsilon -> .
-    (167) ExpressionStmt -> . Expression
-    (168) IncDecStmt -> . PrimaryExpr PLUSPLUS
-    (169) IncDecStmt -> . PrimaryExpr MINUSMIN
-    (170) Assignment -> . ExpressionList assign_op ExpressionList
+    (168) Label -> . IDENTIFIER
+    (226) epsilon -> .
+    (169) ExpressionStmt -> . Expression
+    (170) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (171) IncDecStmt -> . PrimaryExpr MINUSMIN
+    (172) Assignment -> . ExpressionList assign_op ExpressionList
     (79) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (44) CreateScope -> . epsilon
-    (188) CreateForScope -> . epsilon
+    (190) CreateForScope -> . epsilon
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -10619,20 +10646,21 @@ state 297
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    RETURN          shift and go to state 261
-    BREAK           shift and go to state 275
-    CONTINUE        shift and go to state 267
-    GOTO            shift and go to state 279
-    IF              shift and go to state 281
-    PRINT           shift and go to state 263
-    MALLOC          shift and go to state 271
+    RETURN          shift and go to state 262
+    BREAK           shift and go to state 276
+    CONTINUE        shift and go to state 268
+    GOTO            shift and go to state 281
+    IF              shift and go to state 283
+    PRINT           shift and go to state 264
+    SCAN            shift and go to state 278
+    MALLOC          shift and go to state 272
     CONST           shift and go to state 14
     TYPE            shift and go to state 23
     VAR             shift and go to state 21
-    IDENTIFIER      shift and go to state 270
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-    LBRACE          reduce using rule 224 (epsilon -> .)
-    FOR             reduce using rule 224 (epsilon -> .)
+    IDENTIFIER      shift and go to state 271
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
+    FOR             reduce using rule 226 (epsilon -> .)
     LPAREN          shift and go to state 120
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
@@ -10651,319 +10679,320 @@ state 297
     FUNC            shift and go to state 53
     POINTER         shift and go to state 59
 
-    CreateForScope                 shift and go to state 260
+    CreateForScope                 shift and go to state 261
     Pointer                        shift and go to state 66
     UnaryOp                        shift and go to state 106
     ContinueStmt                   shift and go to state 252
     Conversion                     shift and go to state 97
-    SimpleStmt                     shift and go to state 277
-    Label                          shift and go to state 262
+    SimpleStmt                     shift and go to state 279
+    Label                          shift and go to state 263
     ExpressionStmt                 shift and go to state 253
     PointerType                    shift and go to state 69
-    ForStmt                        shift and go to state 278
-    Statement                      shift and go to state 333
+    ForStmt                        shift and go to state 280
+    ScanStmt                       shift and go to state 254
+    Statement                      shift and go to state 336
     RuneLiteral                    shift and go to state 116
     ImgLiteral                     shift and go to state 113
     FloatLiteral                   shift and go to state 100
-    MallocStmt                     shift and go to state 268
-    IfStmt                         shift and go to state 255
+    MallocStmt                     shift and go to state 269
+    IfStmt                         shift and go to state 256
     OperandName                    shift and go to state 104
     ArrayType                      shift and go to state 54
-    Assignment                     shift and go to state 256
+    Assignment                     shift and go to state 257
     TypeName                       shift and go to state 57
-    IncDecStmt                     shift and go to state 257
-    Declaration                    shift and go to state 269
+    IncDecStmt                     shift and go to state 258
+    Declaration                    shift and go to state 270
     FunctionType                   shift and go to state 70
     CreateScope                    shift and go to state 134
     StringLiteral                  shift and go to state 98
-    GotoStmt                       shift and go to state 264
+    GotoStmt                       shift and go to state 265
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     TypeDecl                       shift and go to state 19
-    LabeledStmt                    shift and go to state 258
-    epsilon                        shift and go to state 272
+    LabeledStmt                    shift and go to state 259
+    epsilon                        shift and go to state 273
     UnaryExpr                      shift and go to state 115
     Operand                        shift and go to state 118
-    ExpressionList                 shift and go to state 273
-    Expression                     shift and go to state 274
-    ShortVarDecl                   shift and go to state 280
-    Block                          shift and go to state 266
+    ExpressionList                 shift and go to state 274
+    Expression                     shift and go to state 275
+    ShortVarDecl                   shift and go to state 282
+    Block                          shift and go to state 267
     Type                           shift and go to state 101
-    BreakStmt                      shift and go to state 282
+    BreakStmt                      shift and go to state 284
     VarDecl                        shift and go to state 22
     Literal                        shift and go to state 99
-    PrintStmt                      shift and go to state 259
+    PrintStmt                      shift and go to state 260
     TypeLit                        shift and go to state 56
     BasicLit                       shift and go to state 105
-    PrimaryExpr                    shift and go to state 265
-    ReturnStmt                     shift and go to state 276
+    PrimaryExpr                    shift and go to state 266
+    ReturnStmt                     shift and go to state 277
     ConstDecl                      shift and go to state 18
-
-state 298
-
-    (159) PrintStmt -> PRINT PS . Expression
-    (116) Expression -> . UnaryExpr
-    (117) Expression -> . Expression OROR Expression
-    (118) Expression -> . Expression AMPAMP Expression
-    (119) Expression -> . Expression EQEQ Expression
-    (120) Expression -> . Expression NOTEQ Expression
-    (121) Expression -> . Expression LESS Expression
-    (122) Expression -> . Expression GREAT Expression
-    (123) Expression -> . Expression LEQ Expression
-    (124) Expression -> . Expression GEQ Expression
-    (125) Expression -> . Expression PLUS Expression
-    (126) Expression -> . Expression MINUS Expression
-    (127) Expression -> . Expression OR Expression
-    (128) Expression -> . Expression CARET Expression
-    (129) Expression -> . Expression TIMES Expression
-    (130) Expression -> . Expression DIVIDE Expression
-    (131) Expression -> . Expression MOD Expression
-    (132) Expression -> . Expression AMPERS Expression
-    (133) Expression -> . Expression LL Expression
-    (134) Expression -> . Expression GG Expression
-    (135) Expression -> . Expression AMPCAR Expression
-    (138) UnaryExpr -> . PrimaryExpr
-    (139) UnaryExpr -> . UnaryOp UnaryExpr
-    (101) PrimaryExpr -> . Operand
-    (102) PrimaryExpr -> . Conversion
-    (103) PrimaryExpr -> . PrimaryExpr Selector
-    (104) PrimaryExpr -> . PrimaryExpr Index
-    (105) PrimaryExpr -> . PrimaryExpr Slice
-    (106) PrimaryExpr -> . PrimaryExpr Arguments
-    (140) UnaryOp -> . PLUS
-    (141) UnaryOp -> . MINUS
-    (142) UnaryOp -> . TIMES
-    (143) UnaryOp -> . AMPERS
-    (144) UnaryOp -> . NOT
-    (85) Operand -> . Literal
-    (86) Operand -> . OperandName
-    (87) Operand -> . LPAREN Expression RPAREN
-    (100) Conversion -> . Type LPAREN Expression RPAREN
-    (88) Literal -> . BasicLit
-    (99) OperandName -> . IDENTIFIER
-    (2) Type -> . TypeName
-    (3) Type -> . TypeLit
-    (4) Type -> . LPAREN Type RPAREN
-    (89) BasicLit -> . IntLiteral
-    (90) BasicLit -> . FloatLiteral
-    (91) BasicLit -> . ImgLiteral
-    (92) BasicLit -> . RuneLiteral
-    (93) BasicLit -> . StringLiteral
-    (5) TypeName -> . TYPEX
-    (6) TypeName -> . TTYPE IDENTIFIER
-    (7) TypeLit -> . ArrayType
-    (8) TypeLit -> . StructType
-    (9) TypeLit -> . PointerType
-    (10) TypeLit -> . FunctionType
-    (94) IntLiteral -> . INTEGER
-    (95) FloatLiteral -> . FLOAT
-    (96) ImgLiteral -> . IMAGINARY
-    (97) RuneLiteral -> . RUNE
-    (98) StringLiteral -> . STRING
-    (13) ArrayType -> . LBRACK ArrayLength RBRACK ElementType
-    (14) ArrayType -> . LBRACK RBRACK ElementType
-    (17) StructType -> . STRUCT LBRACE FieldDeclRep RBRACE
-    (24) PointerType -> . Pointer BaseType
-    (27) FunctionType -> . FUNC Signature
-    (25) Pointer -> . POINTER
-
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 102
-    TIMES           shift and go to state 117
-    AMPERS          shift and go to state 123
-    NOT             shift and go to state 107
-    LPAREN          shift and go to state 120
-    IDENTIFIER      shift and go to state 111
-    TYPEX           shift and go to state 58
-    TTYPE           shift and go to state 63
-    INTEGER         shift and go to state 109
-    FLOAT           shift and go to state 122
-    IMAGINARY       shift and go to state 110
-    RUNE            shift and go to state 96
-    STRING          shift and go to state 103
-    LBRACK          shift and go to state 67
-    STRUCT          shift and go to state 65
-    FUNC            shift and go to state 53
-    POINTER         shift and go to state 59
-
-    Conversion                     shift and go to state 97
-    UnaryOp                        shift and go to state 106
-    PrimaryExpr                    shift and go to state 124
-    ArrayType                      shift and go to state 54
-    Literal                        shift and go to state 99
-    FloatLiteral                   shift and go to state 100
-    Type                           shift and go to state 101
-    OperandName                    shift and go to state 104
-    BasicLit                       shift and go to state 105
-    TypeName                       shift and go to state 57
-    StructType                     shift and go to state 60
-    IntLiteral                     shift and go to state 112
-    UnaryExpr                      shift and go to state 115
-    RuneLiteral                    shift and go to state 116
-    Operand                        shift and go to state 118
-    Expression                     shift and go to state 334
-    PointerType                    shift and go to state 69
-    Pointer                        shift and go to state 66
-    StringLiteral                  shift and go to state 98
-    TypeLit                        shift and go to state 56
-    ImgLiteral                     shift and go to state 113
-    FunctionType                   shift and go to state 70
-
-state 299
-
-    (158) PrintStmt -> PRINT PD . Expression
-    (116) Expression -> . UnaryExpr
-    (117) Expression -> . Expression OROR Expression
-    (118) Expression -> . Expression AMPAMP Expression
-    (119) Expression -> . Expression EQEQ Expression
-    (120) Expression -> . Expression NOTEQ Expression
-    (121) Expression -> . Expression LESS Expression
-    (122) Expression -> . Expression GREAT Expression
-    (123) Expression -> . Expression LEQ Expression
-    (124) Expression -> . Expression GEQ Expression
-    (125) Expression -> . Expression PLUS Expression
-    (126) Expression -> . Expression MINUS Expression
-    (127) Expression -> . Expression OR Expression
-    (128) Expression -> . Expression CARET Expression
-    (129) Expression -> . Expression TIMES Expression
-    (130) Expression -> . Expression DIVIDE Expression
-    (131) Expression -> . Expression MOD Expression
-    (132) Expression -> . Expression AMPERS Expression
-    (133) Expression -> . Expression LL Expression
-    (134) Expression -> . Expression GG Expression
-    (135) Expression -> . Expression AMPCAR Expression
-    (138) UnaryExpr -> . PrimaryExpr
-    (139) UnaryExpr -> . UnaryOp UnaryExpr
-    (101) PrimaryExpr -> . Operand
-    (102) PrimaryExpr -> . Conversion
-    (103) PrimaryExpr -> . PrimaryExpr Selector
-    (104) PrimaryExpr -> . PrimaryExpr Index
-    (105) PrimaryExpr -> . PrimaryExpr Slice
-    (106) PrimaryExpr -> . PrimaryExpr Arguments
-    (140) UnaryOp -> . PLUS
-    (141) UnaryOp -> . MINUS
-    (142) UnaryOp -> . TIMES
-    (143) UnaryOp -> . AMPERS
-    (144) UnaryOp -> . NOT
-    (85) Operand -> . Literal
-    (86) Operand -> . OperandName
-    (87) Operand -> . LPAREN Expression RPAREN
-    (100) Conversion -> . Type LPAREN Expression RPAREN
-    (88) Literal -> . BasicLit
-    (99) OperandName -> . IDENTIFIER
-    (2) Type -> . TypeName
-    (3) Type -> . TypeLit
-    (4) Type -> . LPAREN Type RPAREN
-    (89) BasicLit -> . IntLiteral
-    (90) BasicLit -> . FloatLiteral
-    (91) BasicLit -> . ImgLiteral
-    (92) BasicLit -> . RuneLiteral
-    (93) BasicLit -> . StringLiteral
-    (5) TypeName -> . TYPEX
-    (6) TypeName -> . TTYPE IDENTIFIER
-    (7) TypeLit -> . ArrayType
-    (8) TypeLit -> . StructType
-    (9) TypeLit -> . PointerType
-    (10) TypeLit -> . FunctionType
-    (94) IntLiteral -> . INTEGER
-    (95) FloatLiteral -> . FLOAT
-    (96) ImgLiteral -> . IMAGINARY
-    (97) RuneLiteral -> . RUNE
-    (98) StringLiteral -> . STRING
-    (13) ArrayType -> . LBRACK ArrayLength RBRACK ElementType
-    (14) ArrayType -> . LBRACK RBRACK ElementType
-    (17) StructType -> . STRUCT LBRACE FieldDeclRep RBRACE
-    (24) PointerType -> . Pointer BaseType
-    (27) FunctionType -> . FUNC Signature
-    (25) Pointer -> . POINTER
-
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 102
-    TIMES           shift and go to state 117
-    AMPERS          shift and go to state 123
-    NOT             shift and go to state 107
-    LPAREN          shift and go to state 120
-    IDENTIFIER      shift and go to state 111
-    TYPEX           shift and go to state 58
-    TTYPE           shift and go to state 63
-    INTEGER         shift and go to state 109
-    FLOAT           shift and go to state 122
-    IMAGINARY       shift and go to state 110
-    RUNE            shift and go to state 96
-    STRING          shift and go to state 103
-    LBRACK          shift and go to state 67
-    STRUCT          shift and go to state 65
-    FUNC            shift and go to state 53
-    POINTER         shift and go to state 59
-
-    Conversion                     shift and go to state 97
-    UnaryOp                        shift and go to state 106
-    PrimaryExpr                    shift and go to state 124
-    ArrayType                      shift and go to state 54
-    Literal                        shift and go to state 99
-    FloatLiteral                   shift and go to state 100
-    Type                           shift and go to state 101
-    OperandName                    shift and go to state 104
-    BasicLit                       shift and go to state 105
-    TypeName                       shift and go to state 57
-    StructType                     shift and go to state 60
-    IntLiteral                     shift and go to state 112
-    UnaryExpr                      shift and go to state 115
-    RuneLiteral                    shift and go to state 116
-    Operand                        shift and go to state 118
-    Expression                     shift and go to state 335
-    PointerType                    shift and go to state 69
-    Pointer                        shift and go to state 66
-    StringLiteral                  shift and go to state 98
-    TypeLit                        shift and go to state 56
-    ImgLiteral                     shift and go to state 113
-    FunctionType                   shift and go to state 70
 
 state 300
 
-    (168) IncDecStmt -> PrimaryExpr PLUSPLUS .
+    (160) PrintStmt -> PRINT PS . Expression
+    (116) Expression -> . UnaryExpr
+    (117) Expression -> . Expression OROR Expression
+    (118) Expression -> . Expression AMPAMP Expression
+    (119) Expression -> . Expression EQEQ Expression
+    (120) Expression -> . Expression NOTEQ Expression
+    (121) Expression -> . Expression LESS Expression
+    (122) Expression -> . Expression GREAT Expression
+    (123) Expression -> . Expression LEQ Expression
+    (124) Expression -> . Expression GEQ Expression
+    (125) Expression -> . Expression PLUS Expression
+    (126) Expression -> . Expression MINUS Expression
+    (127) Expression -> . Expression OR Expression
+    (128) Expression -> . Expression CARET Expression
+    (129) Expression -> . Expression TIMES Expression
+    (130) Expression -> . Expression DIVIDE Expression
+    (131) Expression -> . Expression MOD Expression
+    (132) Expression -> . Expression AMPERS Expression
+    (133) Expression -> . Expression LL Expression
+    (134) Expression -> . Expression GG Expression
+    (135) Expression -> . Expression AMPCAR Expression
+    (138) UnaryExpr -> . PrimaryExpr
+    (139) UnaryExpr -> . UnaryOp UnaryExpr
+    (101) PrimaryExpr -> . Operand
+    (102) PrimaryExpr -> . Conversion
+    (103) PrimaryExpr -> . PrimaryExpr Selector
+    (104) PrimaryExpr -> . PrimaryExpr Index
+    (105) PrimaryExpr -> . PrimaryExpr Slice
+    (106) PrimaryExpr -> . PrimaryExpr Arguments
+    (140) UnaryOp -> . PLUS
+    (141) UnaryOp -> . MINUS
+    (142) UnaryOp -> . TIMES
+    (143) UnaryOp -> . AMPERS
+    (144) UnaryOp -> . NOT
+    (85) Operand -> . Literal
+    (86) Operand -> . OperandName
+    (87) Operand -> . LPAREN Expression RPAREN
+    (100) Conversion -> . Type LPAREN Expression RPAREN
+    (88) Literal -> . BasicLit
+    (99) OperandName -> . IDENTIFIER
+    (2) Type -> . TypeName
+    (3) Type -> . TypeLit
+    (4) Type -> . LPAREN Type RPAREN
+    (89) BasicLit -> . IntLiteral
+    (90) BasicLit -> . FloatLiteral
+    (91) BasicLit -> . ImgLiteral
+    (92) BasicLit -> . RuneLiteral
+    (93) BasicLit -> . StringLiteral
+    (5) TypeName -> . TYPEX
+    (6) TypeName -> . TTYPE IDENTIFIER
+    (7) TypeLit -> . ArrayType
+    (8) TypeLit -> . StructType
+    (9) TypeLit -> . PointerType
+    (10) TypeLit -> . FunctionType
+    (94) IntLiteral -> . INTEGER
+    (95) FloatLiteral -> . FLOAT
+    (96) ImgLiteral -> . IMAGINARY
+    (97) RuneLiteral -> . RUNE
+    (98) StringLiteral -> . STRING
+    (13) ArrayType -> . LBRACK ArrayLength RBRACK ElementType
+    (14) ArrayType -> . LBRACK RBRACK ElementType
+    (17) StructType -> . STRUCT LBRACE FieldDeclRep RBRACE
+    (24) PointerType -> . Pointer BaseType
+    (27) FunctionType -> . FUNC Signature
+    (25) Pointer -> . POINTER
 
-    SEMICOL         reduce using rule 168 (IncDecStmt -> PrimaryExpr PLUSPLUS .)
-    LBRACE          reduce using rule 168 (IncDecStmt -> PrimaryExpr PLUSPLUS .)
+    PLUS            shift and go to state 108
+    MINUS           shift and go to state 102
+    TIMES           shift and go to state 117
+    AMPERS          shift and go to state 123
+    NOT             shift and go to state 107
+    LPAREN          shift and go to state 120
+    IDENTIFIER      shift and go to state 111
+    TYPEX           shift and go to state 58
+    TTYPE           shift and go to state 63
+    INTEGER         shift and go to state 109
+    FLOAT           shift and go to state 122
+    IMAGINARY       shift and go to state 110
+    RUNE            shift and go to state 96
+    STRING          shift and go to state 103
+    LBRACK          shift and go to state 67
+    STRUCT          shift and go to state 65
+    FUNC            shift and go to state 53
+    POINTER         shift and go to state 59
 
+    Conversion                     shift and go to state 97
+    UnaryOp                        shift and go to state 106
+    PrimaryExpr                    shift and go to state 124
+    ArrayType                      shift and go to state 54
+    Literal                        shift and go to state 99
+    FloatLiteral                   shift and go to state 100
+    Type                           shift and go to state 101
+    OperandName                    shift and go to state 104
+    BasicLit                       shift and go to state 105
+    TypeName                       shift and go to state 57
+    StructType                     shift and go to state 60
+    IntLiteral                     shift and go to state 112
+    UnaryExpr                      shift and go to state 115
+    RuneLiteral                    shift and go to state 116
+    Operand                        shift and go to state 118
+    Expression                     shift and go to state 337
+    PointerType                    shift and go to state 69
+    Pointer                        shift and go to state 66
+    StringLiteral                  shift and go to state 98
+    TypeLit                        shift and go to state 56
+    ImgLiteral                     shift and go to state 113
+    FunctionType                   shift and go to state 70
 
 state 301
 
-    (169) IncDecStmt -> PrimaryExpr MINUSMIN .
+    (159) PrintStmt -> PRINT PD . Expression
+    (116) Expression -> . UnaryExpr
+    (117) Expression -> . Expression OROR Expression
+    (118) Expression -> . Expression AMPAMP Expression
+    (119) Expression -> . Expression EQEQ Expression
+    (120) Expression -> . Expression NOTEQ Expression
+    (121) Expression -> . Expression LESS Expression
+    (122) Expression -> . Expression GREAT Expression
+    (123) Expression -> . Expression LEQ Expression
+    (124) Expression -> . Expression GEQ Expression
+    (125) Expression -> . Expression PLUS Expression
+    (126) Expression -> . Expression MINUS Expression
+    (127) Expression -> . Expression OR Expression
+    (128) Expression -> . Expression CARET Expression
+    (129) Expression -> . Expression TIMES Expression
+    (130) Expression -> . Expression DIVIDE Expression
+    (131) Expression -> . Expression MOD Expression
+    (132) Expression -> . Expression AMPERS Expression
+    (133) Expression -> . Expression LL Expression
+    (134) Expression -> . Expression GG Expression
+    (135) Expression -> . Expression AMPCAR Expression
+    (138) UnaryExpr -> . PrimaryExpr
+    (139) UnaryExpr -> . UnaryOp UnaryExpr
+    (101) PrimaryExpr -> . Operand
+    (102) PrimaryExpr -> . Conversion
+    (103) PrimaryExpr -> . PrimaryExpr Selector
+    (104) PrimaryExpr -> . PrimaryExpr Index
+    (105) PrimaryExpr -> . PrimaryExpr Slice
+    (106) PrimaryExpr -> . PrimaryExpr Arguments
+    (140) UnaryOp -> . PLUS
+    (141) UnaryOp -> . MINUS
+    (142) UnaryOp -> . TIMES
+    (143) UnaryOp -> . AMPERS
+    (144) UnaryOp -> . NOT
+    (85) Operand -> . Literal
+    (86) Operand -> . OperandName
+    (87) Operand -> . LPAREN Expression RPAREN
+    (100) Conversion -> . Type LPAREN Expression RPAREN
+    (88) Literal -> . BasicLit
+    (99) OperandName -> . IDENTIFIER
+    (2) Type -> . TypeName
+    (3) Type -> . TypeLit
+    (4) Type -> . LPAREN Type RPAREN
+    (89) BasicLit -> . IntLiteral
+    (90) BasicLit -> . FloatLiteral
+    (91) BasicLit -> . ImgLiteral
+    (92) BasicLit -> . RuneLiteral
+    (93) BasicLit -> . StringLiteral
+    (5) TypeName -> . TYPEX
+    (6) TypeName -> . TTYPE IDENTIFIER
+    (7) TypeLit -> . ArrayType
+    (8) TypeLit -> . StructType
+    (9) TypeLit -> . PointerType
+    (10) TypeLit -> . FunctionType
+    (94) IntLiteral -> . INTEGER
+    (95) FloatLiteral -> . FLOAT
+    (96) ImgLiteral -> . IMAGINARY
+    (97) RuneLiteral -> . RUNE
+    (98) StringLiteral -> . STRING
+    (13) ArrayType -> . LBRACK ArrayLength RBRACK ElementType
+    (14) ArrayType -> . LBRACK RBRACK ElementType
+    (17) StructType -> . STRUCT LBRACE FieldDeclRep RBRACE
+    (24) PointerType -> . Pointer BaseType
+    (27) FunctionType -> . FUNC Signature
+    (25) Pointer -> . POINTER
 
-    SEMICOL         reduce using rule 169 (IncDecStmt -> PrimaryExpr MINUSMIN .)
-    LBRACE          reduce using rule 169 (IncDecStmt -> PrimaryExpr MINUSMIN .)
+    PLUS            shift and go to state 108
+    MINUS           shift and go to state 102
+    TIMES           shift and go to state 117
+    AMPERS          shift and go to state 123
+    NOT             shift and go to state 107
+    LPAREN          shift and go to state 120
+    IDENTIFIER      shift and go to state 111
+    TYPEX           shift and go to state 58
+    TTYPE           shift and go to state 63
+    INTEGER         shift and go to state 109
+    FLOAT           shift and go to state 122
+    IMAGINARY       shift and go to state 110
+    RUNE            shift and go to state 96
+    STRING          shift and go to state 103
+    LBRACK          shift and go to state 67
+    STRUCT          shift and go to state 65
+    FUNC            shift and go to state 53
+    POINTER         shift and go to state 59
 
+    Conversion                     shift and go to state 97
+    UnaryOp                        shift and go to state 106
+    PrimaryExpr                    shift and go to state 124
+    ArrayType                      shift and go to state 54
+    Literal                        shift and go to state 99
+    FloatLiteral                   shift and go to state 100
+    Type                           shift and go to state 101
+    OperandName                    shift and go to state 104
+    BasicLit                       shift and go to state 105
+    TypeName                       shift and go to state 57
+    StructType                     shift and go to state 60
+    IntLiteral                     shift and go to state 112
+    UnaryExpr                      shift and go to state 115
+    RuneLiteral                    shift and go to state 116
+    Operand                        shift and go to state 118
+    Expression                     shift and go to state 338
+    PointerType                    shift and go to state 69
+    Pointer                        shift and go to state 66
+    StringLiteral                  shift and go to state 98
+    TypeLit                        shift and go to state 56
+    ImgLiteral                     shift and go to state 113
+    FunctionType                   shift and go to state 70
 
 state 302
 
-    (206) LabelOpt -> epsilon .
+    (170) IncDecStmt -> PrimaryExpr PLUSPLUS .
 
-    SEMICOL         reduce using rule 206 (LabelOpt -> epsilon .)
+    SEMICOL         reduce using rule 170 (IncDecStmt -> PrimaryExpr PLUSPLUS .)
+    LBRACE          reduce using rule 170 (IncDecStmt -> PrimaryExpr PLUSPLUS .)
 
 
 state 303
 
-    (166) Label -> IDENTIFIER .
+    (171) IncDecStmt -> PrimaryExpr MINUSMIN .
 
-    SEMICOL         reduce using rule 166 (Label -> IDENTIFIER .)
+    SEMICOL         reduce using rule 171 (IncDecStmt -> PrimaryExpr MINUSMIN .)
+    LBRACE          reduce using rule 171 (IncDecStmt -> PrimaryExpr MINUSMIN .)
 
 
 state 304
 
-    (204) ContinueStmt -> CONTINUE LabelOpt .
+    (208) LabelOpt -> epsilon .
 
-    SEMICOL         reduce using rule 204 (ContinueStmt -> CONTINUE LabelOpt .)
+    SEMICOL         reduce using rule 208 (LabelOpt -> epsilon .)
 
 
 state 305
 
-    (205) LabelOpt -> Label .
+    (168) Label -> IDENTIFIER .
 
-    SEMICOL         reduce using rule 205 (LabelOpt -> Label .)
+    SEMICOL         reduce using rule 168 (Label -> IDENTIFIER .)
 
 
 state 306
+
+    (206) ContinueStmt -> CONTINUE LabelOpt .
+
+    SEMICOL         reduce using rule 206 (ContinueStmt -> CONTINUE LabelOpt .)
+
+
+state 307
+
+    (207) LabelOpt -> Label .
+
+    SEMICOL         reduce using rule 207 (LabelOpt -> Label .)
+
+
+state 308
 
     (79) ShortVarDecl -> IDENTIFIER COLONEQ . Expression
     (116) Expression -> . UnaryExpr
@@ -11065,7 +11094,7 @@ state 306
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     Operand                        shift and go to state 118
-    Expression                     shift and go to state 336
+    Expression                     shift and go to state 339
     PointerType                    shift and go to state 69
     Pointer                        shift and go to state 66
     StringLiteral                  shift and go to state 98
@@ -11073,280 +11102,280 @@ state 306
     ImgLiteral                     shift and go to state 113
     FunctionType                   shift and go to state 70
 
-state 307
-
-    (157) MallocStmt -> MALLOC IDENTIFIER .
-
-    SEMICOL         reduce using rule 157 (MallocStmt -> MALLOC IDENTIFIER .)
-
-
-state 308
-
-    (171) assign_op -> AssignOp .
-
-    PLUS            reduce using rule 171 (assign_op -> AssignOp .)
-    MINUS           reduce using rule 171 (assign_op -> AssignOp .)
-    TIMES           reduce using rule 171 (assign_op -> AssignOp .)
-    AMPERS          reduce using rule 171 (assign_op -> AssignOp .)
-    NOT             reduce using rule 171 (assign_op -> AssignOp .)
-    LPAREN          reduce using rule 171 (assign_op -> AssignOp .)
-    IDENTIFIER      reduce using rule 171 (assign_op -> AssignOp .)
-    TYPEX           reduce using rule 171 (assign_op -> AssignOp .)
-    TTYPE           reduce using rule 171 (assign_op -> AssignOp .)
-    INTEGER         reduce using rule 171 (assign_op -> AssignOp .)
-    FLOAT           reduce using rule 171 (assign_op -> AssignOp .)
-    IMAGINARY       reduce using rule 171 (assign_op -> AssignOp .)
-    RUNE            reduce using rule 171 (assign_op -> AssignOp .)
-    STRING          reduce using rule 171 (assign_op -> AssignOp .)
-    LBRACK          reduce using rule 171 (assign_op -> AssignOp .)
-    STRUCT          reduce using rule 171 (assign_op -> AssignOp .)
-    FUNC            reduce using rule 171 (assign_op -> AssignOp .)
-    POINTER         reduce using rule 171 (assign_op -> AssignOp .)
-
-
 state 309
 
-    (182) AssignOp -> EQUAL .
+    (158) MallocStmt -> MALLOC IDENTIFIER .
 
-    PLUS            reduce using rule 182 (AssignOp -> EQUAL .)
-    MINUS           reduce using rule 182 (AssignOp -> EQUAL .)
-    TIMES           reduce using rule 182 (AssignOp -> EQUAL .)
-    AMPERS          reduce using rule 182 (AssignOp -> EQUAL .)
-    NOT             reduce using rule 182 (AssignOp -> EQUAL .)
-    LPAREN          reduce using rule 182 (AssignOp -> EQUAL .)
-    IDENTIFIER      reduce using rule 182 (AssignOp -> EQUAL .)
-    TYPEX           reduce using rule 182 (AssignOp -> EQUAL .)
-    TTYPE           reduce using rule 182 (AssignOp -> EQUAL .)
-    INTEGER         reduce using rule 182 (AssignOp -> EQUAL .)
-    FLOAT           reduce using rule 182 (AssignOp -> EQUAL .)
-    IMAGINARY       reduce using rule 182 (AssignOp -> EQUAL .)
-    RUNE            reduce using rule 182 (AssignOp -> EQUAL .)
-    STRING          reduce using rule 182 (AssignOp -> EQUAL .)
-    LBRACK          reduce using rule 182 (AssignOp -> EQUAL .)
-    STRUCT          reduce using rule 182 (AssignOp -> EQUAL .)
-    FUNC            reduce using rule 182 (AssignOp -> EQUAL .)
-    POINTER         reduce using rule 182 (AssignOp -> EQUAL .)
+    SEMICOL         reduce using rule 158 (MallocStmt -> MALLOC IDENTIFIER .)
 
 
 state 310
 
-    (179) AssignOp -> CAREQ .
+    (173) assign_op -> AssignOp .
 
-    PLUS            reduce using rule 179 (AssignOp -> CAREQ .)
-    MINUS           reduce using rule 179 (AssignOp -> CAREQ .)
-    TIMES           reduce using rule 179 (AssignOp -> CAREQ .)
-    AMPERS          reduce using rule 179 (AssignOp -> CAREQ .)
-    NOT             reduce using rule 179 (AssignOp -> CAREQ .)
-    LPAREN          reduce using rule 179 (AssignOp -> CAREQ .)
-    IDENTIFIER      reduce using rule 179 (AssignOp -> CAREQ .)
-    TYPEX           reduce using rule 179 (AssignOp -> CAREQ .)
-    TTYPE           reduce using rule 179 (AssignOp -> CAREQ .)
-    INTEGER         reduce using rule 179 (AssignOp -> CAREQ .)
-    FLOAT           reduce using rule 179 (AssignOp -> CAREQ .)
-    IMAGINARY       reduce using rule 179 (AssignOp -> CAREQ .)
-    RUNE            reduce using rule 179 (AssignOp -> CAREQ .)
-    STRING          reduce using rule 179 (AssignOp -> CAREQ .)
-    LBRACK          reduce using rule 179 (AssignOp -> CAREQ .)
-    STRUCT          reduce using rule 179 (AssignOp -> CAREQ .)
-    FUNC            reduce using rule 179 (AssignOp -> CAREQ .)
-    POINTER         reduce using rule 179 (AssignOp -> CAREQ .)
+    PLUS            reduce using rule 173 (assign_op -> AssignOp .)
+    MINUS           reduce using rule 173 (assign_op -> AssignOp .)
+    TIMES           reduce using rule 173 (assign_op -> AssignOp .)
+    AMPERS          reduce using rule 173 (assign_op -> AssignOp .)
+    NOT             reduce using rule 173 (assign_op -> AssignOp .)
+    LPAREN          reduce using rule 173 (assign_op -> AssignOp .)
+    IDENTIFIER      reduce using rule 173 (assign_op -> AssignOp .)
+    TYPEX           reduce using rule 173 (assign_op -> AssignOp .)
+    TTYPE           reduce using rule 173 (assign_op -> AssignOp .)
+    INTEGER         reduce using rule 173 (assign_op -> AssignOp .)
+    FLOAT           reduce using rule 173 (assign_op -> AssignOp .)
+    IMAGINARY       reduce using rule 173 (assign_op -> AssignOp .)
+    RUNE            reduce using rule 173 (assign_op -> AssignOp .)
+    STRING          reduce using rule 173 (assign_op -> AssignOp .)
+    LBRACK          reduce using rule 173 (assign_op -> AssignOp .)
+    STRUCT          reduce using rule 173 (assign_op -> AssignOp .)
+    FUNC            reduce using rule 173 (assign_op -> AssignOp .)
+    POINTER         reduce using rule 173 (assign_op -> AssignOp .)
 
 
 state 311
 
-    (174) AssignOp -> TIMESEQ .
+    (184) AssignOp -> EQUAL .
 
-    PLUS            reduce using rule 174 (AssignOp -> TIMESEQ .)
-    MINUS           reduce using rule 174 (AssignOp -> TIMESEQ .)
-    TIMES           reduce using rule 174 (AssignOp -> TIMESEQ .)
-    AMPERS          reduce using rule 174 (AssignOp -> TIMESEQ .)
-    NOT             reduce using rule 174 (AssignOp -> TIMESEQ .)
-    LPAREN          reduce using rule 174 (AssignOp -> TIMESEQ .)
-    IDENTIFIER      reduce using rule 174 (AssignOp -> TIMESEQ .)
-    TYPEX           reduce using rule 174 (AssignOp -> TIMESEQ .)
-    TTYPE           reduce using rule 174 (AssignOp -> TIMESEQ .)
-    INTEGER         reduce using rule 174 (AssignOp -> TIMESEQ .)
-    FLOAT           reduce using rule 174 (AssignOp -> TIMESEQ .)
-    IMAGINARY       reduce using rule 174 (AssignOp -> TIMESEQ .)
-    RUNE            reduce using rule 174 (AssignOp -> TIMESEQ .)
-    STRING          reduce using rule 174 (AssignOp -> TIMESEQ .)
-    LBRACK          reduce using rule 174 (AssignOp -> TIMESEQ .)
-    STRUCT          reduce using rule 174 (AssignOp -> TIMESEQ .)
-    FUNC            reduce using rule 174 (AssignOp -> TIMESEQ .)
-    POINTER         reduce using rule 174 (AssignOp -> TIMESEQ .)
+    PLUS            reduce using rule 184 (AssignOp -> EQUAL .)
+    MINUS           reduce using rule 184 (AssignOp -> EQUAL .)
+    TIMES           reduce using rule 184 (AssignOp -> EQUAL .)
+    AMPERS          reduce using rule 184 (AssignOp -> EQUAL .)
+    NOT             reduce using rule 184 (AssignOp -> EQUAL .)
+    LPAREN          reduce using rule 184 (AssignOp -> EQUAL .)
+    IDENTIFIER      reduce using rule 184 (AssignOp -> EQUAL .)
+    TYPEX           reduce using rule 184 (AssignOp -> EQUAL .)
+    TTYPE           reduce using rule 184 (AssignOp -> EQUAL .)
+    INTEGER         reduce using rule 184 (AssignOp -> EQUAL .)
+    FLOAT           reduce using rule 184 (AssignOp -> EQUAL .)
+    IMAGINARY       reduce using rule 184 (AssignOp -> EQUAL .)
+    RUNE            reduce using rule 184 (AssignOp -> EQUAL .)
+    STRING          reduce using rule 184 (AssignOp -> EQUAL .)
+    LBRACK          reduce using rule 184 (AssignOp -> EQUAL .)
+    STRUCT          reduce using rule 184 (AssignOp -> EQUAL .)
+    FUNC            reduce using rule 184 (AssignOp -> EQUAL .)
+    POINTER         reduce using rule 184 (AssignOp -> EQUAL .)
 
 
 state 312
 
-    (172) AssignOp -> PLUSEQ .
+    (181) AssignOp -> CAREQ .
 
-    PLUS            reduce using rule 172 (AssignOp -> PLUSEQ .)
-    MINUS           reduce using rule 172 (AssignOp -> PLUSEQ .)
-    TIMES           reduce using rule 172 (AssignOp -> PLUSEQ .)
-    AMPERS          reduce using rule 172 (AssignOp -> PLUSEQ .)
-    NOT             reduce using rule 172 (AssignOp -> PLUSEQ .)
-    LPAREN          reduce using rule 172 (AssignOp -> PLUSEQ .)
-    IDENTIFIER      reduce using rule 172 (AssignOp -> PLUSEQ .)
-    TYPEX           reduce using rule 172 (AssignOp -> PLUSEQ .)
-    TTYPE           reduce using rule 172 (AssignOp -> PLUSEQ .)
-    INTEGER         reduce using rule 172 (AssignOp -> PLUSEQ .)
-    FLOAT           reduce using rule 172 (AssignOp -> PLUSEQ .)
-    IMAGINARY       reduce using rule 172 (AssignOp -> PLUSEQ .)
-    RUNE            reduce using rule 172 (AssignOp -> PLUSEQ .)
-    STRING          reduce using rule 172 (AssignOp -> PLUSEQ .)
-    LBRACK          reduce using rule 172 (AssignOp -> PLUSEQ .)
-    STRUCT          reduce using rule 172 (AssignOp -> PLUSEQ .)
-    FUNC            reduce using rule 172 (AssignOp -> PLUSEQ .)
-    POINTER         reduce using rule 172 (AssignOp -> PLUSEQ .)
+    PLUS            reduce using rule 181 (AssignOp -> CAREQ .)
+    MINUS           reduce using rule 181 (AssignOp -> CAREQ .)
+    TIMES           reduce using rule 181 (AssignOp -> CAREQ .)
+    AMPERS          reduce using rule 181 (AssignOp -> CAREQ .)
+    NOT             reduce using rule 181 (AssignOp -> CAREQ .)
+    LPAREN          reduce using rule 181 (AssignOp -> CAREQ .)
+    IDENTIFIER      reduce using rule 181 (AssignOp -> CAREQ .)
+    TYPEX           reduce using rule 181 (AssignOp -> CAREQ .)
+    TTYPE           reduce using rule 181 (AssignOp -> CAREQ .)
+    INTEGER         reduce using rule 181 (AssignOp -> CAREQ .)
+    FLOAT           reduce using rule 181 (AssignOp -> CAREQ .)
+    IMAGINARY       reduce using rule 181 (AssignOp -> CAREQ .)
+    RUNE            reduce using rule 181 (AssignOp -> CAREQ .)
+    STRING          reduce using rule 181 (AssignOp -> CAREQ .)
+    LBRACK          reduce using rule 181 (AssignOp -> CAREQ .)
+    STRUCT          reduce using rule 181 (AssignOp -> CAREQ .)
+    FUNC            reduce using rule 181 (AssignOp -> CAREQ .)
+    POINTER         reduce using rule 181 (AssignOp -> CAREQ .)
 
 
 state 313
 
-    (176) AssignOp -> MODEQ .
+    (176) AssignOp -> TIMESEQ .
 
-    PLUS            reduce using rule 176 (AssignOp -> MODEQ .)
-    MINUS           reduce using rule 176 (AssignOp -> MODEQ .)
-    TIMES           reduce using rule 176 (AssignOp -> MODEQ .)
-    AMPERS          reduce using rule 176 (AssignOp -> MODEQ .)
-    NOT             reduce using rule 176 (AssignOp -> MODEQ .)
-    LPAREN          reduce using rule 176 (AssignOp -> MODEQ .)
-    IDENTIFIER      reduce using rule 176 (AssignOp -> MODEQ .)
-    TYPEX           reduce using rule 176 (AssignOp -> MODEQ .)
-    TTYPE           reduce using rule 176 (AssignOp -> MODEQ .)
-    INTEGER         reduce using rule 176 (AssignOp -> MODEQ .)
-    FLOAT           reduce using rule 176 (AssignOp -> MODEQ .)
-    IMAGINARY       reduce using rule 176 (AssignOp -> MODEQ .)
-    RUNE            reduce using rule 176 (AssignOp -> MODEQ .)
-    STRING          reduce using rule 176 (AssignOp -> MODEQ .)
-    LBRACK          reduce using rule 176 (AssignOp -> MODEQ .)
-    STRUCT          reduce using rule 176 (AssignOp -> MODEQ .)
-    FUNC            reduce using rule 176 (AssignOp -> MODEQ .)
-    POINTER         reduce using rule 176 (AssignOp -> MODEQ .)
+    PLUS            reduce using rule 176 (AssignOp -> TIMESEQ .)
+    MINUS           reduce using rule 176 (AssignOp -> TIMESEQ .)
+    TIMES           reduce using rule 176 (AssignOp -> TIMESEQ .)
+    AMPERS          reduce using rule 176 (AssignOp -> TIMESEQ .)
+    NOT             reduce using rule 176 (AssignOp -> TIMESEQ .)
+    LPAREN          reduce using rule 176 (AssignOp -> TIMESEQ .)
+    IDENTIFIER      reduce using rule 176 (AssignOp -> TIMESEQ .)
+    TYPEX           reduce using rule 176 (AssignOp -> TIMESEQ .)
+    TTYPE           reduce using rule 176 (AssignOp -> TIMESEQ .)
+    INTEGER         reduce using rule 176 (AssignOp -> TIMESEQ .)
+    FLOAT           reduce using rule 176 (AssignOp -> TIMESEQ .)
+    IMAGINARY       reduce using rule 176 (AssignOp -> TIMESEQ .)
+    RUNE            reduce using rule 176 (AssignOp -> TIMESEQ .)
+    STRING          reduce using rule 176 (AssignOp -> TIMESEQ .)
+    LBRACK          reduce using rule 176 (AssignOp -> TIMESEQ .)
+    STRUCT          reduce using rule 176 (AssignOp -> TIMESEQ .)
+    FUNC            reduce using rule 176 (AssignOp -> TIMESEQ .)
+    POINTER         reduce using rule 176 (AssignOp -> TIMESEQ .)
 
 
 state 314
 
-    (181) AssignOp -> GGEQ .
+    (174) AssignOp -> PLUSEQ .
 
-    PLUS            reduce using rule 181 (AssignOp -> GGEQ .)
-    MINUS           reduce using rule 181 (AssignOp -> GGEQ .)
-    TIMES           reduce using rule 181 (AssignOp -> GGEQ .)
-    AMPERS          reduce using rule 181 (AssignOp -> GGEQ .)
-    NOT             reduce using rule 181 (AssignOp -> GGEQ .)
-    LPAREN          reduce using rule 181 (AssignOp -> GGEQ .)
-    IDENTIFIER      reduce using rule 181 (AssignOp -> GGEQ .)
-    TYPEX           reduce using rule 181 (AssignOp -> GGEQ .)
-    TTYPE           reduce using rule 181 (AssignOp -> GGEQ .)
-    INTEGER         reduce using rule 181 (AssignOp -> GGEQ .)
-    FLOAT           reduce using rule 181 (AssignOp -> GGEQ .)
-    IMAGINARY       reduce using rule 181 (AssignOp -> GGEQ .)
-    RUNE            reduce using rule 181 (AssignOp -> GGEQ .)
-    STRING          reduce using rule 181 (AssignOp -> GGEQ .)
-    LBRACK          reduce using rule 181 (AssignOp -> GGEQ .)
-    STRUCT          reduce using rule 181 (AssignOp -> GGEQ .)
-    FUNC            reduce using rule 181 (AssignOp -> GGEQ .)
-    POINTER         reduce using rule 181 (AssignOp -> GGEQ .)
+    PLUS            reduce using rule 174 (AssignOp -> PLUSEQ .)
+    MINUS           reduce using rule 174 (AssignOp -> PLUSEQ .)
+    TIMES           reduce using rule 174 (AssignOp -> PLUSEQ .)
+    AMPERS          reduce using rule 174 (AssignOp -> PLUSEQ .)
+    NOT             reduce using rule 174 (AssignOp -> PLUSEQ .)
+    LPAREN          reduce using rule 174 (AssignOp -> PLUSEQ .)
+    IDENTIFIER      reduce using rule 174 (AssignOp -> PLUSEQ .)
+    TYPEX           reduce using rule 174 (AssignOp -> PLUSEQ .)
+    TTYPE           reduce using rule 174 (AssignOp -> PLUSEQ .)
+    INTEGER         reduce using rule 174 (AssignOp -> PLUSEQ .)
+    FLOAT           reduce using rule 174 (AssignOp -> PLUSEQ .)
+    IMAGINARY       reduce using rule 174 (AssignOp -> PLUSEQ .)
+    RUNE            reduce using rule 174 (AssignOp -> PLUSEQ .)
+    STRING          reduce using rule 174 (AssignOp -> PLUSEQ .)
+    LBRACK          reduce using rule 174 (AssignOp -> PLUSEQ .)
+    STRUCT          reduce using rule 174 (AssignOp -> PLUSEQ .)
+    FUNC            reduce using rule 174 (AssignOp -> PLUSEQ .)
+    POINTER         reduce using rule 174 (AssignOp -> PLUSEQ .)
 
 
 state 315
 
-    (180) AssignOp -> LLEQ .
+    (178) AssignOp -> MODEQ .
 
-    PLUS            reduce using rule 180 (AssignOp -> LLEQ .)
-    MINUS           reduce using rule 180 (AssignOp -> LLEQ .)
-    TIMES           reduce using rule 180 (AssignOp -> LLEQ .)
-    AMPERS          reduce using rule 180 (AssignOp -> LLEQ .)
-    NOT             reduce using rule 180 (AssignOp -> LLEQ .)
-    LPAREN          reduce using rule 180 (AssignOp -> LLEQ .)
-    IDENTIFIER      reduce using rule 180 (AssignOp -> LLEQ .)
-    TYPEX           reduce using rule 180 (AssignOp -> LLEQ .)
-    TTYPE           reduce using rule 180 (AssignOp -> LLEQ .)
-    INTEGER         reduce using rule 180 (AssignOp -> LLEQ .)
-    FLOAT           reduce using rule 180 (AssignOp -> LLEQ .)
-    IMAGINARY       reduce using rule 180 (AssignOp -> LLEQ .)
-    RUNE            reduce using rule 180 (AssignOp -> LLEQ .)
-    STRING          reduce using rule 180 (AssignOp -> LLEQ .)
-    LBRACK          reduce using rule 180 (AssignOp -> LLEQ .)
-    STRUCT          reduce using rule 180 (AssignOp -> LLEQ .)
-    FUNC            reduce using rule 180 (AssignOp -> LLEQ .)
-    POINTER         reduce using rule 180 (AssignOp -> LLEQ .)
+    PLUS            reduce using rule 178 (AssignOp -> MODEQ .)
+    MINUS           reduce using rule 178 (AssignOp -> MODEQ .)
+    TIMES           reduce using rule 178 (AssignOp -> MODEQ .)
+    AMPERS          reduce using rule 178 (AssignOp -> MODEQ .)
+    NOT             reduce using rule 178 (AssignOp -> MODEQ .)
+    LPAREN          reduce using rule 178 (AssignOp -> MODEQ .)
+    IDENTIFIER      reduce using rule 178 (AssignOp -> MODEQ .)
+    TYPEX           reduce using rule 178 (AssignOp -> MODEQ .)
+    TTYPE           reduce using rule 178 (AssignOp -> MODEQ .)
+    INTEGER         reduce using rule 178 (AssignOp -> MODEQ .)
+    FLOAT           reduce using rule 178 (AssignOp -> MODEQ .)
+    IMAGINARY       reduce using rule 178 (AssignOp -> MODEQ .)
+    RUNE            reduce using rule 178 (AssignOp -> MODEQ .)
+    STRING          reduce using rule 178 (AssignOp -> MODEQ .)
+    LBRACK          reduce using rule 178 (AssignOp -> MODEQ .)
+    STRUCT          reduce using rule 178 (AssignOp -> MODEQ .)
+    FUNC            reduce using rule 178 (AssignOp -> MODEQ .)
+    POINTER         reduce using rule 178 (AssignOp -> MODEQ .)
 
 
 state 316
 
-    (178) AssignOp -> OREQ .
+    (183) AssignOp -> GGEQ .
 
-    PLUS            reduce using rule 178 (AssignOp -> OREQ .)
-    MINUS           reduce using rule 178 (AssignOp -> OREQ .)
-    TIMES           reduce using rule 178 (AssignOp -> OREQ .)
-    AMPERS          reduce using rule 178 (AssignOp -> OREQ .)
-    NOT             reduce using rule 178 (AssignOp -> OREQ .)
-    LPAREN          reduce using rule 178 (AssignOp -> OREQ .)
-    IDENTIFIER      reduce using rule 178 (AssignOp -> OREQ .)
-    TYPEX           reduce using rule 178 (AssignOp -> OREQ .)
-    TTYPE           reduce using rule 178 (AssignOp -> OREQ .)
-    INTEGER         reduce using rule 178 (AssignOp -> OREQ .)
-    FLOAT           reduce using rule 178 (AssignOp -> OREQ .)
-    IMAGINARY       reduce using rule 178 (AssignOp -> OREQ .)
-    RUNE            reduce using rule 178 (AssignOp -> OREQ .)
-    STRING          reduce using rule 178 (AssignOp -> OREQ .)
-    LBRACK          reduce using rule 178 (AssignOp -> OREQ .)
-    STRUCT          reduce using rule 178 (AssignOp -> OREQ .)
-    FUNC            reduce using rule 178 (AssignOp -> OREQ .)
-    POINTER         reduce using rule 178 (AssignOp -> OREQ .)
+    PLUS            reduce using rule 183 (AssignOp -> GGEQ .)
+    MINUS           reduce using rule 183 (AssignOp -> GGEQ .)
+    TIMES           reduce using rule 183 (AssignOp -> GGEQ .)
+    AMPERS          reduce using rule 183 (AssignOp -> GGEQ .)
+    NOT             reduce using rule 183 (AssignOp -> GGEQ .)
+    LPAREN          reduce using rule 183 (AssignOp -> GGEQ .)
+    IDENTIFIER      reduce using rule 183 (AssignOp -> GGEQ .)
+    TYPEX           reduce using rule 183 (AssignOp -> GGEQ .)
+    TTYPE           reduce using rule 183 (AssignOp -> GGEQ .)
+    INTEGER         reduce using rule 183 (AssignOp -> GGEQ .)
+    FLOAT           reduce using rule 183 (AssignOp -> GGEQ .)
+    IMAGINARY       reduce using rule 183 (AssignOp -> GGEQ .)
+    RUNE            reduce using rule 183 (AssignOp -> GGEQ .)
+    STRING          reduce using rule 183 (AssignOp -> GGEQ .)
+    LBRACK          reduce using rule 183 (AssignOp -> GGEQ .)
+    STRUCT          reduce using rule 183 (AssignOp -> GGEQ .)
+    FUNC            reduce using rule 183 (AssignOp -> GGEQ .)
+    POINTER         reduce using rule 183 (AssignOp -> GGEQ .)
 
 
 state 317
 
-    (173) AssignOp -> MINUSEQ .
+    (182) AssignOp -> LLEQ .
 
-    PLUS            reduce using rule 173 (AssignOp -> MINUSEQ .)
-    MINUS           reduce using rule 173 (AssignOp -> MINUSEQ .)
-    TIMES           reduce using rule 173 (AssignOp -> MINUSEQ .)
-    AMPERS          reduce using rule 173 (AssignOp -> MINUSEQ .)
-    NOT             reduce using rule 173 (AssignOp -> MINUSEQ .)
-    LPAREN          reduce using rule 173 (AssignOp -> MINUSEQ .)
-    IDENTIFIER      reduce using rule 173 (AssignOp -> MINUSEQ .)
-    TYPEX           reduce using rule 173 (AssignOp -> MINUSEQ .)
-    TTYPE           reduce using rule 173 (AssignOp -> MINUSEQ .)
-    INTEGER         reduce using rule 173 (AssignOp -> MINUSEQ .)
-    FLOAT           reduce using rule 173 (AssignOp -> MINUSEQ .)
-    IMAGINARY       reduce using rule 173 (AssignOp -> MINUSEQ .)
-    RUNE            reduce using rule 173 (AssignOp -> MINUSEQ .)
-    STRING          reduce using rule 173 (AssignOp -> MINUSEQ .)
-    LBRACK          reduce using rule 173 (AssignOp -> MINUSEQ .)
-    STRUCT          reduce using rule 173 (AssignOp -> MINUSEQ .)
-    FUNC            reduce using rule 173 (AssignOp -> MINUSEQ .)
-    POINTER         reduce using rule 173 (AssignOp -> MINUSEQ .)
+    PLUS            reduce using rule 182 (AssignOp -> LLEQ .)
+    MINUS           reduce using rule 182 (AssignOp -> LLEQ .)
+    TIMES           reduce using rule 182 (AssignOp -> LLEQ .)
+    AMPERS          reduce using rule 182 (AssignOp -> LLEQ .)
+    NOT             reduce using rule 182 (AssignOp -> LLEQ .)
+    LPAREN          reduce using rule 182 (AssignOp -> LLEQ .)
+    IDENTIFIER      reduce using rule 182 (AssignOp -> LLEQ .)
+    TYPEX           reduce using rule 182 (AssignOp -> LLEQ .)
+    TTYPE           reduce using rule 182 (AssignOp -> LLEQ .)
+    INTEGER         reduce using rule 182 (AssignOp -> LLEQ .)
+    FLOAT           reduce using rule 182 (AssignOp -> LLEQ .)
+    IMAGINARY       reduce using rule 182 (AssignOp -> LLEQ .)
+    RUNE            reduce using rule 182 (AssignOp -> LLEQ .)
+    STRING          reduce using rule 182 (AssignOp -> LLEQ .)
+    LBRACK          reduce using rule 182 (AssignOp -> LLEQ .)
+    STRUCT          reduce using rule 182 (AssignOp -> LLEQ .)
+    FUNC            reduce using rule 182 (AssignOp -> LLEQ .)
+    POINTER         reduce using rule 182 (AssignOp -> LLEQ .)
 
 
 state 318
 
-    (177) AssignOp -> AMPEQ .
+    (180) AssignOp -> OREQ .
 
-    PLUS            reduce using rule 177 (AssignOp -> AMPEQ .)
-    MINUS           reduce using rule 177 (AssignOp -> AMPEQ .)
-    TIMES           reduce using rule 177 (AssignOp -> AMPEQ .)
-    AMPERS          reduce using rule 177 (AssignOp -> AMPEQ .)
-    NOT             reduce using rule 177 (AssignOp -> AMPEQ .)
-    LPAREN          reduce using rule 177 (AssignOp -> AMPEQ .)
-    IDENTIFIER      reduce using rule 177 (AssignOp -> AMPEQ .)
-    TYPEX           reduce using rule 177 (AssignOp -> AMPEQ .)
-    TTYPE           reduce using rule 177 (AssignOp -> AMPEQ .)
-    INTEGER         reduce using rule 177 (AssignOp -> AMPEQ .)
-    FLOAT           reduce using rule 177 (AssignOp -> AMPEQ .)
-    IMAGINARY       reduce using rule 177 (AssignOp -> AMPEQ .)
-    RUNE            reduce using rule 177 (AssignOp -> AMPEQ .)
-    STRING          reduce using rule 177 (AssignOp -> AMPEQ .)
-    LBRACK          reduce using rule 177 (AssignOp -> AMPEQ .)
-    STRUCT          reduce using rule 177 (AssignOp -> AMPEQ .)
-    FUNC            reduce using rule 177 (AssignOp -> AMPEQ .)
-    POINTER         reduce using rule 177 (AssignOp -> AMPEQ .)
+    PLUS            reduce using rule 180 (AssignOp -> OREQ .)
+    MINUS           reduce using rule 180 (AssignOp -> OREQ .)
+    TIMES           reduce using rule 180 (AssignOp -> OREQ .)
+    AMPERS          reduce using rule 180 (AssignOp -> OREQ .)
+    NOT             reduce using rule 180 (AssignOp -> OREQ .)
+    LPAREN          reduce using rule 180 (AssignOp -> OREQ .)
+    IDENTIFIER      reduce using rule 180 (AssignOp -> OREQ .)
+    TYPEX           reduce using rule 180 (AssignOp -> OREQ .)
+    TTYPE           reduce using rule 180 (AssignOp -> OREQ .)
+    INTEGER         reduce using rule 180 (AssignOp -> OREQ .)
+    FLOAT           reduce using rule 180 (AssignOp -> OREQ .)
+    IMAGINARY       reduce using rule 180 (AssignOp -> OREQ .)
+    RUNE            reduce using rule 180 (AssignOp -> OREQ .)
+    STRING          reduce using rule 180 (AssignOp -> OREQ .)
+    LBRACK          reduce using rule 180 (AssignOp -> OREQ .)
+    STRUCT          reduce using rule 180 (AssignOp -> OREQ .)
+    FUNC            reduce using rule 180 (AssignOp -> OREQ .)
+    POINTER         reduce using rule 180 (AssignOp -> OREQ .)
 
 
 state 319
 
-    (170) Assignment -> ExpressionList assign_op . ExpressionList
+    (175) AssignOp -> MINUSEQ .
+
+    PLUS            reduce using rule 175 (AssignOp -> MINUSEQ .)
+    MINUS           reduce using rule 175 (AssignOp -> MINUSEQ .)
+    TIMES           reduce using rule 175 (AssignOp -> MINUSEQ .)
+    AMPERS          reduce using rule 175 (AssignOp -> MINUSEQ .)
+    NOT             reduce using rule 175 (AssignOp -> MINUSEQ .)
+    LPAREN          reduce using rule 175 (AssignOp -> MINUSEQ .)
+    IDENTIFIER      reduce using rule 175 (AssignOp -> MINUSEQ .)
+    TYPEX           reduce using rule 175 (AssignOp -> MINUSEQ .)
+    TTYPE           reduce using rule 175 (AssignOp -> MINUSEQ .)
+    INTEGER         reduce using rule 175 (AssignOp -> MINUSEQ .)
+    FLOAT           reduce using rule 175 (AssignOp -> MINUSEQ .)
+    IMAGINARY       reduce using rule 175 (AssignOp -> MINUSEQ .)
+    RUNE            reduce using rule 175 (AssignOp -> MINUSEQ .)
+    STRING          reduce using rule 175 (AssignOp -> MINUSEQ .)
+    LBRACK          reduce using rule 175 (AssignOp -> MINUSEQ .)
+    STRUCT          reduce using rule 175 (AssignOp -> MINUSEQ .)
+    FUNC            reduce using rule 175 (AssignOp -> MINUSEQ .)
+    POINTER         reduce using rule 175 (AssignOp -> MINUSEQ .)
+
+
+state 320
+
+    (179) AssignOp -> AMPEQ .
+
+    PLUS            reduce using rule 179 (AssignOp -> AMPEQ .)
+    MINUS           reduce using rule 179 (AssignOp -> AMPEQ .)
+    TIMES           reduce using rule 179 (AssignOp -> AMPEQ .)
+    AMPERS          reduce using rule 179 (AssignOp -> AMPEQ .)
+    NOT             reduce using rule 179 (AssignOp -> AMPEQ .)
+    LPAREN          reduce using rule 179 (AssignOp -> AMPEQ .)
+    IDENTIFIER      reduce using rule 179 (AssignOp -> AMPEQ .)
+    TYPEX           reduce using rule 179 (AssignOp -> AMPEQ .)
+    TTYPE           reduce using rule 179 (AssignOp -> AMPEQ .)
+    INTEGER         reduce using rule 179 (AssignOp -> AMPEQ .)
+    FLOAT           reduce using rule 179 (AssignOp -> AMPEQ .)
+    IMAGINARY       reduce using rule 179 (AssignOp -> AMPEQ .)
+    RUNE            reduce using rule 179 (AssignOp -> AMPEQ .)
+    STRING          reduce using rule 179 (AssignOp -> AMPEQ .)
+    LBRACK          reduce using rule 179 (AssignOp -> AMPEQ .)
+    STRUCT          reduce using rule 179 (AssignOp -> AMPEQ .)
+    FUNC            reduce using rule 179 (AssignOp -> AMPEQ .)
+    POINTER         reduce using rule 179 (AssignOp -> AMPEQ .)
+
+
+state 321
+
+    (172) Assignment -> ExpressionList assign_op . ExpressionList
     (113) ExpressionList -> . Expression ExpressionRep
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
@@ -11447,7 +11476,7 @@ state 319
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     Operand                        shift and go to state 118
-    ExpressionList                 shift and go to state 337
+    ExpressionList                 shift and go to state 340
     Expression                     shift and go to state 146
     PointerType                    shift and go to state 69
     Pointer                        shift and go to state 66
@@ -11456,47 +11485,54 @@ state 319
     ImgLiteral                     shift and go to state 113
     FunctionType                   shift and go to state 70
 
-state 320
-
-    (175) AssignOp -> DIVIDEEQ .
-
-    PLUS            reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    MINUS           reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    TIMES           reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    AMPERS          reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    NOT             reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    LPAREN          reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    IDENTIFIER      reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    TYPEX           reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    TTYPE           reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    INTEGER         reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    FLOAT           reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    IMAGINARY       reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    RUNE            reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    STRING          reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    LBRACK          reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    STRUCT          reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    FUNC            reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-    POINTER         reduce using rule 175 (AssignOp -> DIVIDEEQ .)
-
-
-state 321
-
-    (203) BreakStmt -> BREAK LabelOpt .
-
-    SEMICOL         reduce using rule 203 (BreakStmt -> BREAK LabelOpt .)
-
-
 state 322
 
-    (207) GotoStmt -> GOTO Label .
+    (177) AssignOp -> DIVIDEEQ .
 
-    SEMICOL         reduce using rule 207 (GotoStmt -> GOTO Label .)
+    PLUS            reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    MINUS           reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    TIMES           reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    AMPERS          reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    NOT             reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    LPAREN          reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    IDENTIFIER      reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    TYPEX           reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    TTYPE           reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    INTEGER         reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    FLOAT           reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    IMAGINARY       reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    RUNE            reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    STRING          reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    LBRACK          reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    STRUCT          reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    FUNC            reduce using rule 177 (AssignOp -> DIVIDEEQ .)
+    POINTER         reduce using rule 177 (AssignOp -> DIVIDEEQ .)
 
 
 state 323
 
-    (183) IfStmt -> IF Expression . Block ElseOpt
+    (205) BreakStmt -> BREAK LabelOpt .
+
+    SEMICOL         reduce using rule 205 (BreakStmt -> BREAK LabelOpt .)
+
+
+state 324
+
+    (161) ScanStmt -> SCAN PD . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 341
+
+
+state 325
+
+    (209) GotoStmt -> GOTO Label .
+
+    SEMICOL         reduce using rule 209 (GotoStmt -> GOTO Label .)
+
+
+state 326
+
+    (185) IfStmt -> IF Expression . Block ElseOpt
     (117) Expression -> Expression . OROR Expression
     (118) Expression -> Expression . AMPAMP Expression
     (119) Expression -> Expression . EQEQ Expression
@@ -11518,7 +11554,7 @@ state 323
     (135) Expression -> Expression . AMPCAR Expression
     (43) Block -> . CreateScope LBRACE StatementList RBRACE
     (44) CreateScope -> . epsilon
-    (224) epsilon -> .
+    (226) epsilon -> .
 
     OROR            shift and go to state 168
     AMPAMP          shift and go to state 183
@@ -11539,13 +11575,13 @@ state 323
     LL              shift and go to state 175
     GG              shift and go to state 179
     AMPCAR          shift and go to state 172
-    LBRACE          reduce using rule 224 (epsilon -> .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
 
     epsilon                        shift and go to state 133
     CreateScope                    shift and go to state 134
-    Block                          shift and go to state 338
+    Block                          shift and go to state 342
 
-state 324
+state 327
 
     (109) Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .
 
@@ -11574,6 +11610,7 @@ state 324
     GG              reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     AMPCAR          reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     COMMA           reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
+    LBRACE          reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     SEMICOL         reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     PLUSEQ          reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     MINUSEQ         reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
@@ -11586,17 +11623,16 @@ state 324
     LLEQ            reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     GGEQ            reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     EQUAL           reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
-    LBRACE          reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     RBRACK          reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     RPAREN          reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
     COLON           reduce using rule 109 (Slice -> LBRACK ExpressionOpt COLON ExpressionOpt RBRACK .)
 
 
-state 325
+state 328
 
     (138) UnaryExpr -> PrimaryExpr .
-    (168) IncDecStmt -> PrimaryExpr . PLUSPLUS
-    (169) IncDecStmt -> PrimaryExpr . MINUSMIN
+    (170) IncDecStmt -> PrimaryExpr . PLUSPLUS
+    (171) IncDecStmt -> PrimaryExpr . MINUSMIN
     (103) PrimaryExpr -> PrimaryExpr . Selector
     (104) PrimaryExpr -> PrimaryExpr . Index
     (105) PrimaryExpr -> PrimaryExpr . Slice
@@ -11639,8 +11675,8 @@ state 325
     LLEQ            reduce using rule 138 (UnaryExpr -> PrimaryExpr .)
     GGEQ            reduce using rule 138 (UnaryExpr -> PrimaryExpr .)
     EQUAL           reduce using rule 138 (UnaryExpr -> PrimaryExpr .)
-    PLUSPLUS        shift and go to state 300
-    MINUSMIN        shift and go to state 301
+    PLUSPLUS        shift and go to state 302
+    MINUSMIN        shift and go to state 303
     DOT             shift and go to state 193
     LBRACK          shift and go to state 189
     LPAREN          shift and go to state 192
@@ -11650,12 +11686,12 @@ state 325
     Selector                       shift and go to state 190
     Arguments                      shift and go to state 191
 
-state 326
+state 329
 
     (79) ShortVarDecl -> IDENTIFIER . COLONEQ Expression
     (99) OperandName -> IDENTIFIER .
 
-    COLONEQ         shift and go to state 306
+    COLONEQ         shift and go to state 308
     PLUSPLUS        reduce using rule 99 (OperandName -> IDENTIFIER .)
     MINUSMIN        reduce using rule 99 (OperandName -> IDENTIFIER .)
     DOT             reduce using rule 99 (OperandName -> IDENTIFIER .)
@@ -11682,6 +11718,7 @@ state 326
     AMPCAR          reduce using rule 99 (OperandName -> IDENTIFIER .)
     COMMA           reduce using rule 99 (OperandName -> IDENTIFIER .)
     LBRACE          reduce using rule 99 (OperandName -> IDENTIFIER .)
+    SEMICOL         reduce using rule 99 (OperandName -> IDENTIFIER .)
     PLUSEQ          reduce using rule 99 (OperandName -> IDENTIFIER .)
     MINUSEQ         reduce using rule 99 (OperandName -> IDENTIFIER .)
     TIMESEQ         reduce using rule 99 (OperandName -> IDENTIFIER .)
@@ -11693,127 +11730,40 @@ state 326
     LLEQ            reduce using rule 99 (OperandName -> IDENTIFIER .)
     GGEQ            reduce using rule 99 (OperandName -> IDENTIFIER .)
     EQUAL           reduce using rule 99 (OperandName -> IDENTIFIER .)
-    SEMICOL         reduce using rule 99 (OperandName -> IDENTIFIER .)
 
-
-state 327
-
-    (190) ConditionBlockOpt -> Condition .
-
-    LBRACE          reduce using rule 190 (ConditionBlockOpt -> Condition .)
-
-
-state 328
-
-    (189) ConditionBlockOpt -> epsilon .
-    (160) SimpleStmt -> epsilon .
-
-    LBRACE          reduce using rule 189 (ConditionBlockOpt -> epsilon .)
-    SEMICOL         reduce using rule 160 (SimpleStmt -> epsilon .)
-
-
-state 329
-
-    (187) ForStmt -> CreateForScope FOR ConditionBlockOpt . Block
-    (43) Block -> . CreateScope LBRACE StatementList RBRACE
-    (44) CreateScope -> . epsilon
-    (224) epsilon -> .
-
-    LBRACE          reduce using rule 224 (epsilon -> .)
-
-    epsilon                        shift and go to state 133
-    CreateScope                    shift and go to state 134
-    Block                          shift and go to state 339
 
 state 330
 
-    (192) Condition -> Expression .
-    (117) Expression -> Expression . OROR Expression
-    (118) Expression -> Expression . AMPAMP Expression
-    (119) Expression -> Expression . EQEQ Expression
-    (120) Expression -> Expression . NOTEQ Expression
-    (121) Expression -> Expression . LESS Expression
-    (122) Expression -> Expression . GREAT Expression
-    (123) Expression -> Expression . LEQ Expression
-    (124) Expression -> Expression . GEQ Expression
-    (125) Expression -> Expression . PLUS Expression
-    (126) Expression -> Expression . MINUS Expression
-    (127) Expression -> Expression . OR Expression
-    (128) Expression -> Expression . CARET Expression
-    (129) Expression -> Expression . TIMES Expression
-    (130) Expression -> Expression . DIVIDE Expression
-    (131) Expression -> Expression . MOD Expression
-    (132) Expression -> Expression . AMPERS Expression
-    (133) Expression -> Expression . LL Expression
-    (134) Expression -> Expression . GG Expression
-    (135) Expression -> Expression . AMPCAR Expression
-    (167) ExpressionStmt -> Expression .
-    (113) ExpressionList -> Expression . ExpressionRep
-    (114) ExpressionRep -> . ExpressionRep COMMA Expression
-    (115) ExpressionRep -> . epsilon
-    (224) epsilon -> .
+    (192) ConditionBlockOpt -> Condition .
 
-    LBRACE          reduce using rule 192 (Condition -> Expression .)
-    OROR            shift and go to state 168
-    AMPAMP          shift and go to state 183
-    EQEQ            shift and go to state 174
-    NOTEQ           shift and go to state 180
-    LESS            shift and go to state 173
-    GREAT           shift and go to state 170
-    LEQ             shift and go to state 186
-    GEQ             shift and go to state 177
-    PLUS            shift and go to state 181
-    MINUS           shift and go to state 185
-    OR              shift and go to state 178
-    CARET           shift and go to state 169
-    TIMES           shift and go to state 184
-    DIVIDE          shift and go to state 171
-    MOD             shift and go to state 182
-    AMPERS          shift and go to state 176
-    LL              shift and go to state 175
-    GG              shift and go to state 179
-    AMPCAR          shift and go to state 172
-    SEMICOL         reduce using rule 167 (ExpressionStmt -> Expression .)
-    COMMA           reduce using rule 224 (epsilon -> .)
-    PLUSEQ          reduce using rule 224 (epsilon -> .)
-    MINUSEQ         reduce using rule 224 (epsilon -> .)
-    TIMESEQ         reduce using rule 224 (epsilon -> .)
-    DIVIDEEQ        reduce using rule 224 (epsilon -> .)
-    MODEQ           reduce using rule 224 (epsilon -> .)
-    AMPEQ           reduce using rule 224 (epsilon -> .)
-    OREQ            reduce using rule 224 (epsilon -> .)
-    CAREQ           reduce using rule 224 (epsilon -> .)
-    LLEQ            reduce using rule 224 (epsilon -> .)
-    GGEQ            reduce using rule 224 (epsilon -> .)
-    EQUAL           reduce using rule 224 (epsilon -> .)
+    LBRACE          reduce using rule 192 (ConditionBlockOpt -> Condition .)
 
-    epsilon                        shift and go to state 203
-    ExpressionRep                  shift and go to state 202
 
 state 331
 
-    (193) ForClause -> SimpleStmt . SEMICOL ConditionOpt SEMICOL SimpleStmt
+    (191) ConditionBlockOpt -> epsilon .
+    (162) SimpleStmt -> epsilon .
 
-    SEMICOL         shift and go to state 340
+    LBRACE          reduce using rule 191 (ConditionBlockOpt -> epsilon .)
+    SEMICOL         reduce using rule 162 (SimpleStmt -> epsilon .)
 
 
 state 332
 
-    (191) ConditionBlockOpt -> ForClause .
+    (189) ForStmt -> CreateForScope FOR ConditionBlockOpt . Block
+    (43) Block -> . CreateScope LBRACE StatementList RBRACE
+    (44) CreateScope -> . epsilon
+    (226) epsilon -> .
 
-    LBRACE          reduce using rule 191 (ConditionBlockOpt -> ForClause .)
+    LBRACE          reduce using rule 226 (epsilon -> .)
 
+    epsilon                        shift and go to state 133
+    CreateScope                    shift and go to state 134
+    Block                          shift and go to state 343
 
 state 333
 
-    (165) LabeledStmt -> Label COLON Statement .
-
-    SEMICOL         reduce using rule 165 (LabeledStmt -> Label COLON Statement .)
-
-
-state 334
-
-    (159) PrintStmt -> PRINT PS Expression .
+    (194) Condition -> Expression .
     (117) Expression -> Expression . OROR Expression
     (118) Expression -> Expression . AMPAMP Expression
     (119) Expression -> Expression . EQEQ Expression
@@ -11833,8 +11783,13 @@ state 334
     (133) Expression -> Expression . LL Expression
     (134) Expression -> Expression . GG Expression
     (135) Expression -> Expression . AMPCAR Expression
+    (169) ExpressionStmt -> Expression .
+    (113) ExpressionList -> Expression . ExpressionRep
+    (114) ExpressionRep -> . ExpressionRep COMMA Expression
+    (115) ExpressionRep -> . epsilon
+    (226) epsilon -> .
 
-    SEMICOL         reduce using rule 159 (PrintStmt -> PRINT PS Expression .)
+    LBRACE          reduce using rule 194 (Condition -> Expression .)
     OROR            shift and go to state 168
     AMPAMP          shift and go to state 183
     EQEQ            shift and go to state 174
@@ -11854,11 +11809,47 @@ state 334
     LL              shift and go to state 175
     GG              shift and go to state 179
     AMPCAR          shift and go to state 172
+    SEMICOL         reduce using rule 169 (ExpressionStmt -> Expression .)
+    COMMA           reduce using rule 226 (epsilon -> .)
+    PLUSEQ          reduce using rule 226 (epsilon -> .)
+    MINUSEQ         reduce using rule 226 (epsilon -> .)
+    TIMESEQ         reduce using rule 226 (epsilon -> .)
+    DIVIDEEQ        reduce using rule 226 (epsilon -> .)
+    MODEQ           reduce using rule 226 (epsilon -> .)
+    AMPEQ           reduce using rule 226 (epsilon -> .)
+    OREQ            reduce using rule 226 (epsilon -> .)
+    CAREQ           reduce using rule 226 (epsilon -> .)
+    LLEQ            reduce using rule 226 (epsilon -> .)
+    GGEQ            reduce using rule 226 (epsilon -> .)
+    EQUAL           reduce using rule 226 (epsilon -> .)
+
+    epsilon                        shift and go to state 203
+    ExpressionRep                  shift and go to state 202
+
+state 334
+
+    (195) ForClause -> SimpleStmt . SEMICOL ConditionOpt SEMICOL SimpleStmt
+
+    SEMICOL         shift and go to state 344
 
 
 state 335
 
-    (158) PrintStmt -> PRINT PD Expression .
+    (193) ConditionBlockOpt -> ForClause .
+
+    LBRACE          reduce using rule 193 (ConditionBlockOpt -> ForClause .)
+
+
+state 336
+
+    (167) LabeledStmt -> Label COLON Statement .
+
+    SEMICOL         reduce using rule 167 (LabeledStmt -> Label COLON Statement .)
+
+
+state 337
+
+    (160) PrintStmt -> PRINT PS Expression .
     (117) Expression -> Expression . OROR Expression
     (118) Expression -> Expression . AMPAMP Expression
     (119) Expression -> Expression . EQEQ Expression
@@ -11879,7 +11870,7 @@ state 335
     (134) Expression -> Expression . GG Expression
     (135) Expression -> Expression . AMPCAR Expression
 
-    SEMICOL         reduce using rule 158 (PrintStmt -> PRINT PD Expression .)
+    SEMICOL         reduce using rule 160 (PrintStmt -> PRINT PS Expression .)
     OROR            shift and go to state 168
     AMPAMP          shift and go to state 183
     EQEQ            shift and go to state 174
@@ -11901,7 +11892,52 @@ state 335
     AMPCAR          shift and go to state 172
 
 
-state 336
+state 338
+
+    (159) PrintStmt -> PRINT PD Expression .
+    (117) Expression -> Expression . OROR Expression
+    (118) Expression -> Expression . AMPAMP Expression
+    (119) Expression -> Expression . EQEQ Expression
+    (120) Expression -> Expression . NOTEQ Expression
+    (121) Expression -> Expression . LESS Expression
+    (122) Expression -> Expression . GREAT Expression
+    (123) Expression -> Expression . LEQ Expression
+    (124) Expression -> Expression . GEQ Expression
+    (125) Expression -> Expression . PLUS Expression
+    (126) Expression -> Expression . MINUS Expression
+    (127) Expression -> Expression . OR Expression
+    (128) Expression -> Expression . CARET Expression
+    (129) Expression -> Expression . TIMES Expression
+    (130) Expression -> Expression . DIVIDE Expression
+    (131) Expression -> Expression . MOD Expression
+    (132) Expression -> Expression . AMPERS Expression
+    (133) Expression -> Expression . LL Expression
+    (134) Expression -> Expression . GG Expression
+    (135) Expression -> Expression . AMPCAR Expression
+
+    SEMICOL         reduce using rule 159 (PrintStmt -> PRINT PD Expression .)
+    OROR            shift and go to state 168
+    AMPAMP          shift and go to state 183
+    EQEQ            shift and go to state 174
+    NOTEQ           shift and go to state 180
+    LESS            shift and go to state 173
+    GREAT           shift and go to state 170
+    LEQ             shift and go to state 186
+    GEQ             shift and go to state 177
+    PLUS            shift and go to state 181
+    MINUS           shift and go to state 185
+    OR              shift and go to state 178
+    CARET           shift and go to state 169
+    TIMES           shift and go to state 184
+    DIVIDE          shift and go to state 171
+    MOD             shift and go to state 182
+    AMPERS          shift and go to state 176
+    LL              shift and go to state 175
+    GG              shift and go to state 179
+    AMPCAR          shift and go to state 172
+
+
+state 339
 
     (79) ShortVarDecl -> IDENTIFIER COLONEQ Expression .
     (117) Expression -> Expression . OROR Expression
@@ -11947,42 +11983,49 @@ state 336
     AMPCAR          shift and go to state 172
 
 
-state 337
-
-    (170) Assignment -> ExpressionList assign_op ExpressionList .
-
-    SEMICOL         reduce using rule 170 (Assignment -> ExpressionList assign_op ExpressionList .)
-    LBRACE          reduce using rule 170 (Assignment -> ExpressionList assign_op ExpressionList .)
-
-
-state 338
-
-    (183) IfStmt -> IF Expression Block . ElseOpt
-    (184) ElseOpt -> . ELSE IfStmt
-    (185) ElseOpt -> . ELSE Block
-    (186) ElseOpt -> . epsilon
-    (224) epsilon -> .
-
-    ELSE            shift and go to state 342
-    SEMICOL         reduce using rule 224 (epsilon -> .)
-
-    epsilon                        shift and go to state 341
-    ElseOpt                        shift and go to state 343
-
-state 339
-
-    (187) ForStmt -> CreateForScope FOR ConditionBlockOpt Block .
-
-    SEMICOL         reduce using rule 187 (ForStmt -> CreateForScope FOR ConditionBlockOpt Block .)
-
-
 state 340
 
-    (193) ForClause -> SimpleStmt SEMICOL . ConditionOpt SEMICOL SimpleStmt
-    (194) ConditionOpt -> . epsilon
-    (195) ConditionOpt -> . Condition
-    (224) epsilon -> .
-    (192) Condition -> . Expression
+    (172) Assignment -> ExpressionList assign_op ExpressionList .
+
+    LBRACE          reduce using rule 172 (Assignment -> ExpressionList assign_op ExpressionList .)
+    SEMICOL         reduce using rule 172 (Assignment -> ExpressionList assign_op ExpressionList .)
+
+
+state 341
+
+    (161) ScanStmt -> SCAN PD IDENTIFIER .
+
+    SEMICOL         reduce using rule 161 (ScanStmt -> SCAN PD IDENTIFIER .)
+
+
+state 342
+
+    (185) IfStmt -> IF Expression Block . ElseOpt
+    (186) ElseOpt -> . ELSE IfStmt
+    (187) ElseOpt -> . ELSE Block
+    (188) ElseOpt -> . epsilon
+    (226) epsilon -> .
+
+    ELSE            shift and go to state 346
+    SEMICOL         reduce using rule 226 (epsilon -> .)
+
+    epsilon                        shift and go to state 345
+    ElseOpt                        shift and go to state 347
+
+state 343
+
+    (189) ForStmt -> CreateForScope FOR ConditionBlockOpt Block .
+
+    SEMICOL         reduce using rule 189 (ForStmt -> CreateForScope FOR ConditionBlockOpt Block .)
+
+
+state 344
+
+    (195) ForClause -> SimpleStmt SEMICOL . ConditionOpt SEMICOL SimpleStmt
+    (196) ConditionOpt -> . epsilon
+    (197) ConditionOpt -> . Condition
+    (226) epsilon -> .
+    (194) Condition -> . Expression
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
     (118) Expression -> . Expression AMPAMP Expression
@@ -12048,7 +12091,7 @@ state 340
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    SEMICOL         reduce using rule 224 (epsilon -> .)
+    SEMICOL         reduce using rule 226 (epsilon -> .)
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
     TIMES           shift and go to state 117
@@ -12076,17 +12119,17 @@ state 340
     OperandName                    shift and go to state 104
     BasicLit                       shift and go to state 105
     TypeName                       shift and go to state 57
-    Condition                      shift and go to state 344
+    Condition                      shift and go to state 348
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     ImgLiteral                     shift and go to state 113
-    epsilon                        shift and go to state 345
+    epsilon                        shift and go to state 349
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
     PrimaryExpr                    shift and go to state 124
-    ConditionOpt                   shift and go to state 346
+    ConditionOpt                   shift and go to state 350
     ArrayType                      shift and go to state 54
-    Expression                     shift and go to state 347
+    Expression                     shift and go to state 351
     PointerType                    shift and go to state 69
     Pointer                        shift and go to state 66
     StringLiteral                  shift and go to state 98
@@ -12094,61 +12137,61 @@ state 340
     Operand                        shift and go to state 118
     FunctionType                   shift and go to state 70
 
-state 341
-
-    (186) ElseOpt -> epsilon .
-
-    SEMICOL         reduce using rule 186 (ElseOpt -> epsilon .)
-
-
-state 342
-
-    (184) ElseOpt -> ELSE . IfStmt
-    (185) ElseOpt -> ELSE . Block
-    (183) IfStmt -> . IF Expression Block ElseOpt
-    (43) Block -> . CreateScope LBRACE StatementList RBRACE
-    (44) CreateScope -> . epsilon
-    (224) epsilon -> .
-
-    IF              shift and go to state 281
-    LBRACE          reduce using rule 224 (epsilon -> .)
-
-    epsilon                        shift and go to state 133
-    CreateScope                    shift and go to state 134
-    IfStmt                         shift and go to state 348
-    Block                          shift and go to state 349
-
-state 343
-
-    (183) IfStmt -> IF Expression Block ElseOpt .
-
-    SEMICOL         reduce using rule 183 (IfStmt -> IF Expression Block ElseOpt .)
-
-
-state 344
-
-    (195) ConditionOpt -> Condition .
-
-    SEMICOL         reduce using rule 195 (ConditionOpt -> Condition .)
-
-
 state 345
 
-    (194) ConditionOpt -> epsilon .
+    (188) ElseOpt -> epsilon .
 
-    SEMICOL         reduce using rule 194 (ConditionOpt -> epsilon .)
+    SEMICOL         reduce using rule 188 (ElseOpt -> epsilon .)
 
 
 state 346
 
-    (193) ForClause -> SimpleStmt SEMICOL ConditionOpt . SEMICOL SimpleStmt
+    (186) ElseOpt -> ELSE . IfStmt
+    (187) ElseOpt -> ELSE . Block
+    (185) IfStmt -> . IF Expression Block ElseOpt
+    (43) Block -> . CreateScope LBRACE StatementList RBRACE
+    (44) CreateScope -> . epsilon
+    (226) epsilon -> .
 
-    SEMICOL         shift and go to state 350
+    IF              shift and go to state 283
+    LBRACE          reduce using rule 226 (epsilon -> .)
 
+    epsilon                        shift and go to state 133
+    CreateScope                    shift and go to state 134
+    IfStmt                         shift and go to state 352
+    Block                          shift and go to state 353
 
 state 347
 
-    (192) Condition -> Expression .
+    (185) IfStmt -> IF Expression Block ElseOpt .
+
+    SEMICOL         reduce using rule 185 (IfStmt -> IF Expression Block ElseOpt .)
+
+
+state 348
+
+    (197) ConditionOpt -> Condition .
+
+    SEMICOL         reduce using rule 197 (ConditionOpt -> Condition .)
+
+
+state 349
+
+    (196) ConditionOpt -> epsilon .
+
+    SEMICOL         reduce using rule 196 (ConditionOpt -> epsilon .)
+
+
+state 350
+
+    (195) ForClause -> SimpleStmt SEMICOL ConditionOpt . SEMICOL SimpleStmt
+
+    SEMICOL         shift and go to state 354
+
+
+state 351
+
+    (194) Condition -> Expression .
     (117) Expression -> Expression . OROR Expression
     (118) Expression -> Expression . AMPAMP Expression
     (119) Expression -> Expression . EQEQ Expression
@@ -12169,7 +12212,7 @@ state 347
     (134) Expression -> Expression . GG Expression
     (135) Expression -> Expression . AMPCAR Expression
 
-    SEMICOL         reduce using rule 192 (Condition -> Expression .)
+    SEMICOL         reduce using rule 194 (Condition -> Expression .)
     OROR            shift and go to state 168
     AMPAMP          shift and go to state 183
     EQEQ            shift and go to state 174
@@ -12191,33 +12234,33 @@ state 347
     AMPCAR          shift and go to state 172
 
 
-state 348
+state 352
 
-    (184) ElseOpt -> ELSE IfStmt .
+    (186) ElseOpt -> ELSE IfStmt .
 
-    SEMICOL         reduce using rule 184 (ElseOpt -> ELSE IfStmt .)
-
-
-state 349
-
-    (185) ElseOpt -> ELSE Block .
-
-    SEMICOL         reduce using rule 185 (ElseOpt -> ELSE Block .)
+    SEMICOL         reduce using rule 186 (ElseOpt -> ELSE IfStmt .)
 
 
-state 350
+state 353
 
-    (193) ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL . SimpleStmt
-    (160) SimpleStmt -> . epsilon
-    (161) SimpleStmt -> . ExpressionStmt
-    (162) SimpleStmt -> . IncDecStmt
-    (163) SimpleStmt -> . Assignment
-    (164) SimpleStmt -> . ShortVarDecl
-    (224) epsilon -> .
-    (167) ExpressionStmt -> . Expression
-    (168) IncDecStmt -> . PrimaryExpr PLUSPLUS
-    (169) IncDecStmt -> . PrimaryExpr MINUSMIN
-    (170) Assignment -> . ExpressionList assign_op ExpressionList
+    (187) ElseOpt -> ELSE Block .
+
+    SEMICOL         reduce using rule 187 (ElseOpt -> ELSE Block .)
+
+
+state 354
+
+    (195) ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL . SimpleStmt
+    (162) SimpleStmt -> . epsilon
+    (163) SimpleStmt -> . ExpressionStmt
+    (164) SimpleStmt -> . IncDecStmt
+    (165) SimpleStmt -> . Assignment
+    (166) SimpleStmt -> . ShortVarDecl
+    (226) epsilon -> .
+    (169) ExpressionStmt -> . Expression
+    (170) IncDecStmt -> . PrimaryExpr PLUSPLUS
+    (171) IncDecStmt -> . PrimaryExpr MINUSMIN
+    (172) Assignment -> . ExpressionList assign_op ExpressionList
     (79) ShortVarDecl -> . IDENTIFIER COLONEQ Expression
     (116) Expression -> . UnaryExpr
     (117) Expression -> . Expression OROR Expression
@@ -12285,8 +12328,8 @@ state 350
     (27) FunctionType -> . FUNC Signature
     (25) Pointer -> . POINTER
 
-    LBRACE          reduce using rule 224 (epsilon -> .)
-    IDENTIFIER      shift and go to state 326
+    LBRACE          reduce using rule 226 (epsilon -> .)
+    IDENTIFIER      shift and go to state 329
     LPAREN          shift and go to state 120
     PLUS            shift and go to state 108
     MINUS           shift and go to state 102
@@ -12307,26 +12350,26 @@ state 350
 
     UnaryOp                        shift and go to state 106
     Conversion                     shift and go to state 97
-    SimpleStmt                     shift and go to state 351
+    SimpleStmt                     shift and go to state 355
     StringLiteral                  shift and go to state 98
     ExpressionStmt                 shift and go to state 253
     FloatLiteral                   shift and go to state 100
     Type                           shift and go to state 101
     OperandName                    shift and go to state 104
-    Assignment                     shift and go to state 256
+    Assignment                     shift and go to state 257
     TypeName                       shift and go to state 57
-    IncDecStmt                     shift and go to state 257
+    IncDecStmt                     shift and go to state 258
     StructType                     shift and go to state 60
     IntLiteral                     shift and go to state 112
     ImgLiteral                     shift and go to state 113
-    epsilon                        shift and go to state 352
+    epsilon                        shift and go to state 356
     UnaryExpr                      shift and go to state 115
     RuneLiteral                    shift and go to state 116
-    PrimaryExpr                    shift and go to state 265
-    ExpressionList                 shift and go to state 273
+    PrimaryExpr                    shift and go to state 266
+    ExpressionList                 shift and go to state 274
     ArrayType                      shift and go to state 54
-    Expression                     shift and go to state 274
-    ShortVarDecl                   shift and go to state 280
+    Expression                     shift and go to state 275
+    ShortVarDecl                   shift and go to state 282
     PointerType                    shift and go to state 69
     Pointer                        shift and go to state 66
     Literal                        shift and go to state 99
@@ -12335,18 +12378,18 @@ state 350
     Operand                        shift and go to state 118
     FunctionType                   shift and go to state 70
 
-state 351
+state 355
 
-    (193) ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt .
+    (195) ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt .
 
-    LBRACE          reduce using rule 193 (ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt .)
+    LBRACE          reduce using rule 195 (ForClause -> SimpleStmt SEMICOL ConditionOpt SEMICOL SimpleStmt .)
 
 
-state 352
+state 356
 
-    (160) SimpleStmt -> epsilon .
+    (162) SimpleStmt -> epsilon .
 
-    LBRACE          reduce using rule 160 (SimpleStmt -> epsilon .)
+    LBRACE          reduce using rule 162 (SimpleStmt -> epsilon .)
 
 WARNING: 
 WARNING: Conflicts:

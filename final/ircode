@@ -1,20 +1,41 @@
-label0 function fun:
-TEMP_VAR0(1) := a(1)[14]4
-printint TEMP_VAR0(1)
-ret
-label1 function main:
-n(2) := 5
-m(2) := 4
-TEMP_VAR1(2) := 4 int*i m(2)
-Allocate a(2) TEMP_VAR1(2) int
-TEMP_VAR3(2) := 3 int*i m(2)
-TEMP_VAR4(2) := TEMP_VAR3(2) int+i 2
-TEMP_VAR2(2) := a(2)[TEMP_VAR4(2)]4
-a(2)[TEMP_VAR4(2)]4 := 4
-TEMP_VAR6(2) := 3 int*i m(2)
-TEMP_VAR7(2) := TEMP_VAR6(2) int+i 2
-TEMP_VAR5(2) := a(2)[TEMP_VAR7(2)]4
-b(2) := TEMP_VAR5(2)
-printint b(2)
-param a(2)
-callvoid fun 4
+label9 function main:
+malloc curr(1) 8
+TEMP_VAR0(1) := curr(1).value
+curr(1).value := -1
+head(1) := curr(1)
+tail(1) := curr(1)
+i(2) := 0
+label0:
+if i(2) < 5 goto label1
+goto label3
+label1:
+malloc curr(1) 8
+TEMP_VAR2(2) := curr(1).value
+curr(1).value := i(2)
+TEMP_VAR3(2) := curr(1).next
+curr(1).next := 0
+TEMP_VAR4(2) := tail(1).next
+tail(1).next := curr(1)
+tail(1) := curr(1)
+label2:
+TEMP_VAR1(2) := i(2) int+i 1
+i(2) := TEMP_VAR1(2)
+goto label0
+label3:
+key(1) := -10
+curr(1) := head(1)
+label6:
+if curr(1) != 0 goto label7
+goto label8
+label7:
+TEMP_VAR5(3) := curr(1).value
+if TEMP_VAR5(3) == key(1) goto label4
+goto label5
+label4:
+printint 1
+goto label8
+label5:
+TEMP_VAR6(3) := curr(1).next
+curr(1) := TEMP_VAR6(3)
+goto label6
+label8:

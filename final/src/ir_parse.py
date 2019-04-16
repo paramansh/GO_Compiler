@@ -63,6 +63,12 @@ class instruction:
             self.dest = args[0][5:]
             self.src1 = args[1]
             self.src2 = None
+        
+        elif len(args) == 2 and args[0][0:4] == 'scan': # scan_dest_ src
+            self.type = 'scan'
+            self.dest = args[1]
+            self.src1 = args[0][4:]
+            self.src2 = None
 
         elif len(args) == 2 and args[0][0:5] == 'param': # print___ src
             self.type = 'parameter'

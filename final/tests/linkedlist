@@ -18,7 +18,7 @@ func main() {
         tail = curr;
     };
 
-    key := 3;
+    key := -10;
     curr = head;
     for curr != 0 {
         if curr.value == key {

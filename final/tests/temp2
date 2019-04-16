@@ -1,8 +1,7 @@
 package main;
- 
 
 func main() {
-    m := 29;
-    n := 6;
-    print %d 34;
+    var m int;
+    scan %d m;
+    print %d m*m;
 };

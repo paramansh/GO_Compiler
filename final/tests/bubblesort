@@ -15,13 +15,16 @@ func sort(a []int, n int) {
 };
 
 func main() {
-    var a [5]int;
-    for i := 0; i < 5; i++ {
-        a[i] = 5-i;
-        print %d a[i];
+    var n, x int;
+    scan %d n;
+
+    var a [n]int;
+    for i := 0; i < n; i++ {
+        scan %d x;
+        a[i] = x;
     };
 
-    sort(a, 5);
+    sort(a, n);
     for i := 0; i < 5; i++ {
         print %d a[i];
     };

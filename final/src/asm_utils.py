@@ -5,6 +5,7 @@ def init_globals(scope_list, fp):
     fp.write('.data\n\n')
 
     table = scope_list[0].table
+    fp.write('blank' + ':\n\t.int\t0\n')
     for entry in table:
         if table[entry]['type'] != 'func':
             fp.write(entry + ':\n\t.' + table[entry]['type'] + '\t' + str(table[entry]['value']) + '\n')

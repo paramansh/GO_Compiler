@@ -876,7 +876,7 @@ def p_string_literal(p):
 
 def p_operand_name(p):
 	'''OperandName : IDENTIFIER'''
-	p[0] = Node()
+	# p[0] = Node()
 	if not inScope(p[1]):
 		print "error at line", p.lineno(0), 'Variable not Declared'
 	scope_label = getScope(p[1]).label	 
@@ -1325,6 +1325,7 @@ def p_statement(p):
 				 | Block
 				 | IfStmt
 				 | PrintStmt
+				 | ScanStmt
 				 | MallocStmt
 				 | ForStmt '''
 				#  SwitchStmt'''
@@ -1355,6 +1356,25 @@ def p_print_stmt(p):
 		p[0].code += ['printstr ' + p[3].place]
 	elif p[2] == '%d':
 		p[0].code += ['printint ' + p[3].place]
+	else:
+		print 'unsupported types for print'
+
+def p_scan_stmt(p):
+	'''ScanStmt : SCAN PD IDENTIFIER'''
+	if not inScope(p[3]):
+		print 'error at line', p.lineno(0), 'variable not in scope'
+		return
+	
+	var_type = getIdInfo(p[3])['type']
+	if var_type != 'int':
+		print 'error at line', p.lineno(0), 'type mismatch in scan'
+	
+	id_scope = getScope(p[3]).label
+	p[0] = Node()
+	if p[2] == '%d':
+		p[0].code += ['scanint ' + p[3] + '(' + str(id_scope) + ')']
+	else:
+		print 'error at line', p.lineno(0), 'unsupported types for scan' 
 
 def p_simple_stmt(p):
 	'''SimpleStmt : epsilon

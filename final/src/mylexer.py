@@ -21,6 +21,7 @@ keywords = [
         'map',
         'package',
         'print',
+        'scan',
         'range',
         'return',
         'select',
