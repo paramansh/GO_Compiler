@@ -1,0 +1,53 @@
+package main;
+
+// need to pass number of columns
+func multiply(A [][3]int, rowsA, colsA int, B [][1]int, rowsB, colsB int) {
+    var M [rowsA][colsB]int;
+
+    if colsA != rowsB {
+        print %d -1;
+    }
+    else {
+        for i:=0; i<rowsA; i++ {
+            for j:=0; j<colsB; j++ {
+                M[i][j] = 0;
+                for k:=0; k<colsA; k++ {
+                    M[i][j] += A[i][k] * B[k][j];
+                };
+            };
+        };
+
+        for i:=0; i<rowsA; i++ {
+            for j:=0; j<colsB; j++ {
+                print %d M[i][j];
+            };
+        };
+    };
+
+    return;
+};
+
+func main() {
+    var a [2][3]int;
+    var b [3][1]int;
+
+    for i:=0; i<2; i++ {
+        for j:=0; j<3; j++ {
+            a[i][j] = 2*i + j*j;
+            // print %d a[i][j];
+        };
+    };
+
+    for i:=0; i<3; i++ {
+        for j:=0; j<1; j++ {
+            b[i][j] = 3 * (2 - i);
+            // print %d b[i][j];
+        };
+    };
+
+    multiply(a, 2, 3, b, 3, 1);
+};
+
+// | 0 1 4 | * | 6 | = | 3 | 
+// | 2 3 6 |   | 3 |   | 21|
+//             | 0 | 

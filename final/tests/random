@@ -1,0 +1,16 @@
+package main;
+
+type ttype type2 struct{x, y int;};
+type ttype type1 struct{c int; b [4][7] ttype type2;};
+type ttype new_type struct{a int; st ttype type1;};
+
+func main() {
+    a := 3;
+    var x ttype new_type;
+    a = x.st.b[2][3].x;
+    i := 0;
+    j := 0;
+    //k := i + j++;
+    *(&a) = 4;
+    print %d a;
+};

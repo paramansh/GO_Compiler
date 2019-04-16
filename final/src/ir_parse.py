@@ -13,11 +13,13 @@ class instruction:
             temp = ast.literal_eval(temp)
             self.src2 = temp
             self.src1 = args[-1] # func name
+
         elif args[0] == 'ret:' and len(args) > 3:
             self.type = 'retmulti'
             self.dest = None
             self.src1 = args[1:]
             self.src2 = None
+
         elif len(args) == 6 and args[0] == 'if': # if src1 comp src2 goto dest
             self.type = ('if', args[2])
             self.dest = args[5]
@@ -53,6 +55,12 @@ class instruction:
             self.dest = args[1] # return value
             self.src1 = args[2] # function name
             self.src2 = None
+            
+        elif args[0][0:4] == 'call':
+            self.type = 'callother'
+            self.dest = args[1]
+            self.src1 = args[2]
+            self.src2 = args[0][4:]
         
         elif len(args) == 3 and args[0][0:6] == 'malloc':
             self.type = 'malloc'

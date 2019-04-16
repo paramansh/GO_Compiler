@@ -679,7 +679,6 @@ def p_var_spec(p):
 					else:
 						scope_label = scope_stack[-1].label
 						p[0].code += ['Allocate ' + i + '(' + str(scope_label) + ') ' +  p[2].type[6:-1].split(',')[0] + ' ' + element_type]
-				
 				err = insertId(i, p[2].type)
 				if p[2].type == 'int':
 					insertInfo(i, 'value', 0)
@@ -689,7 +688,6 @@ def p_var_spec(p):
 					insertInfo(i, 'value', '')
 				### TODO bool type
 				insertInfo(i, 'constant', False)
-
 				if err:
 					print 'error: at line', p.lineno(0), err
 		else:
@@ -758,7 +756,7 @@ def p_func_decl(p):
 		for ret_dict in return_types:
 			if type(ret_dict) == dict:
 				for ret_type in ret_dict:
-					correct_types += [ret_type] * len(ret_dict[ret_type])
+					correct_types += [ret_type] * max(len(ret_dict[ret_type]), 1)
 			else:
 				correct_types += [ret_dict]
 		# print 'here3', correct_types
@@ -1080,6 +1078,13 @@ def p_prim_expr(p):
 								p[0].exprlist.append(temp_node)
 								return_out_list.append(res)
 								return_arg_list.append(temp_node.place)
+							if not result[res]:
+								temp_node = Node()
+								temp_node.expr.type = res
+								temp_node.place = newTemp(res)
+								p[0].exprlist.append(temp_node)
+								return_out_list.append(res)
+								return_arg_list.append(temp_node.place)
 						# p[0].expr.type = ret_types
 						# p[0].place = new_place
 						# p[0].code += ['call' + result.keys()[0] + ', ' + new_place + ', ' + p[1].place]
@@ -1088,7 +1093,7 @@ def p_prim_expr(p):
 						new_place = newTemp(result)
 						p[0].expr.type = result
 						p[0].place = new_place
-						p[0].code += ['call' + result + ', ' + new_place + ', ' + p[1].place]
+						p[0].code += ['call' + result + ' ' + new_place + ' ' + p[1].place]
 				if flag:
 					p[0].code += ['call ' + str(return_out_list) + ' ' + str(return_arg_list) + ' ' + p[1].place]
 
@@ -1320,9 +1325,9 @@ def p_unary_expr(p):
 			p[0].code = p[2].code + [p[0].place + ' := &' + p[2].place] 
 		if p[1] == '!':
 			p[0] = Node()
-			p[0].code = p[1].code
-			p[1].expr.true_label[0] = p[0].expr.false_label
-			p[1].expr.false_label[0] = p[0].expr.true_label
+			p[0].code = p[2].code
+			p[2].expr.true_label[0] = p[0].expr.false_label
+			p[2].expr.false_label[0] = p[0].expr.true_label
 
 def p_unary_op(p):
 	'''UnaryOp : PLUS

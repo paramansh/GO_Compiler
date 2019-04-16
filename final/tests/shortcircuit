@@ -6,7 +6,7 @@ func main() {
     m := 7;
     n := 5;
 
-    if m > a && b == n {
+    if !(m > a) && b == n {
         print %d m-a;
     }
     else {

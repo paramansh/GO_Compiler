@@ -5,5 +5,5 @@ func random(n1, n2, n3, n4, n5, n6, n7, n8 int) int {
 };
 
 func main() {
-    print %d random(5, 1, 7, 0, 3, 5, 2, 6);
+    print %d random(5, 1, 7, 0, 3, 3, 2, 6);
 };

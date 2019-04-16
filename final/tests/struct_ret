@@ -1,0 +1,29 @@
+package main;
+
+type ttype new_type struct{a int; b int;};
+
+func fun(a, b int) ttype new_type {
+    var result ttype new_type;
+    result.a = b;
+    result.b = a;
+    return result;
+};
+
+func fun2(a ttype new_type) ttype new_type {
+    print %d a.a;
+    print %d a.b;
+    a.a = 2 * a.a;
+    a.b = 2 * a.b;
+    return a;
+};
+
+func main() {
+    a := 3;
+    b := 4;
+    c := fun(a, b);
+    print %d c.a;
+    print %d c.b;
+    d := fun2(c);
+    print %d d.a;
+    print %d d.b;
+};
