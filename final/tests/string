@@ -1,0 +1,11 @@
+package main;
+
+var n int;
+
+func main() {
+    a := "hello";
+    b := a;
+    print %s a;
+    print %s b;
+    print %s "bye";
+};

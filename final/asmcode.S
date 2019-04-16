@@ -2,6 +2,12 @@
 
 blank:
 	.int	0
+TEMP_VAR1:
+	.string	"bye"
+TEMP_VAR0:
+	.string	"hello"
+n:
+	.int	0
 outFormatInt:
 	.asciz	"%d\n"
 outFormatStr:
@@ -22,25 +28,19 @@ __main__:
 
 	pushl %ebp
 	movl %esp, %ebp
-	subl $52, %esp
-	movl $3, -16(%ebp)
-	movl -24(%ebp), %edx
-	movl 136(%edx), %ecx
-	movl %ecx, -32(%ebp)
-	movl -36(%ebp), %edx
-	movl %edx, -16(%ebp)
-	movl $0, -40(%ebp)
-	movl $0, -44(%ebp)
-	movl %ebp, %edx
-	addl $-16, %edx
-	movl %edx, -48(%ebp)
-	movl -48(%ebp), %edx
-	movl (%edx), %ecx
-	movl %ecx, -52(%ebp)
-	movl -48(%ebp), %edx
-	movl $4, (%edx)
-	pushl -16(%ebp)
-	pushl $outFormatInt
+	subl $16, %esp
+	pushl $TEMP_VAR0
+	pushl $outFormatStr
+	call printf
+	pop %ebx
+	pop %ebx
+	pushl $TEMP_VAR0
+	pushl $outFormatStr
+	call printf
+	pop %ebx
+	pop %ebx
+	pushl $TEMP_VAR1
+	pushl $outFormatStr
 	call printf
 	pop %ebx
 	pop %ebx

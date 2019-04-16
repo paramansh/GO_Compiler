@@ -1,23 +1,19 @@
 scope: 1
 parent: 0
-{'TEMP_VAR0': {'constant': False, 'offset': 16, 'type': 'ttype_type2'},
- 'TEMP_VAR1': {'constant': False, 'offset': 32, 'type': 'int*'},
- 'TEMP_VAR2': {'constant': False, 'offset': 36, 'type': 'int'},
- 'a': {'constant': False, 'offset': 0, 'type': 'int'},
- 'i': {'constant': False, 'offset': 24, 'type': 'int'},
- 'j': {'constant': False, 'offset': 28, 'type': 'int'},
- 'x': {'constant': False,
-       'offset': 4,
-       'type': "Struct{'a':'int','st':'ttype_type1'}"}}
+{'TEMP_VAR0': {'constant': False, 'offset': 0, 'type': 'string'},
+ 'TEMP_VAR1': {'constant': False, 'offset': 3, 'type': 'string'},
+ 'a': {'constant': False, 'offset': 1, 'type': 'string'},
+ 'b': {'constant': False, 'offset': 2, 'type': 'string'}}
 {}
 
 scope: 0
 parent: None
-{'main': {'func_dict': {'symbol_table': 1},
+{'TEMP_VAR0': {'type': 'string', 'value': '"hello"'},
+ 'TEMP_VAR1': {'type': 'string', 'value': '"bye"'},
+ 'main': {'func_dict': {'symbol_table': 1},
           'func_signature': [[], []],
-          'offset': 0,
-          'type': 'func'}}
-{'ttype_new_type': "Struct{'a':'int','st':'ttype_type1'}",
- 'ttype_type1': "Struct{'c':'int','b':'Array(4, Array(7, ttype_type2))'}",
- 'ttype_type2': "Struct{'y':'int','x':'int'}"}
+          'offset': 4,
+          'type': 'func'},
+ 'n': {'constant': False, 'offset': 0, 'type': 'int', 'value': 0}}
+{}
 

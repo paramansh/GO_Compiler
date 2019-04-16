@@ -877,7 +877,10 @@ def p_string_literal(p):
 	p[0].expr.value = p[1]
 	p[0].expr.type = 'string'
 	p[0].expr.is_constant = True
-	p[0].place = str(p[0].expr.value)
+	new_temp = newTemp('string').split('(')[0]
+	scope_stack[0].insert(new_temp, 'string')
+	scope_stack[0].setArgs(new_temp, 'value', '\"' + p[1] + '\"')
+	p[0].place = str(new_temp)
 
 def p_operand_name(p):
 	'''OperandName : IDENTIFIER'''

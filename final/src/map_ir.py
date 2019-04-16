@@ -18,6 +18,8 @@ jumps = {
 	'!=' : 'jne'
 }
 
+var_to_str = {}
+
 BUFFER_CAP = 12
 
 def getTypeConversion(name, scope_list):
@@ -360,11 +362,17 @@ def map_instr(instr, scope_list, fp):
 					gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
 			else:
 				if is_immediate(instr.src1):
-					gen_instr('movl $' + str(instr.src1) + ', ' + str(dest_offset) + '(%ebp)', fp)
+					if get_type(instr.dest, scope_list) == 'string':
+						var_to_str[instr.dest] = instr.src1 
+					else:
+						gen_instr('movl $' + str(instr.src1) + ', ' + str(dest_offset) + '(%ebp)', fp)
 				else:
-					src_offset = get_offset(instr.src1, scope_list)
-					gen_instr('movl ' + str(src_offset) + '(%ebp), %edx', fp)
-					gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
+					if get_type(instr.dest, scope_list) == 'string':
+						var_to_str[instr.dest] = var_to_str[instr.src1]
+					else:
+						src_offset = get_offset(instr.src1, scope_list)
+						gen_instr('movl ' + str(src_offset) + '(%ebp), %edx', fp)
+						gen_instr('movl %edx, ' + str(dest_offset) + '(%ebp)', fp)
 
 	elif instr.type == 'allocate':
 		dest_offset = get_offset(instr.dest, scope_list)
@@ -402,7 +410,15 @@ def map_instr(instr, scope_list, fp):
 			gen_instr('pop %ebx', fp)
 			gen_instr('pop %ebx', fp)
 		else:
-			print 'unsupported types for print'
+			if is_immediate(instr.src1):
+				var = instr.src1
+			else:
+				var = var_to_str[instr.src1]
+			gen_instr('pushl $' + var, fp)
+			gen_instr('pushl $outFormatStr', fp)
+			gen_instr('call printf', fp)
+			gen_instr('pop %ebx', fp)
+			gen_instr('pop %ebx', fp)
 	
 	elif instr.type == 'scan':
 		if instr.src1 == 'int':
@@ -538,4 +554,3 @@ def map_instr(instr, scope_list, fp):
 		gen_instr("movl %ebp, %esp", fp)
   		gen_instr("pop %ebp", fp)
 		gen_instr("ret", fp)
-
